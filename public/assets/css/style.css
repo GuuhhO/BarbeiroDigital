@@ -7,6 +7,8 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh; /* altura mínima da viewport */
+    background-color: #212529;
+    color: white;
 }
 
 main {
@@ -19,4 +21,55 @@ footer {
     background-color: #212529;
     padding: 1em;
     text-align: center;
+}
+
+#boxEntrada {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+
+#servicos {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.p-3.btn.btn-light {
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    width: 150px;
+}
+
+/* #boxHorario {
+    background-color: orange;
+    border-radius: 20px;
+    text-align: center;
+    padding: 10px;
+} */
+
+.box-horario {
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    padding: 10px 15px;
+    margin: 5px;
+    cursor: pointer;
+    user-select: none;
+    color: #007bff;
+    font-weight: 500;
+    transition: background-color 0.2s, color 0.2s;
+    display: inline-block;
+    min-width: 80px;
+}
+
+.box-horario:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.box-horario.selected {
+    background-color: #0056b3;
+    color: white;
 }
