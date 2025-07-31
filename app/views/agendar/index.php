@@ -64,10 +64,9 @@ $title = 'Agendar Horário';
   </div>
 </div>
 
-
 <script>
     function verificarHorariosService(event) {
-        event.preventDefault(); // Impede o envio padrão do form
+        event.preventDefault();
 
         const dados = {
             nome: $('#nome').val(),
@@ -81,8 +80,6 @@ $title = 'Agendar Horário';
             url: '/Cortai/agendar/verificarHorariosDisponiveis',
             data: dados,
             success: function(resposta) {
-                console.log(resposta);
-
                 let horariosDisponiveis = typeof resposta === 'string' ? JSON.parse(resposta) : resposta;
 
                 if (horariosDisponiveis.length === 0) {
@@ -91,18 +88,11 @@ $title = 'Agendar Horário';
                     return;
                 }
 
-                $('#horario').empty(); // Limpa os antigos
-                $('#horario').append('<option selected disabled>Selecione um horário</option>');
-
-                horariosDisponiveis.forEach(function(horario) {
-                    $('#horario').append('<option value="' + horario + '">' + horario + '</option>');
-                });
-
-                $('#containerHorarios').show();
+                mostrarHorariosComoCaixas(horariosDisponiveis);
 
                 // Abrir modal Bootstrap
-                var modalElement = document.getElementById('modalSelecionarHorario');
-                var modal = new bootstrap.Modal(modalElement);
+                const modalElement = document.getElementById('modalSelecionarHorario');
+                const modal = new bootstrap.Modal(modalElement);
                 modal.show();
             },
             error: function(erro) {
@@ -133,10 +123,10 @@ $title = 'Agendar Horário';
         const telefone = $('#telefone').val();
         const servico_id = $('#servico_id').val();
         const dia = $('#dia').val();
-        const horario = $('#horario').val();
+        const horario = $('.box-horario.selected').text();
 
         if (!cliente || !telefone || !servico_id || !dia || !horario) {
-            alert("Preencha todos os campos antes de agendar.");
+            alert("Preencha todos os campos e selecione um horário antes de agendar.");
             return;
         }
 
@@ -154,6 +144,9 @@ $title = 'Agendar Horário';
             data: dados,
             success: function(resposta) {
                 alert("Agendamento realizado com sucesso!");
+                const modalEl = document.getElementById('modalSelecionarHorario');
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                modal.hide();
                 console.log(resposta);
             },
             error: function(erro) {
@@ -162,5 +155,4 @@ $title = 'Agendar Horário';
             }
         });
     }
-
 </script>
