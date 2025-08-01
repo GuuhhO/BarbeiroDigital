@@ -165,4 +165,10 @@ class AgendarController
       echo json_encode(['sucesso' => true]);
    }
 
+   public function meusAgendamentos()
+   {
+      global $db;
+      
+   }
+
 }

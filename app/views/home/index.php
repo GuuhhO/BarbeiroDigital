@@ -35,10 +35,10 @@ $title = 'Página Inicial';
         <div class="container overflow-hidden text-center">
             <div class="row gx-5">
                 <div class="col">
-                <div class="p-3 btn btn-warning">AGENDAR HORÁRIO</div>
+                <a class="p-3 btn btn-warning" href="<?= BASE_URL ?>Agendar">AGENDAR HORÁRIO</a>
                 </div>
                 <div class="col">
-                <div class="p-3 btn btn-secondary">MEUS AGENDAMENTOS</div>
+                <a class="p-3 btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalVerificarAgendamento">MEUS AGENDAMENTOS</a>
                 </div>
             </div>
         </div>
@@ -86,3 +86,72 @@ $title = 'Página Inicial';
 </div>
 
 <hr />
+
+<div class="modal" tabindex="-1" id="modalVerificarAgendamento">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Verifique seus agendamentos</h5>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="telefone" class="form-label">Insira seu telefone</label>
+            <input type="text" class="form-control" id="telefone" aria-describedby="telefone" required>
+          </div>
+          <button onclick="verificarAgendamentosService(event)" class="btn btn-primary">Consultar</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function exibirModal()
+  {
+    // Abrir modal Bootstrap
+    const modalElement = document.getElementById('modalVerificarAgendamento');
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+  }
+
+  function verificarAgendamentosService(event) {
+      const telefone = $('#telefone').val();
+
+      if (!telefone) {
+          alert("Informe o telefone.");
+          return;
+      }
+
+      $.ajax({
+          method: 'POST',
+          url: '/Cortai/Cliente/verificarCliente',
+          data: { telefone: telefone },
+          dataType: 'json', // se a resposta for JSON
+          success: function(resposta) {
+              // Redirecionamento via POST
+              const form = document.createElement('form');
+              form.method = 'POST';
+              form.action = '/Cortai/Cliente/';
+
+              const inputTelefone = document.createElement('input');
+              inputTelefone.type = 'hidden';
+              inputTelefone.name = 'telefone';
+              inputTelefone.value = telefone;
+
+              form.appendChild(inputTelefone);
+              document.body.appendChild(form);
+              form.submit();
+          },
+          error: function(xhr, status, error) {
+              alert("Erro ao verificar horários.");
+              console.log("Erro:", error);
+              console.log("Resposta do servidor:", xhr.responseText);
+          }
+      });
+  }
+
+</script>

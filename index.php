@@ -12,6 +12,7 @@ define('BASE_URL', '/Cortai/');
 require_once APP_PATH . '/db.php';
 require_once APP_PATH . '/router.php';
 require_once APP_PATH . '/helper.php';
+require_once APP_PATH . '/session.php';
 
 $router = new Router();
 $router->run();
