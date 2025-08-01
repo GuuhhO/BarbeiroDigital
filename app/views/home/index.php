@@ -54,29 +54,45 @@ $title = 'Página Inicial';
         </div>
         <div class="row flex align-items-center justify-content-center">
             <div class="container overflow-hidden text-center">
-               <div class="row gy-5">
-                    <div class="col-6">
-                        <div class="p-3 btn btn-light d-flex flex-column align-items-center">
-                        <img src="/../Cortai/public/assets/img/penteado (1).png" alt="" width="32">
+               <div class="row gy-4 align-items-center justify-content-center" style="display: grid;">
+                    <div class="col-12">
+                        <div class="p-3 btn btn-servico text-white d-flex flex-column align-items-center">
+                        <img src="/../Cortai/public/assets/img/penteado (1).png" alt="" width="32" id="imgServico">
+                        <div>CORTE E BARBA</div>
+                        <div><i class="fa-regular fa-clock"></i> 1 h</div>
+                        <div><i class="fa-solid fa-dollar-sign"></i> R$ 65,00</div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="p-3 btn btn-servico text-white d-flex flex-column align-items-center">
+                        <img src="/../Cortai/public/assets/img/penteado (1).png" alt="" width="32" id="imgServico">
                         <div>CORTE</div>
+                        <div><i class="fa-regular fa-clock"></i> 45 min</div>
+                        <div><i class="fa-solid fa-dollar-sign"></i> R$ 35,00</div>
                         </div>
                     </div>
-                    <div class="col-6">
-                        <div class="p-3 btn btn-light d-flex flex-column align-items-center">
-                        <img src="/../Cortai/public/assets/img/barba.png" alt="" width="32">
+                    <div class="col-12">
+                        <div class="p-3 btn btn-servico text-white d-flex flex-column align-items-center">
+                        <img src="/../Cortai/public/assets/img/barba.png" alt="" width="32" id="imgServico">
                         <div>BARBA</div>
+                        <div><i class="fa-regular fa-clock"></i> 30 min</div>
+                        <div><i class="fa-solid fa-dollar-sign"></i> R$ 25,00</div>
                         </div>
                     </div>
-                    <div class="col-6">
-                        <div class="p-3 btn btn-light d-flex flex-column align-items-center">
-                        <img src="/../Cortai/public/assets/img/sobrancelha.png" alt="" width="32">
+                    <div class="col-12">
+                        <div class="p-3 btn btn-servico text-white d-flex flex-column align-items-center">
+                        <img src="/../Cortai/public/assets/img/sobrancelha.png" alt="" width="32" id="imgServico">
                         <div>SOBRANCELHA</div>
+                        <div><i class="fa-regular fa-clock"></i> 15 min</div>
+                        <div><i class="fa-solid fa-dollar-sign"></i> R$ 15,00</div>
                         </div>
                     </div>
-                    <div class="col-6">
-                        <div class="p-3 btn btn-light d-flex flex-column align-items-center">
-                        <img src="/../Cortai/public/assets/img/lamina-de-barbear.png" alt="" width="32">
+                    <div class="col-12">
+                        <div class="p-3 btn btn-servico text-white d-flex flex-column align-items-center">
+                        <img src="/../Cortai/public/assets/img/lamina-de-barbear.png" alt="" width="32" id="imgServico">
                         <div>PÉZINHO</div>
+                        <div><i class="fa-regular fa-clock"></i> 15 min</div>
+                        <div><i class="fa-solid fa-dollar-sign"></i> R$ 10,00</div>
                         </div>
                     </div>
                 </div>

@@ -23,6 +23,14 @@ footer {
     text-align: center;
 }
 
+.form-control, .form-select {
+    border-radius: 0px;
+}
+
+.btn {
+    border-radius: 0px;
+}
+
 #boxEntrada {
     padding-top: 15px;
     padding-bottom: 15px;
@@ -34,21 +42,14 @@ footer {
     padding-bottom: 15px;
 }
 
-.p-3.btn.btn-light {
+.p-3.btn-servico {
     margin: auto;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100px;
-    width: 150px;
+    border-radius: 0px;
+    border-bottom: solid 3px orange;
 }
-
-/* #boxHorario {
-    background-color: orange;
-    border-radius: 20px;
-    text-align: center;
-    padding: 10px;
-} */
 
 .box-horario {
     border: 1px solid #007bff;
@@ -72,4 +73,8 @@ footer {
 .box-horario.selected {
     background-color: #0056b3;
     color: white;
+}
+
+#imgServico {
+    filter: invert(1);
 }
