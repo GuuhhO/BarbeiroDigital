@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../models/AdminModel.php';
+
 class AdminController
 {
     public function index()
@@ -9,7 +11,11 @@ class AdminController
 
     public function painel()
     {
-        view('admin/painel');
+        $modelo = new AdminModel();
+
+        $agendamentos = $modelo->obterAgendamentos();
+        $clientes = $modelo->obterClientes();
+        view('admin/painel', compact('agendamentos', 'clientes'));
     }
 
     public function cadastrar()
@@ -92,5 +98,26 @@ class AdminController
             echo json_encode(["erro" => "Erro ao cadastrar usuário"]);
         }
     }
+
+    public function obterAgendamentos()
+    {
+        global $db;
+
+        $stmt = $db->prepare("SELECT * FROM api.agendamentos ORDER BY id DESC");
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); // retorna os dados como array associativo
+    }
+
+    public function obterClientes()
+    {
+        global $db;
+
+        $stmt = $db->prepare("SELECT DISTINCT(cliente) FROM api.agendamentos ORDER BY cliente ASC");
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 
 }
