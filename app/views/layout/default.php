@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <link rel="stylesheet" href="/Cortai/public/assets/css/style.css" />
     <script src="https://kit.fontawesome.com/6700413543.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 <header>
@@ -22,10 +23,10 @@
                         <a class="nav-link" aria-current="page" href="<?= BASE_URL ?>">Início</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="Agendar">Agendar</a>
+                        <a class="nav-link" href="<?= BASE_URL ?>Agendar">Agendar</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="home/sobre">Sobre</a>
+                        <a class="nav-link" href="<?= BASE_URL ?>Sobre">Sobre</a>
                     </li>
                 </ul>
             </div>

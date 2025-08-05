@@ -147,7 +147,7 @@ $title = 'Agendar Horário';
                 const modalEl = document.getElementById('modalSelecionarHorario');
                 const modal = bootstrap.Modal.getInstance(modalEl);
                 modal.hide();
-                window.location.href = "<?= BASE_URL ?>";
+                // window.location.href = "<?= BASE_URL ?>";
             },
             error: function(erro) {
                 alert("Erro ao agendar.");
