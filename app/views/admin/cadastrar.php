@@ -6,6 +6,7 @@ $title = 'Cadastrar';
 
 <div class="container">
     <div class="row text-center pt-5">
+        <h1 align="center">CADASTRAR</h1>
         <form id="formLogar" onsubmit="cadastrarAdmin(event)">
             <div class="mb-3">
                 <label for="inputUsuario" class="form-label">Usuário</label>

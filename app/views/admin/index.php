@@ -6,6 +6,7 @@ $title = 'Login do Administrador';
 
 <div class="container">
     <div class="row text-center pt-5">
+        <h1 align="center">LOGIN</h1>
         <form id="formLogar" onsubmit="logarAdmin(event)">
             <div class="mb-3">
                 <label for="inputUsuario" class="form-label">Usuário</label>
