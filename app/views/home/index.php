@@ -35,7 +35,7 @@ $title = 'Página Inicial';
         <div class="container overflow-hidden text-center">
             <div class="row gx-5">
                 <div class="col">
-                <a class="p-3 btn btn-warning" href="<?= BASE_URL ?>Agendar">AGENDAR HORÁRIO</a>
+                <a class="p-3 btn btn-primary" href="<?= BASE_URL ?>Agendar">AGENDAR HORÁRIO</a>
                 </div>
                 <div class="col">
                 <a class="p-3 btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalVerificarAgendamento">MEUS AGENDAMENTOS</a>
