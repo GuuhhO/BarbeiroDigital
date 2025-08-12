@@ -103,10 +103,10 @@ class AdminController
     {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM api.agendamentos ORDER BY id DESC");
-        $stmt->execute();
+        $obterAgendamentoSql = $db->prepare("SELECT * FROM api.agendamentos ORDER BY id DESC");
+        $obterAgendamentoSql->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC); // retorna os dados como array associativo
+        return $obterAgendamentoSql->fetchAll(PDO::FETCH_ASSOC); // retorna os dados como array associativo
     }
 
     public function obterClientes()
@@ -117,6 +117,23 @@ class AdminController
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function removerAgendamento()
+    {
+        global $db;
+
+        $agendamento_id = $_POST['agendamento_id'];
+
+        $removerAgendamentoSql = $db->prepare("DELETE FROM api.agendamentos WHERE id = ?");
+        $removerAgendamento = $removerAgendamentoSql->execute([$agendamento_id]);
+
+        if ($removerAgendamento) {
+            echo json_encode(["sucesso" => true]);
+        } else {
+            echo json_encode(["erro" => "Erro ao cancelar agendamento"]);
+        }
+        
     }
 
 

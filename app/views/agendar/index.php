@@ -58,7 +58,7 @@ $title = 'Agendar Horário';
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-warning" onclick="agendarClienteService()">Agendar</button>
+        <button type="button" class="btn btn-primary" onclick="agendarClienteService()">Agendar</button>
       </div>
     </div>
   </div>

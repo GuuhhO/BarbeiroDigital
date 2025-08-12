@@ -78,3 +78,29 @@ footer {
 #imgServico {
     filter: invert(1);
 }
+
+.btnEditarAgendamento:active {
+    background-color: #8a8a8a62;
+    color: black;
+}
+
+.dropdown-item.btnEditarAgendamento.btnRemoverAgendamento {
+    transition: 0.2s ease-in-out;
+    padding: 5px;
+}
+
+.dropdown-item.btnEditarAgendamento:hover {
+    background-color: #8a8a8a62;
+}
+
+.btn-warning {
+    background-color: #E77325 !important;
+    border-color: #E77325 !important;
+    color: rgb(56, 56, 56) !important;
+}
+
+.btn-primary {
+    background-color: #FFCA2C !important;
+    border-color: #FFCA2C !important;
+    color: black !important
+}
