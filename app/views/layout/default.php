@@ -28,6 +28,19 @@
                     <li class="nav-item">
                         <a class="nav-link" href="<?= BASE_URL ?>Sobre">Sobre</a>
                     </li>
+                    <?php if (Session::isAuthenticated()) {?>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Administrador
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="<?= BASE_URL ?>admin">Painel</a></li>
+                                <li><a class="dropdown-item" href="<?= BASE_URL ?>admin/configuracoes">Configurações</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="<?= BASE_URL ?>/admin/logout">Sair</a></li>
+                            </ul>
+                        </li>
+                    <? } ?>
                 </ul>
             </div>
         </div>

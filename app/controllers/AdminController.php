@@ -6,11 +6,25 @@ class AdminController
 {
     public function index()
     {
-        view('admin/index');
+        if (!Session::isAuthenticated()) {
+            header('Location: /Cortai/auth/login');
+            exit;
+        }
+
+        $modelo = new AdminModel();
+
+        $agendamentos = $modelo->obterAgendamentos();
+        $clientes = $modelo->obterClientes();
+        view('admin/index', compact('agendamentos', 'clientes'));
     }
 
     public function painel()
     {
+        if (!Session::isAuthenticated()) {
+            header('Location: /Cortai/auth/login');
+            exit;
+        }
+
         $modelo = new AdminModel();
 
         $agendamentos = $modelo->obterAgendamentos();
@@ -20,6 +34,10 @@ class AdminController
 
     public function cadastrar()
     {
+        if (!Session::isAuthenticated()) {
+            header('Location: /auth/login');
+            exit;
+        }
         view('admin/cadastrar');
     }
     
@@ -89,7 +107,7 @@ class AdminController
 
         $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 
-        $cadastrarDb = $db->prepare("INSERT INTO seg.usuarios (usuario, email, senha) VALUES (?, ?, ?)");
+        $cadastrarDb = $db->prepare("INSERT INTO seg.usuarios (usuario, email, senha_hash) VALUES (?, ?, ?)");
         $cadastrar = $cadastrarDb->execute([$usuario, $email, $senhaHash]);
 
         if ($cadastrar) {
