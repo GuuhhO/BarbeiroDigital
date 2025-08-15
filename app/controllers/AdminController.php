@@ -40,6 +40,14 @@ class AdminController
         }
         view('admin/cadastrar');
     }
+
+    public function configuracoes()
+    {
+        $modelo = new AdminModel();
+
+        $servicos = $modelo->obterServicos();
+        view('admin/configuracoes', compact('servicos'));
+    }
     
 
     public function logar()
@@ -154,5 +162,44 @@ class AdminController
         
     }
 
+    public function atualizarServico()
+    {
+        global $db;
 
+        $servico_id = $_POST['servico_id'];
+        $servico = $_POST['servico'];
+        $duracao = $_POST['duracao'];
+        $ativo = $_POST['ativo'];
+        $preco = $_POST['preco'];
+
+        if (empty($servico) || empty($duracao) || empty($ativo) || empty($preco))
+        {
+            echo json_encode(["erro" => "Preencha todos os campos"]);
+            return;
+        }
+
+        try {
+            $atualizarServicoSql= $db->prepare("
+                UPDATE seg.servicos
+                SET servico = ?, duracao = ?, ativo = ?, preco = ?
+                WHERE id = ?
+            ");
+
+            $atualizarServico = $atualizarServicoSql->execute([
+                $servico,
+                $duracao,
+                $ativo,
+                $preco,
+                $servico_id
+            ]);
+
+            if ($atualizarServico) {
+                echo json_encode(["sucesso" => "Serviço atualizado com sucesso"]);
+            } else {
+                echo json_encode(["erro" => "Erro ao atualizar serviço"]);
+            }
+        } catch (PDOException $e) {
+        echo json_encode(["erro" => "Erro no banco de dados: " . $e->getMessage()]);
+        }
+    }
 }
