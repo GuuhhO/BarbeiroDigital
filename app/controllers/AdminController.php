@@ -89,7 +89,7 @@ class AdminController
 
         $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 
-        $cadastrarDb = $db->prepare("INSERT INTO seg.usuarios (usuario, email, senha) VALUES (?, ?, ?)");
+        $cadastrarDb = $db->prepare("INSERT INTO seg.usuarios (usuario, email, senha_hash) VALUES (?, ?, ?)");
         $cadastrar = $cadastrarDb->execute([$usuario, $email, $senhaHash]);
 
         if ($cadastrar) {
