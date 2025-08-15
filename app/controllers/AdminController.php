@@ -4,12 +4,17 @@ require_once __DIR__ . '/../models/AdminModel.php';
 
 class AdminController
 {
-    public function index()
+    private function verificarAutenticacao(): void
     {
         if (!Session::isAuthenticated()) {
             header('Location: /Cortai/auth/login');
             exit;
         }
+    }
+
+    public function index()
+    {
+        $this->verificarAutenticacao();
 
         $modelo = new AdminModel();
 
@@ -20,10 +25,7 @@ class AdminController
 
     public function painel()
     {
-        if (!Session::isAuthenticated()) {
-            header('Location: /Cortai/auth/login');
-            exit;
-        }
+        $this->verificarAutenticacao();
 
         $modelo = new AdminModel();
 
@@ -34,15 +36,15 @@ class AdminController
 
     public function cadastrar()
     {
-        if (!Session::isAuthenticated()) {
-            header('Location: /auth/login');
-            exit;
-        }
+        $this->verificarAutenticacao();
+
         view('admin/cadastrar');
     }
 
     public function configuracoes()
     {
+        $this->verificarAutenticacao();
+        
         $modelo = new AdminModel();
 
         $servicos = $modelo->obterServicos();

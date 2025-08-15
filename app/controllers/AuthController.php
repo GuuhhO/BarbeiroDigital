@@ -4,13 +4,13 @@ require_once __DIR__ . '/../models/UsuarioModel.php';
 
 class AuthController
 {
-    public function index()
-    {
-        view('auth/index');
-    }
-
     public function login()
     {
+        if (Session::isAuthenticated()) {
+            header('Location: /Cortai/admin/');
+            exit;
+        }
+
         view('auth/login');
     }
 
@@ -49,11 +49,13 @@ class AuthController
         echo json_encode(['sucesso' => false, 'mensagem' => 'Credenciais inválidas.']);
     }
 
-    public function logout()
-    {
+    public function logout() {
+        Session::start();
         Session::destroy();
-        header('Location: /login');
-        exit;
+
+        echo json_encode(['sucesso' => true]);
+        return;
     }
+
 
 }

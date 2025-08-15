@@ -37,7 +37,7 @@
                                 <li><a class="dropdown-item" href="<?= BASE_URL ?>admin">Painel</a></li>
                                 <li><a class="dropdown-item" href="<?= BASE_URL ?>admin/configuracoes">Configurações</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="<?= BASE_URL ?>/admin/logout">Sair</a></li>
+                                <li><a class="dropdown-item" onclick="deslogarService()">Sair</a></li>
                             </ul>
                         </li>
                     <? } ?>
@@ -60,4 +60,27 @@
   </body>
 </html>
 
+<script>
+    function deslogarService() {
+        $.ajax({
+            method: 'POST',
+            url: '/Cortai/auth/logout',
+            dataType: 'json',
+            timeout: 5000, // evita requisição travada
+            success: function(resposta) {
+                if (resposta && resposta.sucesso) {
+                    window.location.href = "<?= BASE_URL ?>";
+                } else {
+                    console.warn("Logout falhou:", resposta?.mensagem || "Resposta inesperada.");
+                    alert("Não foi possível sair. Tente novamente.");
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Erro no logout:", error);
+                console.error("Resposta do servidor:", xhr.responseText || "Sem resposta");
+                alert("Erro ao tentar sair. Verifique sua conexão.");
+            }
+        });
+    }
 
+</script>
