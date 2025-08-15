@@ -37,12 +37,19 @@ $title = 'Login';
             method: 'POST',
             url: '/Cortai/auth/verificarCredencial',
             data: dados,
+            dataType: 'json',
             success: function(resposta) {
-                if (resposta.sucesso) window.location.href = '/Cortai/dashboard';
+                if (resposta.sucesso) {
+                    window.location.href = '/Cortai/admin';
+                } else {
+                    alert(resposta.mensagem || "Credenciais inválidas.");
+                }
             },
             error: function(erro) {
-                alert("Erro! Verifique sua credencial e tente novamente.");
+                alert("Erro na comunicação com o servidor. Tente novamente.");
+                console.error(erro);
             }
         });
+
     }
 </script>
