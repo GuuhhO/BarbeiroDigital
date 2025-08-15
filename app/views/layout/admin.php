@@ -13,7 +13,7 @@
 <header>
     <nav class="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="<?= BASE_URL ?>"><img src="/Cortai/public/assets/img/Logo_transparente.png" width="50" /></a>
+            <a class="navbar-brand" href="<?= BASE_URL ?>"><img src="/Cortai/public/assets/img/logo-transparente.png" width="50" /></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
             </button>
