@@ -46,43 +46,41 @@ $title = 'Configurações';
 </div>
 
 <div class="modal" tabindex="-1" id="modalEditarServico">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Editar serviço</h5>
-            </div>
-            <div class="modal-body">
-                <form id="formEditarAgendamento">
-                    <!-- Campo hidden dentro do formulário -->
-                    <input type="hidden" id="servico_id" name="servico_id">
-                    <div class="mb-3">
-                        <label for="servico" class="form-label">Serviço</label>
-                        <input type="text" class="form-control" id="servico" name="servico" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="duracao" class="form-label">Duração</label>
-                        <input type="text" class="form-control" id="duracao" name="duracao" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="ativo" class="form-label">Ativo</label>
-                        <select class="form-select" id="ativo" name="ativo" required>
-                            <option value="TRUE">Sim</option>
-                            <option value="FALSE">Não</option>
-                        </select>
-
-                    </div>
-                    <div class="mb-3">
-                        <label for="preco" class="form-label">Preço</label>
-                        <input type="text" class="form-control" id="preco" name="preco" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-primary" id="btnConfirmarEdicao">Salvar</button>
-            </div>
-        </div>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Editar serviço</h5>
+      </div>
+      <div class="modal-body" id="modalBodyText">
+        <form id="formEditarServico">
+          <input type="hidden" id="servico_id" name="servico_id">
+          <div class="mb-3">
+            <label for="servico" class="form-label">Serviço</label>
+            <input type="text" class="form-control" id="servico" name="servico" required>
+          </div>
+          <div class="mb-3">
+            <label for="duracao" class="form-label">Duração</label>
+            <input type="text" class="form-control" id="duracao" name="duracao" required>
+          </div>
+          <div class="mb-3">
+            <label for="ativo" class="form-label">Ativo</label>
+            <select class="form-select" id="ativo" name="ativo" required>
+              <option value="TRUE">Sim</option>
+              <option value="FALSE">Não</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="preco" class="form-label">Preço</label>
+            <input type="text" class="form-control" id="preco" name="preco" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnModalCancelar">Fechar</button>
+        <button type="button" class="btn btn-primary" id="btnConfirmarEdicao">Salvar</button>
+      </div>
     </div>
+  </div>
 </div>
 
 <script>
@@ -111,28 +109,56 @@ $title = 'Configurações';
     }
 
     function atualizarServicoService() {
-        var precoInput = document.getElementById('preco').value;
-        // Substitui vírgula por ponto para o banco
-        var preco = precoInput.replace(',', '.');
+        const modalEl = document.getElementById('modalEditarServico');
+        const btnSalvar = document.getElementById('btnConfirmarEdicao');
         
-        var dados = $('#formEditarAgendamento').serialize(); // pega todos os inputs
+        const dados = $('#formEditarServico').serialize();
 
-        console.log(dados);
+        document.getElementById('modalBodyText').innerHTML = "<center><img src='/Cortai/public/assets/img/loading.gif' width='50'></img></center>";
+        document.getElementById('btnModalCancelar').style.display = 'none';
+        document.getElementById('btnConfirmarEdicao').style.display = 'none';
 
         $.ajax({
             method: 'POST',
             url: '/Cortai/admin/atualizarServico',
             data: dados,
             success: function(resposta) {
-                alert("Serviço atualizado com sucesso.");
-                location.reload();
+                try {
+                    const resultado = JSON.parse(resposta);
+
+                    if (resultado.erro) {
+                        alert(resultado.erro);
+                        return;
+                    }
+
+                    setTimeout(() => {
+                        document.getElementById('modalBodyText').innerHTML = "<p>Serviço atualizado com sucesso!</p>";
+                        document.getElementById('btnModalCancelar').style.display = 'inline';
+
+                        const btnFechar = document.getElementById('btnModalCancelar');
+
+                        btnFechar.addEventListener('click', function() {
+                            location.reload();
+                        });
+
+                    }, 1000);
+
+                } catch(e) {
+                    alert("Erro ao interpretar resposta do servidor.");
+                    console.log(e);
+                }
             },
             error: function(erro) {
-                alert("Erro ao atualizar serviço.");
+                alert("Erro ao editar serviço.");
                 console.log(erro);
+            },
+            complete: function() {
+                btnSalvar.disabled = false;
+                loading.remove(); // remove o loading
             }
         });
     }
+
 
 
     // Executa quando o DOM estiver carregado
