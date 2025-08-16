@@ -4,6 +4,8 @@ $title = 'Agendar Horário';
 
 ?>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/jquery.inputmask.min.js"></script>
+
 <div class="container">
     <div class="row pt-5 pb-5">
         <H1 align="center">AGENDAR HORÁRIO</H1>
@@ -20,15 +22,16 @@ $title = 'Agendar Horário';
             </div>
             <div class="mb-3 col-8 m-auto">
                 <label for="servico" class="form-label">Serviço</label>
-                <select class="form-select" aria-label="Serviço" id="servico_id">
-                    <option selected>Selecione uma opção</option>
-                    <option value="1">Corte e Barba</option>
-                    <option value="2">Corte</option>
-                    <option value="3">Barba</option>
-                    <option value="3">Sobrancelha</option>
-                    <option value="3">Pezinho</option>
+                <select class="form-select" aria-label="Serviço" id="servico_id" name="servico_id" required>
+                    <option value="" selected disabled>Selecione uma opção</option>
+                    <?php foreach ($servicos as $servico): ?>
+                        <option value="<?= $servico['id'] ?>">
+                            <?= htmlspecialchars($servico['servico']) ?> - <?= 'R$ ' . number_format($servico['preco'], 2, ',', '.') ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
             </div>
+
             <div class="mb-3 col-8 m-auto">
                 <label for="dia" class="form-label">Data</label>
                 <input type="date" class="form-control" id="dia" aria-describedby="data">
@@ -155,4 +158,16 @@ $title = 'Agendar Horário';
             }
         });
     }
+
+    function mascaraTelefone() {
+        Inputmask({
+            mask: ["(99) 9999-9999","(99) 99999-9999"],
+            keepStatic: true
+        }).mask("#telefone");
+    }
+
+    $(document).ready(function() {
+        mascaraTelefone();
+    });
+
 </script>

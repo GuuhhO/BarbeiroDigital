@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/Cortai/public/assets/css/style.css" />
     <script src="https://kit.fontawesome.com/6700413543.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/jquery.inputmask.min.js"></script>
 </head>
 <body>
 <header>
@@ -40,7 +41,7 @@
                                 <li><a class="dropdown-item" onclick="deslogarService()">Sair</a></li>
                             </ul>
                         </li>
-                    <? } ?>
+                    <?php } ?>
                 </ul>
             </div>
         </div>

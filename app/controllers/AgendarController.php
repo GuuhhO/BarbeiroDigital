@@ -1,10 +1,15 @@
 <?php
 
+require_once __DIR__ . '/../models/ServicoModel.php';
+
 class AgendarController
 {
    public function index()
    {
-      view('agendar/index');
+      $modelo = new ServicoModel();
+
+      $servicos = $modelo->obterServicos();
+      view('agendar/index', ['servicos' => $servicos]);
    }
 
    private function gerarHorariosPadrao()
