@@ -172,4 +172,16 @@ $title = 'Página Inicial';
       });
   }
 
+  function mascaraTelefone() {
+    Inputmask({
+        mask: ["(99) 9999-9999","(99) 99999-9999"],
+        keepStatic: true
+    }).mask("#telefone");
+    }
+
+    $(document).ready(function() {
+        mascaraTelefone();
+    }
+  );
+
 </script>
