@@ -1,4 +1,4 @@
 /pasta_temporaria/
 *.log
 .vscode/
-/app/db.php
+app/db.php
