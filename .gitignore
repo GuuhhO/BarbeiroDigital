@@ -1,0 +1,4 @@
+/pasta_temporaria/
+*.log
+.vscode/
+/app/db.php
