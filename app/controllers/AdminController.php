@@ -204,4 +204,44 @@ class AdminController
         echo json_encode(["erro" => "Erro no banco de dados: " . $e->getMessage()]);
         }
     }
+
+    public function adicionarServicoService()
+    {
+        global $db;
+        
+        $servico = $_POST['servico'];
+        $duracao = $_POST['duracao'];
+        $ativo = $_POST['ativo'];
+        $preco = $_POST['preco'];
+
+        if (empty($servico) || empty($duracao) || empty($ativo) || empty($preco))
+        {
+            echo json_encode(["erro" => "Preencha todos os campos"]);
+            return;
+        }
+
+        try {
+            $adicionarServicoSql= $db->prepare("
+                INSERT INTO seg.servicos
+                (servico, duracao, ativo, preco)
+                VALUES (?, ?, ?, ?)
+            ");
+
+            $adicionarServico = $adicionarServicoSql->execute([
+                $servico,
+                $duracao,
+                $ativo,
+                $preco,
+            ]);
+
+            if ($adicionarServico) {
+                echo json_encode(["sucesso" => "Serviço adicionado com sucesso"]);
+            } else {
+                echo json_encode(["erro" => "Erro ao atualizar serviço"]);
+            }
+        } catch (PDOException $e) {
+        echo json_encode(["erro" => "Erro no banco de dados: " . $e->getMessage()]);
+        }
+
+    }
 }
