@@ -30,18 +30,24 @@ $title = 'Configurações';
                     <td><?= $servico['ativo'] ? 'Sim' : 'Não' ?></td>
                     <td><?= 'R$ ' . number_format($servico['preco'], 2, ',', '.') ?></td>
                     <td>
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a class="p-3 btn btn-warning btn-sm btnEditarServico"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modalEditarServico"
-                            data-id="<?= $servico['id'] ?>"
-                            data-servico="<?= htmlspecialchars($servico['servico'], ENT_QUOTES) ?>"
-                            data-duracao="<?= htmlspecialchars($servico['duracao'], ENT_QUOTES) ?>"
-                            data-ativo="<?= htmlspecialchars($servico['ativo'], ENT_QUOTES) ?>"
-                            data-preco="<?= htmlspecialchars($servico['preco'], ENT_QUOTES) ?>">
-                            Editar
-                            </a>
-                        </div>
+                      <div class="btn-group" role="group" aria-label="Basic example">
+                        <a class="p-3 btn btn-warning btn-sm btnEditarServico"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalEditarServico"
+                        data-id="<?= $servico['id'] ?>"
+                        data-servico="<?= htmlspecialchars($servico['servico'], ENT_QUOTES) ?>"
+                        data-duracao="<?= htmlspecialchars($servico['duracao'], ENT_QUOTES) ?>"
+                        data-ativo="<?= htmlspecialchars($servico['ativo'], ENT_QUOTES) ?>"
+                        data-preco="<?= htmlspecialchars($servico['preco'], ENT_QUOTES) ?>">
+                        Editar
+                        </a>
+                        <a class="p-3 btn btn-danger btn-sm btnEditarServico"
+                        onclick="excluirServicoService(<?= $servico['id'] ?>)"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalExcluirServico"
+                        data-id="<?= $servico['id'] ?>">
+                        <i class="fa-solid fa-xmark"></i></a>
+                      </div>
                     </td>
                 </tr>
                 <?php endforeach; ?>
@@ -121,6 +127,23 @@ $title = 'Configurações';
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnModalAdicionarServicoCancelar">Fechar</button>
         <button type="button" class="btn btn-primary" id="btnConfirmarAdicao">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" tabindex="-1" id="modalExcluirServico">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Excluir serviço</h5>
+      </div>
+      <div class="modal-body">
+        <p id="modalExcluirServicoBodyText">Deseja realmente excluir o serviço?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnModalExcluirServicoCancelar">Fechar</button>
+        <button type="button" class="btn btn-danger" id="btnConfirmarExclusaoServico">Excluir</button>
       </div>
     </div>
   </div>
@@ -250,6 +273,64 @@ $title = 'Configurações';
                 btnSalvar.disabled = false;
                 loading.remove(); // remove o loading
             }
+        });
+    }
+
+    function excluirServicoService(servico_id) {
+        if (!servico_id) {
+            alert("Serviço inválido.");
+            return;
+        }
+
+        const dados = { servico_id: servico_id };
+
+        const modalEl = document.getElementById('modalExcluirServico');
+        modalEl.removeAttribute('aria-hidden'); // Remove atributo inválido antes de abrir
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
+
+        // Evita múltiplos bindings duplicados
+        $('#btnConfirmarExclusaoServico').off('click').on('click', function () {
+            document.getElementById('modalExcluirServicoBodyText').innerHTML = "<center><img src='/Cortai/public/assets/img/loading.gif' width='50'></img></center>";
+            document.getElementById('btnModalExcluirServicoCancelar').style.display = 'none';
+            document.getElementById('btnConfirmarExclusaoServico').style.display = 'none';
+
+            $.ajax({
+                method: 'POST',
+                url: '/Cortai/admin/excluirServicoService',
+                data: dados,
+                success: function(resposta) {
+                    try {
+                        const resultado = JSON.parse(resposta);
+
+                        if (resultado.erro) {
+                            alert(resultado.erro);
+                            return;
+                        }
+
+                        setTimeout(() => {
+                            document.getElementById('modalExcluirServicoBodyText').innerHTML = "<p>Agendamento excluído com sucesso!</p>";
+
+                            document.getElementById('btnModalExcluirServicoCancelar').style.display = 'inline';
+                            document.getElementById('btnModalExcluirServicoCancelar').innerHTML = '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnModalCancelar">Fechar</button>';
+
+                            const btnFechar = document.getElementById('btnModalExcluirServicoCancelar');
+
+                            btnFechar.addEventListener('click', function() {
+                            location.reload();
+                        });
+                        }, 1000);
+
+                    } catch (e) {
+                        alert("Erro ao interpretar resposta do servidor.");
+                        console.log(e);
+                    }
+                },
+                error: function(erro) {
+                    alert("Erro ao excluir serviço.");
+                    console.log(erro);
+                }
+            });
         });
     }
 

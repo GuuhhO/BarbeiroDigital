@@ -244,4 +244,28 @@ class AdminController
         }
 
     }
+
+    public function excluirServicoService()
+    {
+      global $db;
+
+      $servicoId = $_POST['servico_id'];
+
+      if (empty($servicoId))
+      {
+         echo json_encode(["erro" => "Nenhum agendamento encontrado."]);
+         return;
+      }
+
+      $excluirServicoDb = $db->prepare("DELETE FROM seg.servicos WHERE id = ?");
+      $excluirServicoDb->execute([$servicoId]);
+
+      if (!$excluirServicoDb)
+      {
+         echo json_encode(["erro" => "Não foi possível excluir o serviço."]);
+         return;
+      }
+
+      echo json_encode(["sucesso" => true, "dados" => $servicoId]);
+    }
 }
