@@ -60,43 +60,22 @@ $title = 'Página Inicial';
               <div class="p-3 btn btn-servico text-white d-flex flex-column align-items-center">
                 <img src="/../Cortai/public/assets/img/<?= htmlspecialchars($servico['icone']) ?>" alt="" width="32" id="imgServico">
                 <div><?= strtoupper(htmlspecialchars($servico['servico'])) ?></div>
-                <div><i class="fa-regular fa-clock"></i> <?= htmlspecialchars($servico['duracao']) ?></div>
+                <div>
+                    <i class="fa-regular fa-clock"></i>
+                    <?php 
+                        if ($servico['duracao'] < "01:00" ) {
+                            echo htmlspecialchars($servico['duracao']) . " minutos";
+                        } else if ($servico['duracao'] >= "01:00" && $servico['duracao'] <= "01:59") {
+                          echo htmlspecialchars($servico['duracao']) . " hora";
+                        } else {
+                            echo htmlspecialchars($servico['duracao']) . " horas";
+                        }
+                    ?>
+                </div>
                 <div><i class="fa-solid fa-dollar-sign"></i> <?= 'R$ ' . number_format($servico['preco'], 2, ',', '.') ?></div>
               </div>
             </div>
           <?php endforeach; ?>
-          <!-- <div class="col-12">
-              <div class="p-3 btn btn-servico text-white d-flex flex-column align-items-center">
-              <img src="/../Cortai/public/assets/img/penteado (1).png" alt="" width="32" id="imgServico">
-              <div>CORTE</div>
-              <div><i class="fa-regular fa-clock"></i> 45 min</div>
-              <div><i class="fa-solid fa-dollar-sign"></i> R$ 35,00</div>
-              </div>
-          </div>
-          <div class="col-12">
-              <div class="p-3 btn btn-servico text-white d-flex flex-column align-items-center">
-              <img src="/../Cortai/public/assets/img/barba.png" alt="" width="32" id="imgServico">
-              <div>BARBA</div>
-              <div><i class="fa-regular fa-clock"></i> 30 min</div>
-              <div><i class="fa-solid fa-dollar-sign"></i> R$ 25,00</div>
-              </div>
-          </div>
-          <div class="col-12">
-              <div class="p-3 btn btn-servico text-white d-flex flex-column align-items-center">
-              <img src="/../Cortai/public/assets/img/sobrancelha.png" alt="" width="32" id="imgServico">
-              <div>SOBRANCELHA</div>
-              <div><i class="fa-regular fa-clock"></i> 15 min</div>
-              <div><i class="fa-solid fa-dollar-sign"></i> R$ 15,00</div>
-              </div>
-          </div>
-          <div class="col-12">
-              <div class="p-3 btn btn-servico text-white d-flex flex-column align-items-center">
-              <img src="/../Cortai/public/assets/img/lamina-de-barbear.png" alt="" width="32" id="imgServico">
-              <div>PÉZINHO</div>
-              <div><i class="fa-regular fa-clock"></i> 15 min</div>
-              <div><i class="fa-solid fa-dollar-sign"></i> R$ 10,00</div>
-              </div>
-          </div> -->
         </div>
       </div>
     </div>
