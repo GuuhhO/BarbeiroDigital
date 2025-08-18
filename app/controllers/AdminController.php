@@ -41,17 +41,17 @@ class AdminController
         view('admin/cadastrar');
     }
 
-    public function configuracoes()
+    public function servicos()
     {
         $this->verificarAutenticacao();
         
         $modelo = new AdminModel();
 
         $servicos = $modelo->obterServicos();
-        view('admin/configuracoes', compact('servicos'));
+        view('admin/servicos', compact('servicos'));
     }
 
-    public function expediente()
+    public function expedientes()
     {
         $this->verificarAutenticacao();
         

@@ -1,6 +1,6 @@
 <?php
 
-$title = 'Configurações';
+$title = 'Serviços';
 
 ?>
 
