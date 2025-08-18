@@ -1,14 +1,14 @@
 <?php
 
-require_once __DIR__ . '/../models/AdminModel.php';
+require_once __DIR__ . '/../models/ServicoModel.php';
 
 class HomeController
 {
    public function index()
    {
-      $modelo = new AdminModel();
+      $modelo = new ServicoModel();
 
-      $servicos = $modelo->obterServicos();
+      $servicos = $modelo->obterServicosAtivos();
       view('home/index', ['servicos' => $servicos]);
    }
 

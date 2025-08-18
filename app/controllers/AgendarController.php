@@ -8,7 +8,7 @@ class AgendarController
    {
       $modelo = new ServicoModel();
 
-      $servicos = $modelo->obterServicos();
+      $servicos = $modelo->obterServicosAtivos();
       view('agendar/index', ['servicos' => $servicos]);
    }
 
