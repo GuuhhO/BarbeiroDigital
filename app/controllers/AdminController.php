@@ -50,6 +50,15 @@ class AdminController
         $servicos = $modelo->obterServicos();
         view('admin/configuracoes', compact('servicos'));
     }
+
+    public function expediente()
+    {
+        $this->verificarAutenticacao();
+        
+        $modelo = new AdminModel();
+        $expedientes = $modelo->obterExpedientes();
+        view('admin/expedientes', compact('expedientes'));
+    }
     
 
     public function logar()
@@ -267,5 +276,46 @@ class AdminController
       }
 
       echo json_encode(["sucesso" => true, "dados" => $servicoId]);
+    }
+
+    public function atualizarExpedienteService()
+    {
+        global $db;
+
+        $expediente_id = $_POST['expediente_id'];
+        $inicio = $_POST['inicio'];
+        $almoco = $_POST['almoco'];
+        $retorno = $_POST['retorno'];
+        $termino = $_POST['termino'];
+
+        if (empty($inicio) || empty($almoco) || empty($retorno) || empty($termino))
+        {
+            echo json_encode(["erro" => "Preencha todos os campos"]);
+            return;
+        }
+
+        try {
+            $atualizarExpedienteSql= $db->prepare("
+                UPDATE seg.expedientes
+                SET inicio = ?, almoco = ?, retorno = ?, termino = ?
+                WHERE id = ?
+            ");
+
+            $atualizarExpediente = $atualizarExpedienteSql->execute([
+                $inicio,
+                $almoco,
+                $retorno,
+                $termino,
+                $expediente_id
+            ]);
+
+            if ($atualizarExpediente) {
+                echo json_encode(["sucesso" => "Expediente atualizado com sucesso"]);
+            } else {
+                echo json_encode(["erro" => "Erro ao atualizar expediente"]);
+            }
+        } catch (PDOException $e) {
+        echo json_encode(["erro" => "Erro no banco de dados: " . $e->getMessage()]);
+        }
     }
 }

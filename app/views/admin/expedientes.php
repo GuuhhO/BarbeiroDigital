@@ -1,0 +1,161 @@
+<?php
+
+$title = 'Expediente';
+
+?>
+
+<div class="container">
+    <div class="row text-center pt-5">
+        <h1 align="center">EXPEDIENTE</h1>
+        <table class="table table-dark table-striped">
+            <thead>
+                <tr>
+                <th scope="col">DIA</th>
+                <th scope="col">INÍCIO</th>
+                <th scope="col">ALMOÇO</th>
+                <th scope="col">RETORNO</th>
+                <th scope="col">TÉRMINO</th>
+                <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($expedientes as $expediente): ?>
+                <tr>
+                    <td><?= htmlspecialchars($expediente['dia']) ?></td>
+                    <td><?= htmlspecialchars($expediente['inicio']) ?></td>
+                    <td><?= htmlspecialchars($expediente['almoco']) ?></td>
+                    <td><?= htmlspecialchars($expediente['retorno'])?></td>
+                    <td><?= htmlspecialchars($expediente['termino'])?></td>
+                    <td>
+                      <div class="btn-group" role="group" aria-label="Basic example">
+                        <a class="p-3 btn btn-warning btn-sm btnEditarExpediente"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalEditarExpediente"
+                        data-id="<?= $expediente['id'] ?>"
+                        data-dia="<?= htmlspecialchars($expediente['dia'], ENT_QUOTES) ?>"
+                        data-inicio="<?= htmlspecialchars($expediente['inicio'], ENT_QUOTES) ?>"
+                        data-almoco="<?= htmlspecialchars($expediente['almoco'], ENT_QUOTES) ?>"
+                        data-retorno="<?= htmlspecialchars($expediente['retorno'], ENT_QUOTES) ?>"
+                        data-termino="<?= htmlspecialchars($expediente['termino'], ENT_QUOTES) ?>">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+                      </div>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" id="modalEditarExpediente">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Editar expediente</h5>
+      </div>
+      <div class="modal-body" id="modalEditarExpedienteBodyText">
+        <form id="formEditarExpediente">
+          <input type="hidden" id="expediente_id" name="expediente_id">
+          <div class="mb-3">
+            <label for="dia" class="form-label">Dia</label>
+            <input type="text" class="form-control" id="dia" name="dia" disabled>
+          </div>
+          <div class="mb-3">
+            <label for="inicio" class="form-label">Início</label>
+            <input type="text" class="form-control" id="inicio" name="inicio" required>
+          </div>
+          <div class="mb-3">
+            <label for="almoco" class="form-label">Almoço</label>
+            <input type="text" class="form-control" id="almoco" name="almoco" required>
+          </div>
+          <div class="mb-3">
+            <label for="retorno" class="form-label">Retorno</label>
+            <input type="text" class="form-control" id="retorno" name="retorno" required>
+          </div>
+          <div class="mb-3">
+            <label for="termino" class="form-label">Término</label>
+            <input type="text" class="form-control" id="termino" name="termino" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnModalExpedienteCancelar">Fechar</button>
+        <button type="button" class="btn btn-primary" id="btnModalExpedienteSalvar">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    function inicializarEdicaoExpediente() {
+        var modal = document.getElementById('modalEditarExpediente');
+
+        modal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget; // botão que abriu o modal
+
+            var expediente_id = button.getAttribute('data-id');
+            var inicio = button.getAttribute('data-inicio');
+            var almoco = button.getAttribute('data-almoco');
+            var retorno = button.getAttribute('data-retorno');
+            var termino = button.getAttribute('data-termino');
+
+            modal.querySelector('#expediente_id').value = expediente_id;
+            modal.querySelector('#inicio').value = inicio;
+            modal.querySelector('#almoco').value = almoco;
+            modal.querySelector('#retorno').value   = retorno;
+            modal.querySelector('#termino').value   = termino;
+        });
+    }
+
+    function atualizarExpedienteService() {
+        const modalEl = document.getElementById('modalEditarExpediente');
+        const btnSalvar = document.getElementById('btnModalExpedienteSalvar');
+        
+        const dados = $('#formEditarExpediente').serialize();
+
+        document.getElementById('modalEditarExpedienteBodyText').innerHTML = "<center><img src='/Cortai/public/assets/img/loading.gif' width='50'></img></center>";
+        document.getElementById('btnModalExpedienteCancelar').style.display = 'none';
+        document.getElementById('btnModalExpedienteSalvar').style.display = 'none';
+
+        $.ajax({
+            method: 'POST',
+            url: '/Cortai/admin/atualizarExpedienteService',
+            data: dados,
+            success: function(resposta) {
+                try {
+                    const resultado = JSON.parse(resposta);
+
+                    if (resultado.erro) {
+                        alert(resultado.erro);
+                        return;
+                    }
+
+                    setTimeout(() => {
+                        document.getElementById('modalEditarExpedienteBodyText').innerHTML = "<p>Serviço atualizado com sucesso!</p>";
+                        document.getElementById('btnModalExpedienteCancelar').style.display = 'inline';
+
+                        const btnFechar = document.getElementById('btnModalExpedienteCancelar');
+
+                        btnFechar.addEventListener('click', function() {
+                            location.reload();
+                        });
+
+                    }, 1000);
+
+                } catch(e) {
+                    alert("Erro ao interpretar resposta do servidor.");
+                    console.log(e);
+                }
+            },
+            error: function(erro) {
+                alert("Erro ao editar serviço.");
+                console.log(erro);
+            },
+            complete: function() {
+                btnSalvar.disabled = false;
+                loading.remove(); // remove o loading
+            }
+        });
+    }
+</script>
