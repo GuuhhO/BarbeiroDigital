@@ -287,17 +287,18 @@ class AdminController
         $almoco = $_POST['almoco'];
         $retorno = $_POST['retorno'];
         $termino = $_POST['termino'];
+        $ativo = $_POST['ativo'];
 
         if (empty($inicio) || empty($almoco) || empty($retorno) || empty($termino))
         {
-            echo json_encode(["erro" => "Preencha todos os campos"]);
+            echo json_encode(["erro" => "Preencha todos os campos."]);
             return;
         }
 
         try {
             $atualizarExpedienteSql= $db->prepare("
                 UPDATE seg.expedientes
-                SET inicio = ?, almoco = ?, retorno = ?, termino = ?
+                SET inicio = ?, almoco = ?, retorno = ?, termino = ?, ativo = ?
                 WHERE id = ?
             ");
 
@@ -306,13 +307,14 @@ class AdminController
                 $almoco,
                 $retorno,
                 $termino,
+                $ativo,
                 $expediente_id
             ]);
 
             if ($atualizarExpediente) {
-                echo json_encode(["sucesso" => "Expediente atualizado com sucesso"]);
+                echo json_encode(["sucesso" => "Expediente atualizado com sucesso."]);
             } else {
-                echo json_encode(["erro" => "Erro ao atualizar expediente"]);
+                echo json_encode(["erro" => "Erro ao atualizar expediente."]);
             }
         } catch (PDOException $e) {
         echo json_encode(["erro" => "Erro no banco de dados: " . $e->getMessage()]);

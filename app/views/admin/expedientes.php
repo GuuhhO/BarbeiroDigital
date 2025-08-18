@@ -11,6 +11,7 @@ $title = 'Expediente';
             <thead>
                 <tr>
                 <th scope="col">DIA</th>
+                <th scope="col">ATIVO</th>
                 <th scope="col">INÍCIO</th>
                 <th scope="col">ALMOÇO</th>
                 <th scope="col">RETORNO</th>
@@ -22,6 +23,7 @@ $title = 'Expediente';
                 <?php foreach ($expedientes as $expediente): ?>
                 <tr>
                     <td><?= htmlspecialchars($expediente['dia']) ?></td>
+                    <td><?= $expediente['ativo'] ? 'Sim' : 'Não' ?></td>
                     <td><?= htmlspecialchars($expediente['inicio']) ?></td>
                     <td><?= htmlspecialchars($expediente['almoco']) ?></td>
                     <td><?= htmlspecialchars($expediente['retorno'])?></td>
@@ -33,6 +35,7 @@ $title = 'Expediente';
                         data-bs-target="#modalEditarExpediente"
                         data-id="<?= $expediente['id'] ?>"
                         data-dia="<?= htmlspecialchars($expediente['dia'], ENT_QUOTES) ?>"
+                        data-ativo="<?= htmlspecialchars($expediente['ativo'], ENT_QUOTES) ?>"
                         data-inicio="<?= htmlspecialchars($expediente['inicio'], ENT_QUOTES) ?>"
                         data-almoco="<?= htmlspecialchars($expediente['almoco'], ENT_QUOTES) ?>"
                         data-retorno="<?= htmlspecialchars($expediente['retorno'], ENT_QUOTES) ?>"
@@ -62,20 +65,27 @@ $title = 'Expediente';
             <input type="text" class="form-control" id="dia" name="dia" disabled>
           </div>
           <div class="mb-3">
+            <label for="ativo" class="form-label">Ativo</label>
+            <select class="form-select" id="ativo" name="ativo" required>
+              <option value="TRUE">Sim</option>
+              <option value="FALSE">Não</option>
+            </select>
+          </div>
+          <div class="mb-3">
             <label for="inicio" class="form-label">Início</label>
-            <input type="text" class="form-control" id="inicio" name="inicio" required>
+            <input type="time" class="form-control" id="inicio" name="inicio" required>
           </div>
           <div class="mb-3">
             <label for="almoco" class="form-label">Almoço</label>
-            <input type="text" class="form-control" id="almoco" name="almoco" required>
+            <input type="time" class="form-control" id="almoco" name="almoco" required>
           </div>
           <div class="mb-3">
             <label for="retorno" class="form-label">Retorno</label>
-            <input type="text" class="form-control" id="retorno" name="retorno" required>
+            <input type="time" class="form-control" id="retorno" name="retorno" required>
           </div>
           <div class="mb-3">
             <label for="termino" class="form-label">Término</label>
-            <input type="text" class="form-control" id="termino" name="termino" required>
+            <input type="time" class="form-control" id="termino" name="termino" required>
           </div>
         </form>
       </div>
@@ -95,12 +105,16 @@ $title = 'Expediente';
             var button = event.relatedTarget; // botão que abriu o modal
 
             var expediente_id = button.getAttribute('data-id');
+            var dia = button.getAttribute('data-dia');
+            var ativo = button.getAttribute('data-ativo');
             var inicio = button.getAttribute('data-inicio');
             var almoco = button.getAttribute('data-almoco');
             var retorno = button.getAttribute('data-retorno');
             var termino = button.getAttribute('data-termino');
 
+            modal.querySelector('#ativo').value = (ativo == 1 ? 'TRUE' : 'FALSE');
             modal.querySelector('#expediente_id').value = expediente_id;
+            modal.querySelector('#dia').value = dia;
             modal.querySelector('#inicio').value = inicio;
             modal.querySelector('#almoco').value = almoco;
             modal.querySelector('#retorno').value   = retorno;
@@ -127,12 +141,18 @@ $title = 'Expediente';
                     const resultado = JSON.parse(resposta);
 
                     if (resultado.erro) {
-                        alert(resultado.erro);
+                        document.getElementById('modalEditarExpedienteBodyText').innerHTML = "<p>"+resultado.erro+"</p>";
+                        document.getElementById('btnModalExpedienteCancelar').style.display = 'inline';
+                        const btnFechar = document.getElementById('btnModalExpedienteCancelar');
+
+                        btnFechar.addEventListener('click', function() {
+                            location.reload();
+                        });
                         return;
                     }
 
                     setTimeout(() => {
-                        document.getElementById('modalEditarExpedienteBodyText').innerHTML = "<p>Serviço atualizado com sucesso!</p>";
+                        document.getElementById('modalEditarExpedienteBodyText').innerHTML = "<p>Expediente atualizado com sucesso!</p>";
                         document.getElementById('btnModalExpedienteCancelar').style.display = 'inline';
 
                         const btnFechar = document.getElementById('btnModalExpedienteCancelar');
@@ -142,9 +162,14 @@ $title = 'Expediente';
                         });
 
                     }, 1000);
-
                 } catch(e) {
-                    alert("Erro ao interpretar resposta do servidor.");
+                    document.getElementById('modalEditarExpedienteBodyText').innerHTML = "<p>"+resultado.erro+"</p>";
+                    document.getElementById('btnModalExpedienteCancelar').style.display = 'inline';
+                    const btnFechar = document.getElementById('btnModalExpedienteCancelar');
+
+                    btnFechar.addEventListener('click', function() {
+                        location.reload();
+                    });
                     console.log(e);
                 }
             },
@@ -158,4 +183,11 @@ $title = 'Expediente';
             }
         });
     }
+
+    document.addEventListener("DOMContentLoaded", function() {
+    inicializarEdicaoExpediente();
+
+    document.getElementById("btnModalExpedienteSalvar")
+            .addEventListener("click", atualizarExpedienteService);
+    });
 </script>
