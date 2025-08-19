@@ -16,7 +16,7 @@ class AgendarController
    {
       global $db;
 
-      $obterExpediente = $db->query("SELECT * FROM seg.expediente LIMIT 1");
+      $obterExpediente = $db->query("SELECT * FROM seg.expedientes LIMIT 1");
       $expediente = $obterExpediente->fetch(PDO::FETCH_ASSOC);
 
       if (!$expediente) return [];
