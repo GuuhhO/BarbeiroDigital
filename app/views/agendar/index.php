@@ -34,7 +34,8 @@ $title = 'Agendar Horário';
 
             <div class="mb-3 col-8 m-auto">
                 <label for="dia" class="form-label">Data</label>
-                <input type="date" class="form-control" id="dia" aria-describedby="data">
+                <input type="text" class="form-control" id="calendario" aria-describedby="dia">
+                <!-- <input type="date" class="form-control" id="dia" aria-describedby="dia" onclick="gerarCalendarioAtivos()"> -->
             </div>
             <div class="mb-3 col-8 m-auto">
                 <button class="btn btn-primary" onclick="verificarHorariosService(event)">VERIFICAR</button>
@@ -68,6 +69,40 @@ $title = 'Agendar Horário';
 </div>
 
 <script>
+    function gerarCalendarioAtivos() {
+        $(function() {
+            $.ajax({
+                method: 'POST',
+                url: '/Cortai/agendar/obterDiasAtivosAjax',
+                success: function(resposta) {
+                    let diasAtivos = typeof resposta === 'string' ? JSON.parse(resposta) : resposta;
+
+                    if (!diasAtivos || diasAtivos.length === 0) {
+                        alert("Nenhum dia ativo encontrado.");
+                        return;
+                    }
+
+                    $("#calendario").datepicker("destroy"); // destrói qualquer Datepicker anterior
+
+                    $("#calendario").datepicker($.extend({}, $.datepicker.regional["pt-BR"], {
+                        beforeShowDay: function(date) {
+                            return [diasAtivos.includes(date.getDay())];
+                        },
+                        dateFormat: 'dd/mm/yy',
+                        minDate: 0 // bloqueia datas passadas
+                    }));
+                },
+                error: function(erro) {
+                    console.log(erro);
+                    alert("Erro ao buscar dias ativos.");
+                }
+            });
+        });
+    }
+
+    // Chamada da função
+    gerarCalendarioAtivos();
+
     function verificarHorariosService(event) {
         event.preventDefault();
 
@@ -75,7 +110,7 @@ $title = 'Agendar Horário';
             nome: $('#nome').val(),
             telefone: $('#telefone').val(),
             servico_id: $('#servico_id').val(),
-            dia: $('#dia').val(),
+            dia: $('#calendario').val(),
         };
 
         $.ajax({
@@ -125,7 +160,7 @@ $title = 'Agendar Horário';
         const cliente = $('#nome').val();
         const telefone = $('#telefone').val();
         const servico_id = $('#servico_id').val();
-        const dia = $('#dia').val();
+        const dia = $('#calendario').val();
         const horario = $('.box-horario.selected').text();
 
         if (!cliente || !telefone || !servico_id || !dia || !horario) {
@@ -160,10 +195,10 @@ $title = 'Agendar Horário';
     }
 
     function mascaraTelefone() {
-        Inputmask({
-            mask: ["(99) 9999-9999","(99) 99999-9999"],
+        $("#telefone").inputmask({
+            mask: ["(99) 9999-9999", "(99) 99999-9999"],
             keepStatic: true
-        }).mask("#telefone");
+        });
     }
 
     $(document).ready(function() {

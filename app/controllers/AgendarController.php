@@ -1,22 +1,26 @@
 <?php
 
 require_once __DIR__ . '/../models/ServicoModel.php';
+require_once __DIR__ . '/../models/ExpedienteModel.php';
 
 class AgendarController
 {
    public function index()
    {
-      $modelo = new ServicoModel();
+      $servicoModel = new ServicoModel();
 
-      $servicos = $modelo->obterServicos();
-      view('agendar/index', ['servicos' => $servicos]);
+      $expedienteModel = new ExpedienteModel();
+
+      $servicos = $servicoModel->obterServicos();
+      $diasAtivos = $expedienteModel->obterDiasAtivos();
+      view('agendar/index', compact('servicos', 'diasAtivos'));
    }
 
    private function gerarHorariosPadrao()
    {
       global $db;
 
-      $obterExpediente = $db->query("SELECT * FROM seg.expediente LIMIT 1");
+      $obterExpediente = $db->query("SELECT * FROM seg.expedientes LIMIT 1");
       $expediente = $obterExpediente->fetch(PDO::FETCH_ASSOC);
 
       if (!$expediente) return [];
@@ -49,6 +53,40 @@ class AgendarController
       echo json_encode($horarios);
    }
 
+   public function obterDiasAtivos()
+   {
+      global $db;
+
+      $dias = [
+         'Domingo' => 0,
+         'Segunda' => 1,
+         'Terça'   => 2,
+         'Quarta'  => 3,
+         'Quinta'  => 4,
+         'Sexta'   => 5,
+         'Sábado'  => 6
+      ];
+
+      $diasAtivosSql = $db->prepare("SELECT dia FROM seg.expedientes WHERE ativo = true");
+      $diasAtivosSql->execute();
+      $diasAtivosRes = $diasAtivosSql->fetchAll(PDO::FETCH_COLUMN);
+
+      $diasAtivos = [];
+      foreach ($diasAtivosRes as $dia) {
+         if (isset($dias[$dia])) {
+               $diasAtivos[] = $dias[$dia];
+         }
+      }
+
+      return $diasAtivos;
+   }
+
+   public function obterDiasAtivosAjax()
+   {
+      $diasAtivos = $this->obterDiasAtivos();
+      echo json_encode($diasAtivos);
+      exit;
+   }
 
    public function verificarHorariosDisponiveis()
    {
@@ -140,6 +178,17 @@ class AgendarController
       if (!$cliente || !$telefone || !$servicoId || !$dia || !$horario) {
          echo json_encode(['erro' => 'Dados incompletos.']);
          return;
+      }
+
+      if ($dia) {
+         // Converte dd/mm/yyyy para yyyy-mm-dd
+         $dataObj = DateTime::createFromFormat('d/m/Y', $dia);
+         if ($dataObj) {
+            $dia = $dataObj->format('Y-m-d');
+         } else {
+            echo json_encode(['erro' => 'Data inválida.']);
+            return;
+         }
       }
 
       // Obter duração do serviço
