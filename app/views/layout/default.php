@@ -36,8 +36,8 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="<?= BASE_URL ?>admin">Painel</a></li>
-                                <li><a class="dropdown-item" href="<?= BASE_URL ?>admin/expediente">Expediente</a></li>
-                                <li><a class="dropdown-item" href="<?= BASE_URL ?>admin/configuracoes">Configurações</a></li>
+                                <li><a class="dropdown-item" href="<?= BASE_URL ?>admin/expedientes">Expedientes</a></li>
+                                <li><a class="dropdown-item" href="<?= BASE_URL ?>admin/servicos">Serviços</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" onclick="deslogarService()">Sair</a></li>
                             </ul>

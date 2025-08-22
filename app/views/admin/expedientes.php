@@ -1,12 +1,12 @@
 <?php
 
-$title = 'Expediente';
+$title = 'Expedientes';
 
 ?>
 
 <div class="container">
     <div class="row text-center pt-5">
-        <h1 align="center">EXPEDIENTE</h1>
+        <h1 align="center">EXPEDIENTES</h1>
         <table class="table table-dark table-striped">
             <thead>
                 <tr>
