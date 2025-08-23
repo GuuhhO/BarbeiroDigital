@@ -157,6 +157,13 @@ $title = 'Agendar Horário';
     }
 
     function agendarClienteService() {
+        const modalEl = document.getElementById('modalSelecionarHorario');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+
+        const modalBody = modalEl.querySelector('.modal-body'); 
+        const btnCancelar = modalEl.querySelector('.btn-secondary'); 
+        const btnAgendar = modalEl.querySelector('.btn-primary');
+
         const cliente = $('#nome').val();
         const telefone = $('#telefone').val();
         const servico_id = $('#servico_id').val();
@@ -176,19 +183,44 @@ $title = 'Agendar Horário';
             horario: horario
         };
 
+        modalBody.innerHTML = "<center><img src='/Cortai/public/assets/img/loading.gif' width='50'></img></center>";
+        btnCancelar.style.display = 'none';
+        btnAgendar.style.display = 'none';
+
         $.ajax({
             method: 'POST',
             url: '/Cortai/agendar/agendarCliente',
             data: dados,
             success: function(resposta) {
-                alert("Agendamento realizado com sucesso!");
-                const modalEl = document.getElementById('modalSelecionarHorario');
-                const modal = bootstrap.Modal.getInstance(modalEl);
-                modal.hide();
-                // window.location.href = "<?= BASE_URL ?>";
+                try {
+                    const resultado = JSON.parse(resposta);
+
+                    if (resultado.erro) {
+                        modalBody.innerHTML = `<p style="color:red">${resultado.erro}</p>`;
+                        btnCancelar.style.display = 'inline';
+                        return;
+                    }
+
+                    setTimeout(() => {
+                        modalBody.innerHTML = "<p>Agendamento realizado com sucesso!</p>";
+                        btnCancelar.style.display = 'inline';
+
+                        // Reload ao fechar
+                        btnCancelar.addEventListener('click', function() {
+                            location.reload();
+                        });
+
+                    }, 1000);
+
+                } catch(e) {
+                    modalBody.innerHTML = "<p style='color:red'>Erro ao interpretar resposta do servidor.</p>";
+                    btnCancelar.style.display = 'inline';
+                    console.log(e);
+                }
             },
             error: function(erro) {
-                alert("Erro ao agendar.");
+                modalBody.innerHTML = "<p style='color:red'>Erro ao agendar.</p>";
+                btnCancelar.style.display = 'inline';
                 console.log(erro);
             }
         });
