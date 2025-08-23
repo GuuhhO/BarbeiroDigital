@@ -11,7 +11,7 @@ class AgendarController
 
       $expedienteModel = new ExpedienteModel();
 
-      $servicos = $servicoModel->obterServicos();
+      $servicos = $servicoModel->obterServicosAtivos();
       $diasAtivos = $expedienteModel->obterDiasAtivos();
       view('agendar/index', compact('servicos', 'diasAtivos'));
    }
