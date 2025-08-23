@@ -38,6 +38,7 @@
                                 <li><a class="dropdown-item" href="<?= BASE_URL ?>admin">Painel</a></li>
                                 <li><a class="dropdown-item" href="<?= BASE_URL ?>admin/expedientes">Expedientes</a></li>
                                 <li><a class="dropdown-item" href="<?= BASE_URL ?>admin/servicos">Serviços</a></li>
+                                <li><a class="dropdown-item" href="<?= BASE_URL ?>admin/barbeiros">Barbeiros</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" onclick="deslogarService()">Sair</a></li>
                             </ul>

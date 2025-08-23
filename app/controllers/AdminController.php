@@ -59,6 +59,15 @@ class AdminController
         $expedientes = $modelo->obterExpedientes();
         view('admin/expedientes', compact('expedientes'));
     }
+
+    public function barbeiros()
+    {
+        $this->verificarAutenticacao();
+        
+        $modelo = new AdminModel();
+        $barbeiros = $modelo->obterBarbeiros();
+        view('admin/barbeiros', compact('barbeiros'));
+    }
     
 
     public function logar()
@@ -319,5 +328,115 @@ class AdminController
         } catch (PDOException $e) {
         echo json_encode(["erro" => "Erro no banco de dados: " . $e->getMessage()]);
         }
+    }
+
+    public function adicionarBarbeiroService()
+    {
+        global $db;
+        
+        $barbeiro_id = $_POST['barbeiro_id'];
+        $nome = $_POST['nome'];
+        $ativo = $_POST['ativo'];
+        $telefone = $_POST['telefone'];
+        $comissao = $_POST['comissao'];
+        $servicos_id = $_POST['servicos_id'];
+
+        if (empty($nome) || empty($telefone) || empty($comissao) || empty($servicos_id))
+        {
+            echo json_encode(["erro" => "Preencha todos os campos"]);
+            return;
+        }
+
+        try {
+            $adicionarBarbeiroSql= $db->prepare("
+                INSERT INTO seg.barbeiros
+                (nome, telefone, ativo, comissao, servicos_id)
+                VALUES (?, ?, ?, ?, ?)
+            ");
+
+            $adicionarBarbeiro = $adicionarBarbeiroSql->execute([
+                $nome,
+                $telefone,
+                $ativo,
+                $comissao,
+                $servicos_id
+            ]);
+
+            if ($adicionarBarbeiro) {
+                echo json_encode(["sucesso" => "Barbeiro adicionado com sucesso"]);
+            } else {
+                echo json_encode(["erro" => "Erro ao atualizar barbeiro"]);
+            }
+        } catch (PDOException $e) {
+        echo json_encode(["erro" => "Erro no banco de dados: " . $e->getMessage()]);
+        }
+
+    }
+
+    public function atualizarBarbeiroService()
+    {
+        global $db;
+
+        $id = $_POST['barbeiro_id'];
+        $nome = $_POST['nome'];
+        $telefone = $_POST['telefone'];
+        $comissao = $_POST['comissao'];
+        $servicos_id = $_POST['servicos_id'];
+        $ativo = $_POST['ativo'];
+
+        if (empty($nome) || empty($telefone) || empty($comissao) || empty($servicos_id))
+        {
+            echo json_encode(["erro" => "Preencha todos os campos."]);
+            return;
+        }
+
+        try {
+            $atualizarBarbeiroSql= $db->prepare("
+                UPDATE seg.barbeiros
+                SET nome = ?, telefone = ?, comissao = ?, servicos_id = ?, ativo = ?
+                WHERE id = ?
+            ");
+
+            $atualizarBarbeiro = $atualizarBarbeiroSql->execute([
+                $nome,
+                $telefone,
+                $comissao,
+                $servicos_id,
+                $ativo,
+                $id
+            ]);
+
+            if ($atualizarBarbeiro) {
+                echo json_encode(["sucesso" => "Barbeiro atualizado com sucesso."]);
+            } else {
+                echo json_encode(["erro" => "Erro ao atualizar barbeiro."]);
+            }
+        } catch (PDOException $e) {
+        echo json_encode(["erro" => "Erro no banco de dados: " . $e->getMessage()]);
+        }
+    }
+
+    public function excluirBarbeiroService()
+    {
+      global $db;
+
+      $barbeiro_id = $_POST['barbeiro_id'];
+
+      if (empty($barbeiro_id))
+      {
+         echo json_encode(["erro" => "Nenhum barbeiro encontrado."]);
+         return;
+      }
+
+      $excluirBarbeiroDb = $db->prepare("DELETE FROM seg.barbeiros WHERE id = ?");
+      $excluirBarbeiroDb->execute([$barbeiro_id]);
+
+      if (!$excluirBarbeiroDb)
+      {
+         echo json_encode(["erro" => "Não foi possível excluir o barbeiro."]);
+         return;
+      }
+
+      echo json_encode(["sucesso" => true, "dados" => $barbeiro_id]);
     }
 }

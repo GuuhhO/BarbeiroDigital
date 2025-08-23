@@ -37,4 +37,13 @@ class AdminModel
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function obterBarbeiros()
+    {
+        global $db;
+
+        $stmt = $db->prepare("SELECT * FROM seg.barbeiros");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
