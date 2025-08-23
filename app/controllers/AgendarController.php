@@ -16,36 +16,60 @@ class AgendarController
       view('agendar/index', compact('servicos', 'diasAtivos'));
    }
 
-   private function gerarHorariosPadrao()
-   {
-      global $db;
+   public function gerarHorariosPadrao()
+{
+    global $db;
 
-      $obterExpediente = $db->query("SELECT * FROM seg.expedientes LIMIT 1");
-      $expediente = $obterExpediente->fetch(PDO::FETCH_ASSOC);
+    $obterExpediente = $db->query("SELECT * FROM seg.expedientes");
+    $expedientes = $obterExpediente->fetchAll(PDO::FETCH_ASSOC);
 
-      if (!$expediente) return [];
+    if (!$expedientes) return [];
 
-      $expedientes = [
-         ['inicio' => $expediente['inicio'], 'fim' => $expediente['almoco']],
-         ['inicio' => $expediente['retorno'], 'fim' => $expediente['termino']]
-      ];
+    $horariosPorDia = [];
 
-      $horarios = [];
+    foreach ($expedientes as $expediente) {
+        // garante que os campos existem
+        $inicio   = $expediente['inicio']   ?? null;
+        $almoco   = $expediente['almoco']   ?? null;
+        $retorno  = $expediente['retorno']  ?? null;
+        $termino  = $expediente['termino']  ?? null;
 
-      foreach ($expedientes as $turno) {
-         $inicio = new DateTime($turno['inicio']);
-         $fim = new DateTime($turno['fim']);
+        if (!$inicio || !$almoco || !$retorno || !$termino) {
+            continue; // pula se o expediente não estiver completo
+        }
 
-         while ($inicio < $fim) {
-            $horario = $inicio->format('H:i');
-            if (empty($horarios) || end($horarios) < $horario) {
-               $horarios[] = $horario;
+        $turnos = [
+            ['inicio' => $inicio, 'fim' => $almoco],
+            ['inicio' => $retorno, 'fim' => $termino]
+        ];
+
+        $horarios = [];
+
+        foreach ($turnos as $turno) {
+            try {
+                $horaInicio = new DateTime((string)$turno['inicio']);
+                $horaFim    = new DateTime((string)$turno['fim']);
+            } catch (Exception $e) {
+                continue; // se não for string válida, ignora
             }
-            $inicio->modify('+15 minutes');
-         }
-      }
-      return $horarios;
-   }
+
+            while ($horaInicio < $horaFim) {
+                $horario = $horaInicio->format('H:i');
+                if (empty($horarios) || end($horarios) < $horario) {
+                    $horarios[] = $horario;
+                }
+                $horaInicio->modify('+15 minutes'); // intervalo
+            }
+        }
+
+        // associa o expediente ao nome do dia
+        $horariosPorDia[$expediente['dia']] = $horarios;
+    }
+
+    return $horariosPorDia;
+}
+
+
 
    public function horarios()
    {
@@ -89,81 +113,99 @@ class AgendarController
    }
 
    public function verificarHorariosDisponiveis()
-   {
-      global $db;
+{
+    global $db;
 
-      $dia = $_POST['dia'] ?? null;
-      $servicoId = $_POST['servico_id'] ?? null;
+    $dia = $_POST['dia'] ?? null; // formato dd/mm/yyyy
+    $servicoId = $_POST['servico_id'] ?? null;
 
-      if (!$dia || !$servicoId) {
-         echo json_encode(["erro" => "Parâmetros inválidos"]);
-         return;
-      }
+    if (!$dia || !$servicoId) {
+        echo json_encode(["erro" => "Parâmetros inválidos"]);
+        return;
+    }
 
-      $horarios = $this->gerarHorariosPadrao();
+    // Converte dd/mm/yyyy para DateTime
+    $dataObj = DateTime::createFromFormat('d/m/Y', $dia);
+    if (!$dataObj) {
+        echo json_encode(["erro" => "Data inválida"]);
+        return;
+    }
 
-      // Duração do serviço
-      $obterServico = $db->prepare("SELECT duracao FROM seg.servicos WHERE id = ?");
-      $obterServico->execute([$servicoId]);
-      $duracao = $obterServico->fetchColumn();
+    // Descobre o nome do dia da semana em português
+    $diasSemana = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+    $nomeDia = $diasSemana[(int)$dataObj->format('w')]; // 0=domingo ... 6=sábado
 
-      if (!$duracao) {
-         echo json_encode(["erro" => "Serviço não encontrado"]);
-         return;
-      }
+    // Gera horários por expediente
+    $horariosPorDia = $this->gerarHorariosPadrao();
 
-      list($h, $m) = explode(':', $duracao);
-      $duracaoMin = ((int)$h * 60) + (int)$m;
+    if (!isset($horariosPorDia[$nomeDia])) {
+        echo json_encode([]); // dia sem expediente
+        return;
+    }
 
-      // Agendamentos do dia
-      $obterAgendados = $db->prepare("SELECT horario, duracao FROM api.agendamentos WHERE dia = :data");
-      $obterAgendados->execute(['data' => $dia]);
-      $agendados = $obterAgendados->fetchAll(PDO::FETCH_ASSOC);
+    $horarios = $horariosPorDia[$nomeDia];
 
-      $horariosOcupados = [];
+    // Duração do serviço
+    $obterServico = $db->prepare("SELECT duracao FROM seg.servicos WHERE id = ?");
+    $obterServico->execute([$servicoId]);
+    $duracao = $obterServico->fetchColumn();
 
-      foreach ($agendados as $ag) {
-         $inicioAg = new DateTime($ag['horario']);
+    if (!$duracao) {
+        echo json_encode(["erro" => "Serviço não encontrado"]);
+        return;
+    }
 
-         list($h, $m) = explode(':', $ag['duracao']);
-         $durAgMin = ((int)$h * 60) + (int)$m;
+    list($h, $m) = explode(':', $duracao);
+    $duracaoMin = ((int)$h * 60) + (int)$m;
 
-         for ($i = 0; $i < $durAgMin / 15; $i++) {
-               $horariosOcupados[] = $inicioAg->format('H:i');
-               $inicioAg->modify('+15 minutes');
-         }
-      }
+    // Agendamentos do dia
+    $obterAgendados = $db->prepare("SELECT horario, duracao FROM api.agendamentos WHERE dia = :data");
+    $obterAgendados->execute(['data' => $dataObj->format('Y-m-d')]);
+    $agendados = $obterAgendados->fetchAll(PDO::FETCH_ASSOC);
 
-      $horariosOcupados = array_unique($horariosOcupados);
+    $horariosOcupados = [];
 
-      $horariosDisponiveis = $horarios;
+    foreach ($agendados as $ag) {
+        $inicioAg = new DateTime($ag['horario']);
+        list($h, $m) = explode(':', $ag['duracao']);
+        $durAgMin = ((int)$h * 60) + (int)$m;
 
-      foreach ($horarios as $h) {
-         $inicio = new DateTime($h);
-         $fim = clone $inicio;
-         $fim->modify("+$duracaoMin minutes");
+        for ($i = 0; $i < $durAgMin / 15; $i++) {
+            $horariosOcupados[] = $inicioAg->format('H:i');
+            $inicioAg->modify('+15 minutes');
+        }
+    }
 
-         $intervaloLivre = true;
+    $horariosOcupados = array_unique($horariosOcupados);
 
-         $temp = clone $inicio;
-         while ($temp < $fim) {
+    $horariosDisponiveis = $horarios;
+
+    foreach ($horarios as $h) {
+        $inicio = new DateTime($h);
+        $fim = clone $inicio;
+        $fim->modify("+$duracaoMin minutes");
+
+        $intervaloLivre = true;
+        $temp = clone $inicio;
+
+        while ($temp < $fim) {
             if (in_array($temp->format('H:i'), $horariosOcupados)) {
-               $intervaloLivre = false;
-               break;
+                $intervaloLivre = false;
+                break;
             }
             $temp->modify('+15 minutes');
-         }
+        }
 
-         if (!$intervaloLivre) {
+        if (!$intervaloLivre) {
             unset($horariosDisponiveis[array_search($h, $horariosDisponiveis)]);
-         }
-      }
+        }
+    }
 
+    $horariosDisponiveis = array_values($horariosDisponiveis);
 
-      $horariosDisponiveis = array_values($horariosDisponiveis);
+    echo json_encode($horariosDisponiveis);
+}
 
-      echo json_encode($horariosDisponiveis);
-   }
 
    public function agendarCliente()
    {
