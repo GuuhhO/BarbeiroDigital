@@ -65,7 +65,7 @@ class AdminController
     {
         $this->verificarAutenticacao();
         
-        $modelo = new AdminModel();
+        $modelo = new BarbeiroModel();
         $barbeiros = $modelo->obterBarbeiros();
         view('admin/barbeiros', compact('barbeiros'));
     }

@@ -29,7 +29,7 @@ $title = 'Barbeiros';
                     <td><?= htmlspecialchars($barbeiro['nome']) ?></td>
                     <td><?= htmlspecialchars($barbeiro['telefone']) ?></td>
                     <td><?= $barbeiro['ativo'] ? 'Sim' : 'Não' ?></td>
-                    <td><?= htmlspecialchars($barbeiro['comissao']) ?></td>
+                    <td><?= htmlspecialchars($barbeiro['comissao']) ?>%</td>
                     <td>
                       <div class="btn-group" role="group" aria-label="Basic example">
                         <a class="p-3 btn btn-warning btn-sm btnEditarBarbeiro"
@@ -100,7 +100,7 @@ $title = 'Barbeiros';
   </div>
 </div>
 
-<div class="modal" tabindex="-1" id="modalAdicionarBarbeiro">
+<div class="modal" tabindex="-1" id="modalAdicionarBarbeiro" >
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
@@ -117,16 +117,19 @@ $title = 'Barbeiros';
             <label for="telefone" class="form-label">Telefone</label>
             <input type="text" class="form-control" id="telefone" name="telefone" required>
           </div>
-          <div class="mb-3">
+          <div class="mb-3 col-md-6 m-auto">
             <label for="ativo" class="form-label">Ativo</label>
             <select class="form-select" id="ativo" name="ativo" required>
               <option value="TRUE">Sim</option>
               <option value="FALSE">Não</option>
             </select>
           </div>
-          <div class="mb-3">
+          <div class="mb-3 col-md-6 m-auto">
             <label for="comissao" class="form-label">Comissão</label>
-            <input type="text" class="form-control" id="comissao" name="comissao" required>
+            <div class="input-group">
+              <input type="text" class="form-control" id="comissao" name="comissao" required>
+              <span class="input-group-text">%</span>
+            </div>
           </div>
           <div class="mb-3">
             <label for="servicos_id" class="form-label">Serviços</label>
@@ -296,9 +299,6 @@ $title = 'Barbeiros';
         const dados = { barbeiro_id: barbeiro_id };
 
         const modalEl = document.getElementById('modalExcluirBarbeiro');
-        modalEl.removeAttribute('aria-hidden'); // Remove atributo inválido antes de abrir
-        const modal = new bootstrap.Modal(modalEl);
-        modal.show();
 
         // Evita múltiplos bindings duplicados
         $('#btnConfirmarExclusaoBarbeiro').off('click').on('click', function () {
