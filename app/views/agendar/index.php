@@ -31,7 +31,13 @@ $title = 'Agendar Horário';
                     <?php endforeach; ?>
                 </select>
             </div>
-
+            <div class="mb-3 col-8 m-auto">
+                <label for="barbeiro" class="form-label">Barbeiro</label>
+                <select class="form-select" aria-label="Barbeiro" id="barbeiro_id" name="barbeiro_id" required>
+                    <option value="" selected disabled>Selecione uma opção</option>
+                    <!-- O JS vai preencher aqui -->
+                </select>
+            </div>
             <div class="mb-3 col-8 m-auto">
                 <label for="dia" class="form-label">Data</label>
                 <input type="text" class="form-control" id="calendario" aria-describedby="dia">
@@ -232,6 +238,51 @@ $title = 'Agendar Horário';
             keepStatic: true
         });
     }
+
+    function obterBarbeiroPorServico() {
+        $('#servico_id').on('change', function() {
+            let servico_id = $(this).val();
+
+            $.ajax({
+                method: 'POST',
+                url: '/Cortai/agendar/obterBarbeiroPorServicoService',
+                data: { servico_id: servico_id },
+                success: function(resposta) {
+                    try {
+                        const barbeiros = JSON.parse(resposta);
+
+                        if (barbeiros.error) {
+                            alert('Serviço inválido. Tente novamente.');
+                            return;
+                        }
+
+                        let $select = $('#barbeiro_id');
+                        $select.empty();
+                        $select.append('<option value="" selected disabled>Selecione uma opção</option>');
+
+                        barbeiros.forEach(b => {
+                            $select.append(`<option value="${b.id}">${b.nome}</option>`);
+                        });
+
+                        // Tratamento: se houver apenas 1 barbeiro, seleciona ele automaticamente
+                        if (barbeiros.length === 1) {
+                            $select.val(barbeiros[0].id);
+                        }
+
+                    } catch (e) {
+                        console.log('Erro ao processar JSON:', e);
+                    }
+                },
+                error: function(erro) {
+                    console.log('Erro na requisição:', erro);
+                }
+            });
+        });
+    }
+
+    $(document).ready(function() {
+        obterBarbeiroPorServico();
+    });
 
     $(document).ready(function() {
         mascaraTelefone();

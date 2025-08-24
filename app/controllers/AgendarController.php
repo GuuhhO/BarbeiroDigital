@@ -2,18 +2,20 @@
 
 require_once __DIR__ . '/../models/ServicoModel.php';
 require_once __DIR__ . '/../models/ExpedienteModel.php';
+require_once __DIR__ . '/../models/BarbeiroModel.php';
 
 class AgendarController
 {
    public function index()
    {
       $servicoModel = new ServicoModel();
-
       $expedienteModel = new ExpedienteModel();
+      $barbeiroModel = new BarbeiroModel();
 
       $servicos = $servicoModel->obterServicosAtivos();
       $diasAtivos = $expedienteModel->obterDiasAtivos();
-      view('agendar/index', compact('servicos', 'diasAtivos'));
+      $barbeirosAtivos = $barbeiroModel->obterBarbeirosAtivos();
+      view('agendar/index', compact('servicos', 'diasAtivos', 'barbeirosAtivos'));
    }
 
    public function gerarHorariosPadrao()
@@ -261,10 +263,19 @@ class AgendarController
       echo json_encode(['sucesso' => true]);
    }
 
-   public function meusAgendamentos()
-   {
-      global $db;
-      
-   }
+    public function obterBarbeiroPorServicoService()
+    {
+        if (!isset($_POST['servico_id']) || empty($_POST['servico_id'])) {
+            echo json_encode(['error' => 'Serviço não informado']);
+            return;
+        }
+
+        $servico_id = $_POST['servico_id'];
+        $barbeiroModel = new BarbeiroModel();
+        $barbeiros = $barbeiroModel->obterBarbeirosAtivosServicos($servico_id);
+
+        echo json_encode($barbeiros);
+    }
+
 
 }

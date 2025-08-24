@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../models/AdminModel.php';
+require_once __DIR__ . '/../models/BarbeiroModel.php';
 
 class AdminController
 {
