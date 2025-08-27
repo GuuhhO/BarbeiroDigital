@@ -4,6 +4,8 @@ require_once __DIR__ . '/../models/ServicoModel.php';
 require_once __DIR__ . '/../models/ExpedienteModel.php';
 require_once __DIR__ . '/../models/BarbeiroModel.php';
 
+use App\Services\WhatsAppService;
+
 class AgendarController
 {
    public function index()
@@ -260,7 +262,7 @@ class AgendarController
          'duracao' => $duracao
       ]);
 
-      echo json_encode(['sucesso' => true]);
+        echo json_encode(['sucesso' => true]);
    }
 
     public function obterBarbeiroPorServicoService()
@@ -277,5 +279,18 @@ class AgendarController
         echo json_encode($barbeiros);
     }
 
+    public function obterDadosGrafico()
+    {
+        global $db;
+        $sql = "SELECT dia, COUNT(*) as total 
+                FROM api.agendamentos
+                GROUP BY dia
+                ORDER BY dia ASC";
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+        $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        header('Content-Type: application/json');
+        echo json_encode($dados);
+    }
 }

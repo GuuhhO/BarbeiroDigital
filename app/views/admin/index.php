@@ -6,6 +6,104 @@ $title = 'Painel do Administrador';
 
 <div class="container">
     <div class="row mt-5">
+        <h1 align="center">PAINEL</h1>
+        <div class="col-md-8">
+            <div class="row">
+                <h4>Desempenho</h4>
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center shadow-sm rounded overflow-hidden mb-3" style="background: #e3e3e3; height: 100px;">
+                        <div class="d-flex justify-content-center align-items-center" 
+                            style="width: 100px; height: 100%; background: #12a033ff; color: #ffffffff;">
+                            <i class="fa-solid fa-calendar fa-2x" style="font-size: 50px !important;"></i>
+                        </div>
+                        <div class="p-3 flex-fill">
+                            <span class="text-muted d-block" style="font-size: 18px;">Agendamentos</span>
+                            <h4 class="mb-0" style="color: #333333ff;">2344</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center shadow-sm rounded overflow-hidden mb-3" style="background: #e3e3e3; height: 100px;">
+                        <div class="d-flex justify-content-center align-items-center" 
+                            style="width: 100px; height: 100%; background: #e92929ff; color: #ffffffff;">
+                            <i class="fa-solid fa-calendar fa-2x" style="font-size: 50px !important;"></i>
+                        </div>
+                        <div class="p-3 flex-fill">
+                            <span class="text-muted d-block" style="font-size: 18px;">Agendamentos</span>
+                            <h4 class="mb-0" style="color: #333333ff;">2344</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center shadow-sm rounded overflow-hidden mb-3" style="background: #e3e3e3; height: 100px;">
+                        <div class="d-flex justify-content-center align-items-center" 
+                            style="width: 100px; height: 100%; background: #1539b1ff; color: #ffffffff;">
+                            <i class="fa-solid fa-hand-holding-dollar fa-2x" style="font-size: 50px !important;"></i>
+                        </div>
+                        <div class="p-3 flex-fill">
+                            <span class="text-muted d-block" style="font-size: 18px;">Faturamento de hoje</span>
+                            <h4 class="mb-0" style="color: #333333ff;">R$ 175,00</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <h4>Saúde financeira</h4>
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center shadow-sm rounded overflow-hidden mb-3" style="background: #e3e3e3; height: 100px;">
+                        <div class="d-flex justify-content-center align-items-center" 
+                            style="width: 100px; height: 100%; background: #1539b1ff; color: #ffffffff;">
+                            <i class="fa-solid fa-hand-holding-dollar fa-2x" style="font-size: 50px !important;"></i>
+                        </div>
+                        <div class="p-3 flex-fill">
+                            <span class="text-muted d-block" style="font-size: 18px;">Faturamento de hoje</span>
+                            <h4 class="mb-0" style="color: #333333ff;">R$ 175,00</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center shadow-sm rounded overflow-hidden mb-3" style="background: #e3e3e3; height: 100px;">
+                        <div class="d-flex justify-content-center align-items-center" 
+                            style="width: 100px; height: 100%; background: #12a033ff; color: #ffffffff;">
+                            <i class="fa-solid fa-sack-dollar fa-2x" style="font-size: 50px !important;"></i>
+                        </div>
+                        <div class="p-3 flex-fill">
+                            <span class="text-muted d-block" style="font-size: 18px;">Faturamento mensal</span>
+                            <h4 class="mb-0" style="color: #333333ff;">R$ 175,00</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>    
+        <div class="col-md-4">
+            <h4>Últimos atendimentos</h4>
+            <div class="row">
+                <div data-bs-spy="scroll"
+                    data-bs-target="#navbar-example2"
+                    data-bs-root-margin="0px 0px -40%"
+                    data-bs-smooth-scroll="true"
+                    class="scrollspy-example bg-body-tertiary p-3 rounded-2 text-black"
+                    style="height: 400px; overflow-y: auto;"
+                    tabindex="0">
+                <?php foreach ($agendamentos as $agendamento): ?>
+                    <h5 id="atendimento<?= $index ?>">
+                        <?= htmlspecialchars($agendamento['cliente']) ?> - <?= htmlspecialchars($agendamento['horario']) ?>
+                    </h5>
+                    <p>
+                        <?= htmlspecialchars($agendamento['servico_id']) ?><br>
+                        <?= htmlspecialchars($agendamento['servico_id']) ?><br>
+                    </p>
+                    <hr>
+                <?php endforeach; ?>
+                </div>
+            </div>
+        </div>  
+    </div>
+    
+    <div class="row mt-5">
+        <canvas id="graficoAgendamentos"></canvas>
+    </div>
+    <div class="row mt-5">
         <h1 align="center">AGENDAMENTOS</h1>
         <table class="table table-dark table-striped">
             <thead>
@@ -368,6 +466,36 @@ $title = 'Painel do Administrador';
             keepStatic: true
         }).mask("#telefone");
     }
+
+    function carregarGraficoAgendamentos() {
+        fetch('/Cortai/agendar/obterDadosGrafico') // ajuste sua rota MVC
+            .then(response => response.json())
+            .then(data => {
+            const labels = data.map(item => item.data);
+            const valores = data.map(item => item.total);
+
+            new Chart(document.getElementById('graficoAgendamentos'), {
+                type: 'bar',
+                data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Agendamentos por dia',
+                    data: valores,
+                    borderWidth: 1,
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)'
+                }]
+                },
+                options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+                }
+            });
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", carregarGraficoAgendamentos);
 
     $(document).ready(function() {
         mascaraTelefone();
