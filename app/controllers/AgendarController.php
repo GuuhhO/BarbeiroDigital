@@ -237,30 +237,30 @@ class AgendarController
          }
       }
 
-      // Obter duração do serviço
-      $query = $db->prepare("SELECT duracao FROM seg.servicos WHERE id = ?");
-      $query->execute([$servicoId]);
-      $duracao = $query->fetchColumn();
+        // Obter duração do serviço
+        $obterDadosServico = $db->prepare("SELECT duracao, preco FROM seg.servicos WHERE id = ?");
+        $obterDadosServico->execute([$servicoId]);
+        $dadosServico = $obterDadosServico->fetchAll(PDO::FETCH_ASSOC);
 
-      if (!$duracao) {
-         echo json_encode(['erro' => 'Serviço inválido.']);
-         return;
-      }
+        if (!$obterDadosServico) {
+            echo json_encode(['erro' => 'Serviço inválido.']);
+            return;
+        }
 
-      // Inserir agendamento
-      $insert = $db->prepare("
-         INSERT INTO api.agendamentos (cliente, telefone, servico_id, dia, horario, duracao)
-         VALUES (:cliente, :telefone, :servico_id, :dia, :horario, :duracao)
-      ");
+        $insert = $db->prepare("
+            INSERT INTO api.agendamentos (cliente, telefone, servico_id, dia, horario, duracao, preco)
+            VALUES (:cliente, :telefone, :servico_id, :dia, :horario, :duracao, :preco)
+        ");
 
-      $insert->execute([
-         'cliente' => $cliente,
-         'telefone' => $telefone,
-         'servico_id' => $servicoId,
-         'dia' => $dia,
-         'horario' => $horario,
-         'duracao' => $duracao
-      ]);
+        $insert->execute([
+            'cliente' => $cliente,
+            'telefone' => $telefone,
+            'servico_id' => $servicoId,
+            'dia' => $dia,
+            'horario' => $horario,
+            'duracao' => $dadosServico['0']['duracao'],
+            'preco' => $dadosServico['0']['preco']
+        ]);
 
         echo json_encode(['sucesso' => true]);
    }
