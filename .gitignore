@@ -2,3 +2,4 @@
 *.log
 .vscode/
 /app/db.php
+wwebjs-bot/
