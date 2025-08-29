@@ -282,10 +282,11 @@ class AgendarController
     public function obterDadosGrafico()
     {
         global $db;
-        $sql = "SELECT dia, COUNT(*) as total 
-                FROM api.agendamentos
-                GROUP BY dia
-                ORDER BY dia ASC";
+        $sql = "SELECT s.servico AS servico, COUNT(*) AS total
+            FROM api.agendamentos a
+            JOIN seg.servicos s ON CAST(a.servico_id AS INTEGER) = s.id
+            GROUP BY s.servico
+            ORDER BY total DESC";
         $stmt = $db->prepare($sql);
         $stmt->execute();
         $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);

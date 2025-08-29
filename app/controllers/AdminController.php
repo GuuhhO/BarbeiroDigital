@@ -20,8 +20,16 @@ class AdminController
         $modelo = new AdminModel();
 
         $agendamentos = $modelo->obterAgendamentos();
+        $contagemAgendamentos = $modelo->obterContagemAgendamentos();
+        $contagemAgendamentosHoje = $modelo->obterContagemAgendamentosHoje();
+        $contagemAgendamentosAmanha = $modelo->obterContagemAgendamentosAmanha();
+        $contagemAgendamentosMes = $modelo->obterContagemAgendamentosMes();
+        $contagemAgendamentosHojeTotal = $modelo->obterContagemAgendamentosHojeTotal();
+        $contagemAgendamentosAtendidos = $modelo->obterContagemAgendamentosAtendidos();
+        $faturamentoMensal = $modelo->obterFaturamentoMensal();
+        $faturamentoHoje = $modelo->obterFaturamentoHoje();
         $clientes = $modelo->obterClientes();
-        view('admin/index', compact('agendamentos', 'clientes'));
+        view('admin/index', compact('agendamentos', 'clientes', 'contagemAgendamentos', 'contagemAgendamentosAtendidos', 'contagemAgendamentosHoje', 'contagemAgendamentosAmanha', 'contagemAgendamentosMes', 'contagemAgendamentosHojeTotal', 'faturamentoMensal', 'faturamentoHoje'));
     }
 
     public function painel()
