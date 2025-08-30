@@ -2,6 +2,18 @@
 
 class AgendamentoModel
 {
+    public function obterAgendamentos()
+    {
+        global $db;
+
+        $stmt = $db->prepare("SELECT a.*, s.servico AS servico_nome
+            FROM api.agendamentos a
+            JOIN seg.servicos s ON s.id = CAST(a.servico_id AS INTEGER)
+            ORDER BY a.id DESC");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function obterAgendamentosPendentes()
     {
         global $db;

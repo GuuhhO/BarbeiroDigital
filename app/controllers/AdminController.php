@@ -3,6 +3,8 @@
 require_once __DIR__ . '/../models/AdminModel.php';
 require_once __DIR__ . '/../models/BarbeiroModel.php';
 require_once __DIR__ . '/../models/ExpedienteModel.php';
+require_once __DIR__ . '/../models/AgendamentoModel.php';
+
 
 class AdminController
 {
@@ -19,8 +21,9 @@ class AdminController
         $this->verificarAutenticacao();
 
         $AdminModel = new AdminModel();
+        $AgendamentoModel = new AgendamentoModel();
 
-        $agendamentos = $AdminModel->obterAgendamentos();
+        $agendamentos = $AgendamentoModel->obterAgendamentos();
         $contagemAgendamentos = $AdminModel->obterContagemAgendamentos();
         $contagemAgendamentosHoje = $AdminModel->obterContagemAgendamentosHoje();
         $contagemAgendamentosAmanha = $AdminModel->obterContagemAgendamentosAmanha();

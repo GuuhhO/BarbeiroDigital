@@ -86,7 +86,7 @@ $title = 'Painel do Administrador';
                 <th scope="col">CLIENTE</th>
                 <th scope="col">HORÁRIO</th>
                 <th scope="col">DIA</th>
-                <th scope="col">TELEFONE</th>
+                <th scope="col">SERVIÇO</th>
                 <th scope="col"></th>
                 </tr>
             </thead>
@@ -96,7 +96,7 @@ $title = 'Painel do Administrador';
                     <td><?= htmlspecialchars($agendamento['cliente']) ?></td>
                     <td><?= htmlspecialchars($agendamento['horario']) ?></td>
                     <td><?= date("d/m/Y", strtotime($agendamento['dia'])) ?></td>
-                    <td><?= htmlspecialchars($agendamento['telefone']) ?></td>
+                    <td><?= htmlspecialchars($agendamento['servico_nome']) ?></td>
                     <td>
                         
                         </div>
