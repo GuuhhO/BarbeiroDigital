@@ -95,7 +95,7 @@ $title = 'Painel do Administrador';
                 <tr>
                     <td><?= htmlspecialchars($agendamento['cliente']) ?></td>
                     <td><?= htmlspecialchars($agendamento['horario']) ?></td>
-                    <td><?= htmlspecialchars($agendamento['dia']) ?></td>
+                    <td><?= date("d/m/Y", strtotime($agendamento['dia'])) ?></td>
                     <td><?= htmlspecialchars($agendamento['telefone']) ?></td>
                     <td>
                         

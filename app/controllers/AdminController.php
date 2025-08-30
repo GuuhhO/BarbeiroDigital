@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../models/AdminModel.php';
 require_once __DIR__ . '/../models/BarbeiroModel.php';
+require_once __DIR__ . '/../models/ExpedienteModel.php';
 
 class AdminController
 {
@@ -17,18 +18,18 @@ class AdminController
     {
         $this->verificarAutenticacao();
 
-        $modelo = new AdminModel();
+        $AdminModel = new AdminModel();
 
-        $agendamentos = $modelo->obterAgendamentos();
-        $contagemAgendamentos = $modelo->obterContagemAgendamentos();
-        $contagemAgendamentosHoje = $modelo->obterContagemAgendamentosHoje();
-        $contagemAgendamentosAmanha = $modelo->obterContagemAgendamentosAmanha();
-        $contagemAgendamentosMes = $modelo->obterContagemAgendamentosMes();
-        $contagemAgendamentosHojeTotal = $modelo->obterContagemAgendamentosHojeTotal();
-        $contagemAgendamentosAtendidos = $modelo->obterContagemAgendamentosAtendidos();
-        $faturamentoMensal = $modelo->obterFaturamentoMensal();
-        $faturamentoHoje = $modelo->obterFaturamentoHoje();
-        $clientes = $modelo->obterClientes();
+        $agendamentos = $AdminModel->obterAgendamentos();
+        $contagemAgendamentos = $AdminModel->obterContagemAgendamentos();
+        $contagemAgendamentosHoje = $AdminModel->obterContagemAgendamentosHoje();
+        $contagemAgendamentosAmanha = $AdminModel->obterContagemAgendamentosAmanha();
+        $contagemAgendamentosMes = $AdminModel->obterContagemAgendamentosMes();
+        $contagemAgendamentosHojeTotal = $AdminModel->obterContagemAgendamentosHojeTotal();
+        $contagemAgendamentosAtendidos = $AdminModel->obterContagemAgendamentosAtendidos();
+        $faturamentoMensal = $AdminModel->obterFaturamentoMensal();
+        $faturamentoHoje = $AdminModel->obterFaturamentoHoje();
+        $clientes = $AdminModel->obterClientes();
         view('admin/index', compact('agendamentos', 'clientes', 'contagemAgendamentos', 'contagemAgendamentosAtendidos', 'contagemAgendamentosHoje', 'contagemAgendamentosAmanha', 'contagemAgendamentosMes', 'contagemAgendamentosHojeTotal', 'faturamentoMensal', 'faturamentoHoje'));
     }
 
@@ -36,10 +37,10 @@ class AdminController
     {
         $this->verificarAutenticacao();
 
-        $modelo = new AdminModel();
+        $AdminModel = new AdminModel();
 
-        $agendamentos = $modelo->obterAgendamentos();
-        $clientes = $modelo->obterClientes();
+        $agendamentos = $AdminModel->obterAgendamentos();
+        $clientes = $AdminModel->obterClientes();
         view('admin/painel', compact('agendamentos', 'clientes'));
     }
 
@@ -54,9 +55,9 @@ class AdminController
     {
         $this->verificarAutenticacao();
         
-        $modelo = new AdminModel();
+        $AdminModel = new AdminModel();
 
-        $servicos = $modelo->obterServicos();
+        $servicos = $AdminModel->obterServicos();
         view('admin/servicos', compact('servicos'));
     }
 
@@ -64,8 +65,9 @@ class AdminController
     {
         $this->verificarAutenticacao();
         
-        $modelo = new AdminModel();
-        $expedientes = $modelo->obterExpedientes();
+        $AdminModel = new AdminModel();
+        $ExpedienteModel = new ExpedienteModel();
+        $expedientes = $ExpedienteModel->obterExpedientes();
         view('admin/expedientes', compact('expedientes'));
     }
 
@@ -73,8 +75,8 @@ class AdminController
     {
         $this->verificarAutenticacao();
         
-        $modelo = new BarbeiroModel();
-        $barbeiros = $modelo->obterBarbeiros();
+        $AdminModel = new BarbeiroModel();
+        $barbeiros = $AdminModel->obterBarbeiros();
         view('admin/barbeiros', compact('barbeiros'));
     }
     
