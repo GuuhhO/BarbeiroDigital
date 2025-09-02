@@ -204,13 +204,14 @@ $title = 'Painel do Administrador';
             </div>
             <div class="modal-body" id="modalEditarAgendamentoBodyText">
                 <form id="formEditarAgendamento">
+                    <input type="hidden" id="agendamento_id" name="agendamento_id">
                     <div class="mb-3">
-                        <label for="nome" class="form-label">Cliente</label>
-                        <input type="text" class="form-control" id="nome" required>
+                        <label for="cliente" class="form-label">Cliente</label>
+                        <input type="text" class="form-control" id="cliente" name="cliente" required>
                     </div>
                     <div class="mb-3">
                         <label for="telefone" class="form-label">Telefone</label>
-                        <input type="text" class="form-control" id="telefone" required>
+                        <input type="text" class="form-control" id="telefone" name="telefone" required>
                     </div>
                     <div class="mb-3">
                         <label for="servico" class="form-label">Serviço</label>
@@ -277,40 +278,25 @@ $title = 'Painel do Administrador';
 </div>
 
 <script>
-    function exibirModal()
-    {
-    // Abrir modal Bootstrap
-    const modalElement = document.getElementById('modalEditarAgendamento');
-    const modal = new bootstrap.Modal(modalElement);
-    modal.show();
-    }
+    function inicializarEdicaoAgendamento() {
+        var modal = document.getElementById('modalEditarAgendamento');
 
-    document.addEventListener('DOMContentLoaded', () => {
-        editarAgendamento();
-    });
+        modal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
 
+            var agendamento_id = button.getAttribute('data-id');
+            var cliente        = button.getAttribute('data-cliente');
+            var telefone       = button.getAttribute('data-telefone');
+            var servico_id     = button.getAttribute('data-servico');
 
-    function editarAgendamento()
-    {
-        document.querySelectorAll('.btnEditarAgendamento').forEach(botao => {
-            botao.addEventListener('click', function(event) {
-                event.preventDefault(); // evita que o link faça scroll ou navegue
-
-                const nome = this.getAttribute('data-cliente');
-                const telefone = this.getAttribute('data-telefone');
-                const servico_id = this.getAttribute('data-servico');
-                const dia = this.getAttribute('data-dia');
-                const horario = this.getAttribute('data-horario');
-
-                // Preenche inputs do modal
-                document.getElementById('nome').value = nome;
-                document.getElementById('telefone').value = telefone;
-                document.getElementById('servico').value = servico_id;
-                document.getElementById('dia').value = dia;
-                document.getElementById('horario').value = horario;
-            });
+            modal.querySelector('#agendamento_id').value = agendamento_id;
+            modal.querySelector('#cliente').value        = cliente;
+            modal.querySelector('#telefone').value       = telefone;
+            modal.querySelector('#servico').value        = servico_id;
         });
     }
+
+    document.addEventListener('DOMContentLoaded', inicializarEdicaoAgendamento);
 
     function editarAgendamentoService()
     {
@@ -325,14 +311,14 @@ $title = 'Painel do Administrador';
 
         $.ajax({
             method: 'POST',
-            url: '/Cortai/admin/atualizarAgendamentoService',
+            url: '/Cortai/admin/editarAgendamentoService',
             data: dados,
             success: function(resposta) {
                 try {
                     const resultado = JSON.parse(resposta);
 
                     if (resultado.erro) {
-                        document.getElementById('modalEditarExpedienteBodyText').innerHTML = "<p>"+resultado.erro+"</p>";
+                        document.getElementById('modalEditarAgendamentoBodyText').innerHTML = "<p>"+resultado.erro+"</p>";
                         document.getElementById('btnModalExpedienteCancelar').style.display = 'inline';
                         const btnFechar = document.getElementById('btnModalExpedienteCancelar');
 
@@ -343,10 +329,10 @@ $title = 'Painel do Administrador';
                     }
 
                     setTimeout(() => {
-                        document.getElementById('modalEditarExpedienteBodyText').innerHTML = "<p>Expediente atualizado com sucesso!</p>";
-                        document.getElementById('btnModalExpedienteCancelar').style.display = 'inline';
+                        document.getElementById('modalEditarAgendamentoBodyText').innerHTML = "<p>Agendamento atualizado com sucesso!</p>";
+                        document.getElementById('btnModalEditarAgendamentoCancelar').style.display = 'inline';
 
-                        const btnFechar = document.getElementById('btnModalExpedienteCancelar');
+                        const btnFechar = document.getElementById('btnModalEditarAgendamentoCancelar');
 
                         btnFechar.addEventListener('click', function() {
                             location.reload();
@@ -354,9 +340,9 @@ $title = 'Painel do Administrador';
 
                     }, 1000);
                 } catch(e) {
-                    document.getElementById('modalEditarExpedienteBodyText').innerHTML = "<p>"+resultado.erro+"</p>";
-                    document.getElementById('btnModalExpedienteCancelar').style.display = 'inline';
-                    const btnFechar = document.getElementById('btnModalExpedienteCancelar');
+                    document.getElementById('modalEditarAgendamentoBodyText').innerHTML = "<p>"+resultado.erro+"</p>";
+                    document.getElementById('btnModalEditarAgendamentoCancelar').style.display = 'inline';
+                    const btnFechar = document.getElementById('btnModalEditarAgendamentoCancelar');
 
                     btnFechar.addEventListener('click', function() {
                         location.reload();
@@ -365,12 +351,11 @@ $title = 'Painel do Administrador';
                 }
             },
             error: function(erro) {
-                alert("Erro ao editar serviço.");
+                alert("Erro ao editar agendamento.");
                 console.log(erro);
             },
             complete: function() {
                 btnSalvar.disabled = false;
-                loading.remove(); // remove o loading
             }
         });
     }
@@ -547,6 +532,9 @@ $title = 'Painel do Administrador';
                 });
             });
     }
+
+    document.getElementById('btnModalEditarAgendamentoSalvar')
+    .addEventListener('click', editarAgendamentoService);
 
     document.addEventListener("DOMContentLoaded", carregarGraficoAgendamentos);
 

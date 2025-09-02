@@ -181,6 +181,45 @@ class AdminController
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function editarAgendamentoService()
+    {
+        global $db;
+
+        $agendamento_id = $_POST['agendamento_id'];
+        $cliente = $_POST['cliente'];
+        $telefone = $_POST['telefone'];
+        $servico_id = $_POST['servico_id'];
+
+        if (empty($cliente) || empty($telefone) || empty($servico_id))
+        {
+            echo json_encode(["erro" => "Preencha todos os campos."]);
+            return;
+        }
+
+        try {
+            $atualizarAgendamentoSql= $db->prepare("
+                UPDATE api.agendamentos
+                SET cliente = ?, telefone = ?, servico_id = ?
+                WHERE id = ?
+            ");
+
+            $atualizarAgendamento = $atualizarAgendamentoSql->execute([
+                $cliente,
+                $telefone,
+                $servico_id,
+                $agendamento_id
+            ]);
+
+            if ($atualizarAgendamento) {
+                echo json_encode(["sucesso" => "Agendamento atualizado com sucesso."]);
+            } else {
+                echo json_encode(["erro" => "Erro ao atualizar agendamento."]);
+            }
+        } catch (PDOException $e) {
+        echo json_encode(["erro" => "Erro no banco de dados: " . $e->getMessage()]);
+        }
+    }
+
     public function removerAgendamento()
     {
         global $db;
