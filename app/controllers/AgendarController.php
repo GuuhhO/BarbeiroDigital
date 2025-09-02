@@ -109,107 +109,103 @@ class AgendarController
       return $diasAtivos;
    }
 
-   public function obterDiasAtivosAjax()
-   {
-      $diasAtivos = $this->obterDiasAtivos();
-      echo json_encode($diasAtivos);
-      exit;
-   }
-
-   public function verificarHorariosDisponiveis()
-{
-    global $db;
-
-    $dia = $_POST['dia'] ?? null; // formato dd/mm/yyyy
-    $servicoId = $_POST['servico_id'] ?? null;
-
-    if (!$dia || !$servicoId) {
-        echo json_encode(["erro" => "Parâmetros inválidos"]);
-        return;
+    public function obterDiasAtivosAjax()
+    {
+        $diasAtivos = $this->obterDiasAtivos();
+        echo json_encode($diasAtivos);
+        exit;
     }
 
-    // Converte dd/mm/yyyy para DateTime
-    $dataObj = DateTime::createFromFormat('d/m/Y', $dia);
-    if (!$dataObj) {
-        echo json_encode(["erro" => "Data inválida"]);
-        return;
-    }
+    public function verificarHorariosDisponiveis()
+    {
+        global $db;
 
-    // Descobre o nome do dia da semana em português
-    $diasSemana = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
-    $nomeDia = $diasSemana[(int)$dataObj->format('w')]; // 0=domingo ... 6=sábado
+        $dia = $_POST['dia'] ?? null; // formato dd/mm/yyyy
+        $servicoId = $_POST['servico_id'] ?? null;
 
-    // Gera horários por expediente
-    $horariosPorDia = $this->gerarHorariosPadrao();
-
-    if (!isset($horariosPorDia[$nomeDia])) {
-        echo json_encode([]); // dia sem expediente
-        return;
-    }
-
-    $horarios = $horariosPorDia[$nomeDia];
-
-    // Duração do serviço
-    $obterServico = $db->prepare("SELECT duracao FROM seg.servicos WHERE id = ?");
-    $obterServico->execute([$servicoId]);
-    $duracao = $obterServico->fetchColumn();
-
-    if (!$duracao) {
-        echo json_encode(["erro" => "Serviço não encontrado"]);
-        return;
-    }
-
-    list($h, $m) = explode(':', $duracao);
-    $duracaoMin = ((int)$h * 60) + (int)$m;
-
-    // Agendamentos do dia
-    $obterAgendados = $db->prepare("SELECT horario, duracao FROM api.agendamentos WHERE dia = :data");
-    $obterAgendados->execute(['data' => $dataObj->format('Y-m-d')]);
-    $agendados = $obterAgendados->fetchAll(PDO::FETCH_ASSOC);
-
-    $horariosOcupados = [];
-
-    foreach ($agendados as $ag) {
-        $inicioAg = new DateTime($ag['horario']);
-        list($h, $m) = explode(':', $ag['duracao']);
-        $durAgMin = ((int)$h * 60) + (int)$m;
-
-        for ($i = 0; $i < $durAgMin / 15; $i++) {
-            $horariosOcupados[] = $inicioAg->format('H:i');
-            $inicioAg->modify('+15 minutes');
+        if (!$dia || !$servicoId) {
+            echo json_encode(["erro" => "Parâmetros inválidos"]);
+            return;
         }
-    }
 
-    $horariosOcupados = array_unique($horariosOcupados);
+        $dataObj = DateTime::createFromFormat('d/m/Y', $dia);
+        if (!$dataObj) {
+            echo json_encode(["erro" => "Data inválida"]);
+            return;
+        }
 
-    $horariosDisponiveis = $horarios;
+        $diasSemana = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+        $nomeDia = $diasSemana[(int)$dataObj->format('w')]; // 0=domingo ... 6=sábado
 
-    foreach ($horarios as $h) {
-        $inicio = new DateTime($h);
-        $fim = clone $inicio;
-        $fim->modify("+$duracaoMin minutes");
+        $horariosPorDia = $this->gerarHorariosPadrao();
 
-        $intervaloLivre = true;
-        $temp = clone $inicio;
+        if (!isset($horariosPorDia[$nomeDia])) {
+            echo json_encode([]); // dia sem expediente
+            return;
+        }
 
-        while ($temp < $fim) {
-            if (in_array($temp->format('H:i'), $horariosOcupados)) {
-                $intervaloLivre = false;
-                break;
+        $horarios = $horariosPorDia[$nomeDia];
+
+        // Duração do serviço
+        $obterServico = $db->prepare("SELECT duracao FROM seg.servicos WHERE id = ?");
+        $obterServico->execute([$servicoId]);
+        $duracao = $obterServico->fetchColumn();
+
+        if (!$duracao) {
+            echo json_encode(["erro" => "Serviço não encontrado"]);
+            return;
+        }
+
+        list($h, $m) = explode(':', $duracao);
+        $duracaoMin = ((int)$h * 60) + (int)$m;
+
+        // Agendamentos do dia
+        $obterAgendados = $db->prepare("SELECT horario, duracao FROM api.agendamentos WHERE dia = :data");
+        $obterAgendados->execute(['data' => $dataObj->format('Y-m-d')]);
+        $agendados = $obterAgendados->fetchAll(PDO::FETCH_ASSOC);
+
+        $horariosOcupados = [];
+
+        foreach ($agendados as $ag) {
+            $inicioAg = new DateTime($ag['horario']);
+            list($h, $m) = explode(':', $ag['duracao']);
+            $durAgMin = ((int)$h * 60) + (int)$m;
+
+            for ($i = 0; $i < $durAgMin / 15; $i++) {
+                $horariosOcupados[] = $inicioAg->format('H:i');
+                $inicioAg->modify('+15 minutes');
             }
-            $temp->modify('+15 minutes');
         }
 
-        if (!$intervaloLivre) {
-            unset($horariosDisponiveis[array_search($h, $horariosDisponiveis)]);
+        $horariosOcupados = array_unique($horariosOcupados);
+
+        $horariosDisponiveis = $horarios;
+
+        foreach ($horarios as $h) {
+            $inicio = new DateTime($h);
+            $fim = clone $inicio;
+            $fim->modify("+$duracaoMin minutes");
+
+            $intervaloLivre = true;
+            $temp = clone $inicio;
+
+            while ($temp < $fim) {
+                if (in_array($temp->format('H:i'), $horariosOcupados)) {
+                    $intervaloLivre = false;
+                    break;
+                }
+                $temp->modify('+15 minutes');
+            }
+
+            if (!$intervaloLivre) {
+                unset($horariosDisponiveis[array_search($h, $horariosDisponiveis)]);
+            }
         }
+
+        $horariosDisponiveis = array_values($horariosDisponiveis);
+
+        echo json_encode($horariosDisponiveis);
     }
-
-    $horariosDisponiveis = array_values($horariosDisponiveis);
-
-    echo json_encode($horariosDisponiveis);
-}
-
 
    public function agendarCliente()
    {

@@ -124,12 +124,14 @@ $title = 'Painel do Administrador';
                                         data-bs-toggle="modal"
                                         data-bs-target="#modalEditarHorarioAgendamento"
                                         class="dropdown-item btnEditarAgendamento"
+                                        data-id="<?= $agendamento['id'] ?>"
                                         data-cliente="<?= htmlspecialchars($agendamento['cliente'], ENT_QUOTES) ?>"
                                         data-telefone="<?= htmlspecialchars($agendamento['telefone'], ENT_QUOTES) ?>"
                                         data-servico="<?= htmlspecialchars($agendamento['servico_id'], ENT_QUOTES) ?>"
                                         data-dia="<?= htmlspecialchars($agendamento['dia'], ENT_QUOTES) ?>"
                                         data-horario="<?= htmlspecialchars($agendamento['horario'], ENT_QUOTES) ?>"
-                                        style="cursor: pointer">
+                                        style="cursor: pointer"
+                                        onclick="editarHorarioAgendamento(this)">
                                         Mudar Horário</a>
                                     </li>
                                     <li id="dropdownAcoesAgendamento">
@@ -234,15 +236,25 @@ $title = 'Painel do Administrador';
     </div>
 </div>
 
-<div class="modal fade" tabindex="-1" id="modalEditarHorarioAgendamento" aria-hidden="true">
+<div class="modal fade" tabindex="-1" id="modalSelecionarHorario" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Selecione um horário</h5>
+        <h5 class="modal-title">Alterar horário de atendimento</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" id="modalEditarHorarioAgendamentoBodyText">
         <div class="container text-center">
+
+            <input type="hidden" id="agendamento_id" name="agendamento_id">
+            <input type="hidden" id="cliente" name="cliente">
+            <input type="hidden" id="telefone" name="telefone">
+            <input type="hidden" id="servico" name="servico">
+            <input type="hidden" id="dia" name="dia">
+
+            <label for=""><b>Dia selecionado:</b></label>
+            <br>
+            <p id="modalBodyExibirDia"></p>   
             <label class="form-label">Horários disponíveis:</label>
             <div class="row row-cols-auto justify-content-center" id="containerHorarios">
                 <!-- caixas serão geradas aqui -->
@@ -250,8 +262,8 @@ $title = 'Painel do Administrador';
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" onclick="agendarClienteService()">Agendar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnModalEditarHorarioAgendamentoCancelar">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="atualizarHorarioAgendamentoService()" id="btnModalEditarHorarioAgendamentoSalvar">Re-agendar</button>
       </div>
     </div>
   </div>
@@ -296,8 +308,6 @@ $title = 'Painel do Administrador';
         });
     }
 
-    document.addEventListener('DOMContentLoaded', inicializarEdicaoAgendamento);
-
     function editarAgendamentoService()
     {
         const modalEl = document.getElementById('modalEditarAgendamento');
@@ -319,8 +329,8 @@ $title = 'Painel do Administrador';
 
                     if (resultado.erro) {
                         document.getElementById('modalEditarAgendamentoBodyText').innerHTML = "<p>"+resultado.erro+"</p>";
-                        document.getElementById('btnModalExpedienteCancelar').style.display = 'inline';
-                        const btnFechar = document.getElementById('btnModalExpedienteCancelar');
+                        document.getElementById('btnModalEditarAgendamentoCancelar').style.display = 'inline';
+                        const btnFechar = document.getElementById('btnModalEditarAgendamentoCancelar');
 
                         btnFechar.addEventListener('click', function() {
                             location.reload();
@@ -360,48 +370,64 @@ $title = 'Painel do Administrador';
         });
     }
 
-    function verificarHorariosService() {
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('').forEach(botao => {
-                botao.addEventListener('click', function(e) {
-                    e.preventDefault(); // evita navegação do <a>
+    function editarHorarioAgendamento(el) {
+        // 'el' é o link que foi clicado
+        const agendamento_id = el.dataset.id;
+        const cliente = el.dataset.cliente;
+        const telefone = el.dataset.telefone;
+        const servico_id = el.dataset.servico;
+        const dia = el.dataset.dia;
+        const horario = el.dataset.horario;
 
-                    const dados = {
-                        nome: this.getAttribute('data-cliente'),
-                        telefone: this.getAttribute('data-telefone'),
-                        servico_id: this.getAttribute('data-servico'),
-                        dia: this.getAttribute('data-dia'),
-                        horario: this.getAttribute('data-horario')
-                    };
+        const [year, month, day] = dia.split('-');
+        const diaFormatado = `${day}/${month}/${year}`;
 
-                    $.ajax({
-                        method: 'POST',
-                        url: '/Cortai/agendar/verificarHorariosDisponiveis',
-                        data: dados,
-                        success: function(resposta) {
-                            let horariosDisponiveis = typeof resposta === 'string' ? JSON.parse(resposta) : resposta;
+        document.querySelector('#agendamento_id').value = agendamento_id;
+        document.querySelector('#cliente').value = cliente;
+        document.querySelector('#telefone').value = telefone;
+        document.querySelector('#servico').value = servico_id;
+        document.querySelector('#dia').value = dia;
 
-                            if (!Array.isArray(horariosDisponiveis) || horariosDisponiveis.length === 0) {
-                                alert("Nenhum horário disponível para essa data/serviço.");
-                                $('#containerHorarios').hide();
-                                return;
-                            }
+        const dados = {
+            cliente: cliente,
+            telefone: telefone,
+            servico_id: servico_id,
+            dia: diaFormatado,
+        };
 
-                            mostrarHorariosComoCaixas(horariosDisponiveis);
+        $.ajax({
+            method: 'POST',
+            url: '/Cortai/agendar/verificarHorariosDisponiveis',
+            data: dados,
+            success: function(resposta) {
+                let horariosDisponiveis = typeof resposta === 'string' ? JSON.parse(resposta) : resposta;
 
-                            const modalElement = document.getElementById('modalSelecionarHorario');
-                            const modal = new bootstrap.Modal(modalElement);
-                            modal.show();
-                        },
-                        error: function(erro) {
-                            alert("Erro ao verificar horários.");
-                            console.log(erro);
-                        }
-                    });
-                });
-            });
+                if (horariosDisponiveis.length === 0) {
+                    alert("Nenhum horário disponível para essa data/serviço.");
+                    $('#containerHorarios').hide();
+                    return;
+                }
+
+                document.querySelector('#modalBodyExibirDia').innerHTML = diaFormatado;
+
+                mostrarHorariosComoCaixas(horariosDisponiveis);
+
+                // Abrir modal Bootstrap
+                const modalElement = document.getElementById('modalSelecionarHorario');
+                const modal = new bootstrap.Modal(modalElement);
+                modal.show();
+            },
+            error: function(erro) {
+                alert("Erro ao verificar horários.");
+                console.log(erro);
+            }
         });
 
+        // Se quiser guardar em inputs ocultos
+        document.querySelector('#agendamento_id').value = agendamento_id;
+        document.querySelector('#cliente').value = cliente;
+        document.querySelector('#telefone').value = telefone;
+        document.querySelector('#servico').value = servico_id;
     }
 
     function mostrarHorariosComoCaixas(horarios) {
@@ -417,6 +443,71 @@ $title = 'Painel do Administrador';
         $('.box-horario').click(function() {
             $('.box-horario').removeClass('selected');
             $(this).addClass('selected');
+        });
+    }
+
+    function atualizarHorarioAgendamentoService() {
+        const agendamento_id = document.querySelector('#agendamento_id').value;
+        const cliente = document.querySelector('#cliente').value;
+        const telefone = document.querySelector('#telefone').value;
+        const servico_id = document.querySelector('#servico').value;
+        const dia = document.querySelector('#dia').value;
+
+        const horarioSelecionadoEl = document.querySelector('.box-horario.selected');
+        if (!horarioSelecionadoEl) {
+            alert("Selecione um horário antes de salvar.");
+            return;
+        }
+        const horarioSelecionado = horarioSelecionadoEl.textContent;
+
+        const dados = {
+            agendamento_id,
+            cliente,
+            telefone,
+            servico_id,
+            horario: horarioSelecionado,
+            dia: dia
+        };
+
+        // Mostrar loading
+        document.getElementById('modalEditarHorarioAgendamentoBodyText').innerHTML = "<center><img src='/Cortai/public/assets/img/loading.gif' width='50'></center>";
+        document.getElementById('btnModalEditarHorarioAgendamentoCancelar').style.display = 'none';
+        document.getElementById('btnModalEditarHorarioAgendamentoSalvar').style.display = 'none';
+
+        $.ajax({
+            method: 'POST',
+            url: '/Cortai/admin/atualizarHorarioAgendamentoService', // ajuste para a rota correta
+            data: dados,
+            success: function(resposta) {
+                try {
+                    const resultado = JSON.parse(resposta);
+
+                    if (resultado.erro) {
+                        alert(resultado.erro);
+                        return;
+                    }
+
+                    setTimeout(() => {
+                        document.getElementById('modalEditarHorarioAgendamentoBodyText').innerHTML = "<p>Horário atualizado com sucesso!</p>";
+                        document.getElementById('btnModalEditarHorarioAgendamentoCancelar').style.display = 'inline';
+
+                        const btnFechar = document.getElementById('btnModalEditarHorarioAgendamentoCancelar');
+
+                        btnFechar.addEventListener('click', function() {
+                            location.reload();
+                        });
+
+                    }, 1000);
+
+                } catch(e) {
+                    console.error(e);
+                    alert("Erro inesperado ao atualizar horário.");
+                }
+            },
+            error: function(erro) {
+                console.error(erro);
+                alert("Erro ao atualizar horário.");
+            }
         });
     }
 
@@ -483,13 +574,6 @@ $title = 'Painel do Administrador';
         };
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const service = new AgendamentoService('/Cortai/admin');
-        const modalHelper = new ModalHelper('modalRemoverAgendamento');
-        const controller = new RemocaoAgendamentoController(service, modalHelper);
-        controller.init();
-    });
-
     function mascaraTelefone() {
         Inputmask({
             mask: ["(99) 9999-9999","(99) 99999-9999"],
@@ -533,11 +617,22 @@ $title = 'Painel do Administrador';
             });
     }
 
+    document.addEventListener('DOMContentLoaded', inicializarEdicaoAgendamento);
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const service = new AgendamentoService('/Cortai/admin');
+        const modalHelper = new ModalHelper('modalRemoverAgendamento');
+        const controller = new RemocaoAgendamentoController(service, modalHelper);
+        controller.init();
+    });
+
     document.getElementById('btnModalEditarAgendamentoSalvar')
     .addEventListener('click', editarAgendamentoService);
 
-    document.addEventListener("DOMContentLoaded", carregarGraficoAgendamentos);
+    document.getElementById('btnModalEditarHorarioAgendamentoSalvar')
+    .addEventListener('click', atualizarHorarioAgendamentoService);
 
+    document.addEventListener("DOMContentLoaded", carregarGraficoAgendamentos);
 
     $(document).ready(function() {
         mascaraTelefone();

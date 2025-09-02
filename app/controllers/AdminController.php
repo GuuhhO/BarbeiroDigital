@@ -220,6 +220,45 @@ class AdminController
         }
     }
 
+    public function atualizarHorarioAgendamentoService()
+    {
+        global $db;
+        $agendamento_id = $_POST['agendamento_id'];
+        $cliente = $_POST['cliente'];
+        $servico_id = $_POST['servico_id'];
+        $dia = $_POST['dia'];
+        $novoHorario = $_POST['horario'];
+
+        if (empty($servico_id) || empty($dia) || empty($novoHorario) || empty($agendamento_id))
+        {
+            echo json_encode(["erro" => "Preencha todos os campos."]);
+            return;
+        }
+
+        try {
+            $atualizarHorarioAgendamentoSql= $db->prepare("
+                UPDATE api.agendamentos
+                SET horario = ?, dia = ?
+                WHERE id = ?
+            ");
+
+            $atualizarHorarioAgendamento = $atualizarHorarioAgendamentoSql->execute([
+                $novoHorario,
+                $dia,
+                $agendamento_id
+            ]);
+
+            if ($atualizarHorarioAgendamento) {
+                echo json_encode(["sucesso" => "Horário atualizado com sucesso."]);
+            } else {
+                echo json_encode(["erro" => "Erro ao atualizar horário."]);
+            }
+        } catch (PDOException $e) {
+        echo json_encode(["erro" => "Erro no banco de dados: " . $e->getMessage()]);
+        }
+
+    }
+
     public function removerAgendamento()
     {
         global $db;
