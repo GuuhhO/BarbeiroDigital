@@ -202,7 +202,7 @@ $title = 'Painel do Administrador';
             <div class="modal-header">
                 <h5 class="modal-title">Editar agendamento</h5>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" id="modalEditarAgendamentoBodyText">
                 <form id="formEditarAgendamento">
                     <div class="mb-3">
                         <label for="nome" class="form-label">Cliente</label>
@@ -214,13 +214,20 @@ $title = 'Painel do Administrador';
                     </div>
                     <div class="mb-3">
                         <label for="servico" class="form-label">Serviço</label>
-                        <input type="text" class="form-control" id="servico" required>
+                        <select class="form-control" id="servico" name="servico_id" required>
+                            <option value="">Selecione...</option>
+                            <?php foreach ($servicos as $servico): ?>
+                                <option value="<?= htmlspecialchars($servico['id']) ?>">
+                                    <?= htmlspecialchars($servico['servico']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-primary" id="btnConfirmarEdicao">Salvar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnModalEditarAgendamentoCancelar">Fechar</button>
+                <button type="button" class="btn btn-primary" id="btnModalEditarAgendamentoSalvar">Salvar</button>
             </div>
         </div>
     </div>
@@ -291,23 +298,86 @@ $title = 'Painel do Administrador';
 
                 const nome = this.getAttribute('data-cliente');
                 const telefone = this.getAttribute('data-telefone');
-                const servico = this.getAttribute('data-servico');
+                const servico_id = this.getAttribute('data-servico');
                 const dia = this.getAttribute('data-dia');
                 const horario = this.getAttribute('data-horario');
 
                 // Preenche inputs do modal
                 document.getElementById('nome').value = nome;
                 document.getElementById('telefone').value = telefone;
-                document.getElementById('servico').value = servico;
+                document.getElementById('servico').value = servico_id;
                 document.getElementById('dia').value = dia;
                 document.getElementById('horario').value = horario;
             });
         });
     }
 
+    function editarAgendamentoService()
+    {
+        const modalEl = document.getElementById('modalEditarAgendamento');
+        const btnSalvar = document.getElementById('btnModalEditarAgendamentoSalvar');
+
+        const dados = $('#formEditarAgendamento').serialize();
+
+        document.getElementById('modalEditarAgendamentoBodyText').innerHTML = "<center><img src='/Cortai/public/assets/img/loading.gif' width='50'></img></center>";
+        document.getElementById('btnModalEditarAgendamentoCancelar').style.display = 'none';
+        document.getElementById('btnModalEditarAgendamentoSalvar').style.display = 'none';
+
+        $.ajax({
+            method: 'POST',
+            url: '/Cortai/admin/atualizarAgendamentoService',
+            data: dados,
+            success: function(resposta) {
+                try {
+                    const resultado = JSON.parse(resposta);
+
+                    if (resultado.erro) {
+                        document.getElementById('modalEditarExpedienteBodyText').innerHTML = "<p>"+resultado.erro+"</p>";
+                        document.getElementById('btnModalExpedienteCancelar').style.display = 'inline';
+                        const btnFechar = document.getElementById('btnModalExpedienteCancelar');
+
+                        btnFechar.addEventListener('click', function() {
+                            location.reload();
+                        });
+                        return;
+                    }
+
+                    setTimeout(() => {
+                        document.getElementById('modalEditarExpedienteBodyText').innerHTML = "<p>Expediente atualizado com sucesso!</p>";
+                        document.getElementById('btnModalExpedienteCancelar').style.display = 'inline';
+
+                        const btnFechar = document.getElementById('btnModalExpedienteCancelar');
+
+                        btnFechar.addEventListener('click', function() {
+                            location.reload();
+                        });
+
+                    }, 1000);
+                } catch(e) {
+                    document.getElementById('modalEditarExpedienteBodyText').innerHTML = "<p>"+resultado.erro+"</p>";
+                    document.getElementById('btnModalExpedienteCancelar').style.display = 'inline';
+                    const btnFechar = document.getElementById('btnModalExpedienteCancelar');
+
+                    btnFechar.addEventListener('click', function() {
+                        location.reload();
+                    });
+                    console.log(e);
+                }
+            },
+            error: function(erro) {
+                alert("Erro ao editar serviço.");
+                console.log(erro);
+            },
+            complete: function() {
+                btnSalvar.disabled = false;
+                loading.remove(); // remove o loading
+            }
+        });
+    }
+
     function verificarHorariosService() {
         document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.btnEditarAgendamento').forEach(botao => {
+            document.querySelectorAll('').forEach(botao => {
                 botao.addEventListener('click', function(e) {
                     e.preventDefault(); // evita navegação do <a>
 

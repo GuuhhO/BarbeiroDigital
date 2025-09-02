@@ -4,7 +4,7 @@ require_once __DIR__ . '/../models/AdminModel.php';
 require_once __DIR__ . '/../models/BarbeiroModel.php';
 require_once __DIR__ . '/../models/ExpedienteModel.php';
 require_once __DIR__ . '/../models/AgendamentoModel.php';
-
+require_once __DIR__ . '/../models/ServicoModel.php';
 
 class AdminController
 {
@@ -22,8 +22,10 @@ class AdminController
 
         $AdminModel = new AdminModel();
         $AgendamentoModel = new AgendamentoModel();
+        $ServicoModel = new ServicoModel();
 
         $agendamentos = $AgendamentoModel->obterAgendamentos();
+        $servicos = $ServicoModel->obterServicos();
         $contagemAgendamentos = $AdminModel->obterContagemAgendamentos();
         $contagemAgendamentosHoje = $AdminModel->obterContagemAgendamentosHoje();
         $contagemAgendamentosAmanha = $AdminModel->obterContagemAgendamentosAmanha();
@@ -33,7 +35,7 @@ class AdminController
         $faturamentoMensal = $AdminModel->obterFaturamentoMensal();
         $faturamentoHoje = $AdminModel->obterFaturamentoHoje();
         $clientes = $AdminModel->obterClientes();
-        view('admin/index', compact('agendamentos', 'clientes', 'contagemAgendamentos', 'contagemAgendamentosAtendidos', 'contagemAgendamentosHoje', 'contagemAgendamentosAmanha', 'contagemAgendamentosMes', 'contagemAgendamentosHojeTotal', 'faturamentoMensal', 'faturamentoHoje'));
+        view('admin/index', compact('agendamentos', 'clientes', 'contagemAgendamentos', 'contagemAgendamentosAtendidos', 'contagemAgendamentosHoje', 'contagemAgendamentosAmanha', 'contagemAgendamentosMes', 'contagemAgendamentosHojeTotal', 'faturamentoMensal', 'faturamentoHoje', 'servicos'));
     }
 
     public function painel()
