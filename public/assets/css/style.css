@@ -104,3 +104,9 @@ footer {
     border-color: #FFCA2C !important;
     color: black !important
 }
+
+.table {
+  table-layout: fixed;
+  width: 100%;
+  word-wrap: break-word;
+}

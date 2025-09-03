@@ -80,121 +80,125 @@ $title = 'Painel do Administrador';
     </div>
     <div class="row mt-5 m-auto">
         <h1 align="center">AGENDAMENTOS</h1>
-        <table class="table table-dark table-striped">
-            <thead>
-                <tr>
-                <th scope="col">CLIENTE</th>
-                <th scope="col">HORÁRIO</th>
-                <th scope="col">DIA</th>
-                <th scope="col">SERVIÇO</th>
-                <th scope="col"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($agendamentos as $agendamento): ?>
-                <tr>
-                    <td><?= htmlspecialchars($agendamento['cliente']) ?></td>
-                    <td><?= htmlspecialchars($agendamento['horario']) ?></td>
-                    <td><?= date("d/m/Y", strtotime($agendamento['dia'])) ?></td>
-                    <td><?= htmlspecialchars($agendamento['servico_nome']) ?></td>
-                    <td>
-                        
-                        </div>
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-warning btn-sm btnEditarAgendamento dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                Ação
-                                </button>
-                                <ul class="dropdown-menu" style="padding: 0px; border-radius: 0px;">
-                                    <li id="dropdownAcoesAgendamento">
-                                        <a class="dropdown-item btnEditarAgendamento"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modalEditarAgendamento"
-                                        data-id="<?= $agendamento['id'] ?>"
-                                        data-cliente="<?= htmlspecialchars($agendamento['cliente'], ENT_QUOTES) ?>"
-                                        data-telefone="<?= htmlspecialchars($agendamento['telefone'], ENT_QUOTES) ?>"
-                                        data-servico="<?= htmlspecialchars($agendamento['servico_id'], ENT_QUOTES) ?>"
-                                        data-dia="<?= htmlspecialchars($agendamento['dia'], ENT_QUOTES) ?>"
-                                        data-horario="<?= htmlspecialchars($agendamento['horario'], ENT_QUOTES) ?>"
-                                        style="cursor: pointer">
-                                        Editar</a>
-                                    </li>
-                                    <li id="dropdownAcoesAgendamento">
-                                        <a id="TrocarHorario"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modalEditarHorarioAgendamento"
-                                        class="dropdown-item btnEditarAgendamento"
-                                        data-id="<?= $agendamento['id'] ?>"
-                                        data-cliente="<?= htmlspecialchars($agendamento['cliente'], ENT_QUOTES) ?>"
-                                        data-telefone="<?= htmlspecialchars($agendamento['telefone'], ENT_QUOTES) ?>"
-                                        data-servico="<?= htmlspecialchars($agendamento['servico_id'], ENT_QUOTES) ?>"
-                                        data-dia="<?= htmlspecialchars($agendamento['dia'], ENT_QUOTES) ?>"
-                                        data-horario="<?= htmlspecialchars($agendamento['horario'], ENT_QUOTES) ?>"
-                                        style="cursor: pointer"
-                                        onclick="editarHorarioAgendamento(this)">
-                                        Mudar Horário</a>
-                                    </li>
-                                    <li id="dropdownAcoesAgendamento">
-                                        <a data-bs-toggle="modal"
-                                        data-bs-target="#modalRemoverAgendamento"
-                                        class="dropdown-item btnRemoverAgendamento"
-                                        data-id="<?= (int) $agendamento['id'] ?>"
-                                        style="cursor: pointer">
-                                        Remover</a>
-                                    </li>
-                                </ul>
+        <div class="table-responsive">
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                    <th scope="col">CLIENTE</th>
+                    <th scope="col">HORÁRIO</th>
+                    <th scope="col">DIA</th>
+                    <th scope="col">SERVIÇO</th>
+                    <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($agendamentos as $agendamento): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($agendamento['cliente']) ?></td>
+                        <td><?= htmlspecialchars($agendamento['horario']) ?></td>
+                        <td><?= date("d/m/Y", strtotime($agendamento['dia'])) ?></td>
+                        <td><?= htmlspecialchars($agendamento['servico_nome']) ?></td>
+                        <td>
+                            
                             </div>
-                        </div>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-warning btn-sm btnEditarAgendamento dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Ação
+                                    </button>
+                                    <ul class="dropdown-menu" style="padding: 0px; border-radius: 0px;">
+                                        <li id="dropdownAcoesAgendamento">
+                                            <a class="dropdown-item btnEditarAgendamento"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalEditarAgendamento"
+                                            data-id="<?= $agendamento['id'] ?>"
+                                            data-cliente="<?= htmlspecialchars($agendamento['cliente'], ENT_QUOTES) ?>"
+                                            data-telefone="<?= htmlspecialchars($agendamento['telefone'], ENT_QUOTES) ?>"
+                                            data-servico="<?= htmlspecialchars($agendamento['servico_id'], ENT_QUOTES) ?>"
+                                            data-dia="<?= htmlspecialchars($agendamento['dia'], ENT_QUOTES) ?>"
+                                            data-horario="<?= htmlspecialchars($agendamento['horario'], ENT_QUOTES) ?>"
+                                            style="cursor: pointer">
+                                            Editar</a>
+                                        </li>
+                                        <li id="dropdownAcoesAgendamento">
+                                            <a id="TrocarHorario"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalEditarHorarioAgendamento"
+                                            class="dropdown-item btnEditarAgendamento"
+                                            data-id="<?= $agendamento['id'] ?>"
+                                            data-cliente="<?= htmlspecialchars($agendamento['cliente'], ENT_QUOTES) ?>"
+                                            data-telefone="<?= htmlspecialchars($agendamento['telefone'], ENT_QUOTES) ?>"
+                                            data-servico="<?= htmlspecialchars($agendamento['servico_id'], ENT_QUOTES) ?>"
+                                            data-dia="<?= htmlspecialchars($agendamento['dia'], ENT_QUOTES) ?>"
+                                            data-horario="<?= htmlspecialchars($agendamento['horario'], ENT_QUOTES) ?>"
+                                            style="cursor: pointer"
+                                            onclick="editarHorarioAgendamento(this)">
+                                            Mudar Horário</a>
+                                        </li>
+                                        <li id="dropdownAcoesAgendamento">
+                                            <a data-bs-toggle="modal"
+                                            data-bs-target="#modalRemoverAgendamento"
+                                            class="dropdown-item btnRemoverAgendamento"
+                                            data-id="<?= (int) $agendamento['id'] ?>"
+                                            style="cursor: pointer">
+                                            Remover</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
     <hr>
     <div class="row mt-5 m-auto">
         <h1 align="center">CLIENTES</h1>
-        <table class="table table-dark table-striped">
-            <thead>
-                <tr>
-                <th scope="col">CLIENTE</th>
-                <th scope="col">TELEFONE</th>
-                <th scope="col">AGENDAMENTOS</th>
-                <th scope="col"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($clientes as $cliente): ?>
-                <tr>
-                    <td><?= htmlspecialchars($cliente['cliente']) ?></td>
-                    <td><?= htmlspecialchars($cliente['telefone'] ?? 'N/A') ?></td>
-                    <td>
-                        <?php
-                            // Conta quantos agendamentos esse cliente tem
-                            $quantidade = array_reduce($agendamentos, function ($carry, $item) use ($cliente) {
-                                return $carry + ($item['cliente'] === $cliente['cliente'] ? 1 : 0);
-                            }, 0);
-                            echo $quantidade;
-                        ?>
-                    </td>
-                    <td>
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a class="p-3 btn btn-warning btn-sm btnEditarAgendamento"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modalEditarAgendamento"
-                            data-id="<?= $agendamento['id'] ?>"
-                            data-cliente="<?= htmlspecialchars($agendamento['cliente'], ENT_QUOTES) ?>"
-                            data-telefone="<?= htmlspecialchars($agendamento['telefone'], ENT_QUOTES) ?>"
-                            data-servico="<?= htmlspecialchars($agendamento['servico_id'], ENT_QUOTES) ?>"
-                            data-dia="<?= htmlspecialchars($agendamento['dia'], ENT_QUOTES) ?>"
-                            data-horario="<?= htmlspecialchars($agendamento['horario'], ENT_QUOTES) ?>">
-                            Editar</a>
-                        </div>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                    <th scope="col">CLIENTE</th>
+                    <th scope="col">TELEFONE</th>
+                    <th scope="col">AGENDAMENTOS</th>
+                    <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($clientes as $cliente): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($cliente['cliente']) ?></td>
+                        <td><?= htmlspecialchars($cliente['telefone'] ?? 'N/A') ?></td>
+                        <td>
+                            <?php
+                                // Conta quantos agendamentos esse cliente tem
+                                $quantidade = array_reduce($agendamentos, function ($carry, $item) use ($cliente) {
+                                    return $carry + ($item['cliente'] === $cliente['cliente'] ? 1 : 0);
+                                }, 0);
+                                echo $quantidade;
+                            ?>
+                        </td>
+                        <td>
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a class="p-3 btn btn-warning btn-sm btnEditarAgendamento"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalEditarAgendamento"
+                                data-id="<?= $agendamento['id'] ?>"
+                                data-cliente="<?= htmlspecialchars($agendamento['cliente'], ENT_QUOTES) ?>"
+                                data-telefone="<?= htmlspecialchars($agendamento['telefone'], ENT_QUOTES) ?>"
+                                data-servico="<?= htmlspecialchars($agendamento['servico_id'], ENT_QUOTES) ?>"
+                                data-dia="<?= htmlspecialchars($agendamento['dia'], ENT_QUOTES) ?>"
+                                data-horario="<?= htmlspecialchars($agendamento['horario'], ENT_QUOTES) ?>">
+                                Editar</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
