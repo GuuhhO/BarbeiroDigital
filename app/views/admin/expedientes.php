@@ -7,47 +7,45 @@ $title = 'Expedientes';
 <div class="container">
     <div class="row text-center pt-5">
         <h1 align="center">EXPEDIENTES</h1>
-        <table class="table table-dark table-striped">
-            <thead>
-                <tr>
-                <th scope="col">DIA</th>
-                <th scope="col">ATIVO</th>
-                <th scope="col">INÍCIO</th>
-                <th scope="col">ALMOÇO</th>
-                <th scope="col">RETORNO</th>
-                <th scope="col">TÉRMINO</th>
-                <th scope="col"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($expedientes as $expediente): ?>
-                <tr>
-                    <td><?= htmlspecialchars($expediente['dia']) ?></td>
-                    <td><?= $expediente['ativo'] ? 'Sim' : 'Não' ?></td>
-                    <td><?= htmlspecialchars($expediente['inicio']) ?></td>
-                    <td><?= htmlspecialchars($expediente['almoco']) ?></td>
-                    <td><?= htmlspecialchars($expediente['retorno'])?></td>
-                    <td><?= htmlspecialchars($expediente['termino'])?></td>
-                    <td>
-                      <div class="btn-group" role="group" aria-label="Basic example">
-                        <a class="p-3 btn btn-warning btn-sm btnEditarExpediente"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalEditarExpediente"
-                        data-id="<?= $expediente['id'] ?>"
-                        data-dia="<?= htmlspecialchars($expediente['dia'], ENT_QUOTES) ?>"
-                        data-ativo="<?= htmlspecialchars($expediente['ativo'], ENT_QUOTES) ?>"
-                        data-inicio="<?= htmlspecialchars($expediente['inicio'], ENT_QUOTES) ?>"
-                        data-almoco="<?= htmlspecialchars($expediente['almoco'], ENT_QUOTES) ?>"
-                        data-retorno="<?= htmlspecialchars($expediente['retorno'], ENT_QUOTES) ?>"
-                        data-termino="<?= htmlspecialchars($expediente['termino'], ENT_QUOTES) ?>">
-                        <i class="fa-solid fa-pen-to-square"></i>
-                        </a>
-                      </div>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+          <table class="table table-dark table-striped">
+              <thead>
+                  <tr>
+                  <th scope="col">DIA</th>
+                  <th scope="col">ATIVO</th>
+                  <th scope="col">TURNO 1</th>
+                  <th scope="col">TURNO 2</th>
+                  <th scope="col"></th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <?php foreach ($expedientes as $expediente): ?>
+                  <tr>
+                      <td><?= htmlspecialchars($expediente['dia']) ?></td>
+                      <td><?= $expediente['ativo'] ? 'Sim' : 'Não' ?></td>
+                      <td><?= htmlspecialchars($expediente['inicio']) ?> até <?= htmlspecialchars($expediente['almoco']) ?></td>
+                      <td><?= htmlspecialchars($expediente['retorno'])?> até <?= htmlspecialchars($expediente['termino'])?></td>
+                      <td>
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                          <a class="p-3 btn btn-warning btn-sm btnEditarExpediente"
+                          data-bs-toggle="modal"
+                          data-bs-target="#modalEditarExpediente"
+                          data-id="<?= $expediente['id'] ?>"
+                          data-dia="<?= htmlspecialchars($expediente['dia'], ENT_QUOTES) ?>"
+                          data-ativo="<?= htmlspecialchars($expediente['ativo'], ENT_QUOTES) ?>"
+                          data-inicio="<?= htmlspecialchars($expediente['inicio'], ENT_QUOTES) ?>"
+                          data-almoco="<?= htmlspecialchars($expediente['almoco'], ENT_QUOTES) ?>"
+                          data-retorno="<?= htmlspecialchars($expediente['retorno'], ENT_QUOTES) ?>"
+                          data-termino="<?= htmlspecialchars($expediente['termino'], ENT_QUOTES) ?>">
+                          <i class="fa-solid fa-pen-to-square"></i>
+                          </a>
+                        </div>
+                      </td>
+                  </tr>
+                  <?php endforeach; ?>
+              </tbody>
+          </table>
+        </div>
     </div>
 </div>
 
