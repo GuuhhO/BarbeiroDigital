@@ -53,7 +53,7 @@ $title = 'Painel do Cliente';
 </div>
 
 <div class="modal" tabindex="-1" id="modalExcluirAgendamento">
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-dialog-centered m-auto">
     <div class="modal-content">
       <div class="modal-body">
         <p id="modalBodyText">Deseja realmente excluir a sua reserva?</p>

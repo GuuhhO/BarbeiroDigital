@@ -110,3 +110,8 @@ footer {
   width: 100%;
   word-wrap: break-word;
 }
+
+.modal-dialog {
+    max-width: 90% !important;
+    max-height: 90vh !important;
+}

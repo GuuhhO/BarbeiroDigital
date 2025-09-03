@@ -57,7 +57,7 @@ $title = 'Serviços';
 </div>
 
 <div class="modal" tabindex="-1" id="modalEditarServico">
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-dialog-centered m-auto">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Editar serviço</h5>
@@ -95,7 +95,7 @@ $title = 'Serviços';
 </div>
 
 <div class="modal" tabindex="-1" id="modalAdicionarServico">
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-dialog-centered m-auto">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Adicionar serviço</h5>
@@ -133,7 +133,7 @@ $title = 'Serviços';
 </div>
 
 <div class="modal" tabindex="-1" id="modalExcluirServico">
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-dialog-centered m-auto">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Excluir serviço</h5>

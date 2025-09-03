@@ -52,7 +52,7 @@ $title = 'Agendar Horário';
 
 <!-- Modal -->
 <div class="modal fade" tabindex="-1" id="modalSelecionarHorario" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-dialog-centered m-auto d-flex justify-content-center">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Selecione um horário</h5>

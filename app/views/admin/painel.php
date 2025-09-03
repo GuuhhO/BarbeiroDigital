@@ -124,7 +124,7 @@ $title = 'Painel do Administrador';
 </div>
 
 <div class="modal" tabindex="-1" id="modalEditarAgendamento">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered m-auto">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Editar agendamento</h5>
@@ -154,7 +154,7 @@ $title = 'Painel do Administrador';
 </div>
 
 <div class="modal fade" tabindex="-1" id="modalEditarHorarioAgendamento" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-dialog-centered m-auto">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Selecione um horário</h5>
@@ -177,7 +177,7 @@ $title = 'Painel do Administrador';
 </div>
 
 <div class="modal fade" tabindex="-1" id="modalRemoverAgendamento" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-dialog-centered m-auto">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Remover agendamento</h5>
