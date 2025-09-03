@@ -5,7 +5,7 @@ $title = 'Barbeiros';
 ?>
 
 <div class="container">
-    <div class="row mt-5">
+    <div class="row mt-5 m-auto">
         <div class="d-flex justify-content-between align-items-center">
             <h1 class="text-start flex-grow-1">BARBEIROS</h1>
             <a type="button" data-bs-toggle="modal" data-bs-target="#modalAdicionarBarbeiro" class="btn btn-primary">
@@ -31,24 +31,36 @@ $title = 'Barbeiros';
                     <td><?= $barbeiro['ativo'] ? 'Sim' : 'Não' ?></td>
                     <td><?= htmlspecialchars($barbeiro['comissao']) ?>%</td>
                     <td>
-                      <div class="btn-group" role="group" aria-label="Basic example">
-                        <a class="p-3 btn btn-warning btn-sm btnEditarBarbeiro"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalEditarBarbeiro"
-                        data-id="<?= $barbeiro['id'] ?>"
-                        data-nome="<?= htmlspecialchars($barbeiro['nome'], ENT_QUOTES) ?>"
-                        data-telefone="<?= htmlspecialchars($barbeiro['telefone'], ENT_QUOTES) ?>"
-                        data-ativo="<?= htmlspecialchars($barbeiro['ativo'], ENT_QUOTES) ?>"
-                        data-comissao="<?= htmlspecialchars($barbeiro['comissao'], ENT_QUOTES) ?>"
-                        data-servicos_id="<?= htmlspecialchars($barbeiro['servicos_id'], ENT_QUOTES) ?>">
-                        Editar
-                        </a>
-                        <a class="p-3 btn btn-danger btn-sm btnEditarBarbeiro"
-                        onclick="excluirBarbeiroService(<?= $barbeiro['id'] ?>)"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalExcluirBarbeiro"
-                        data-id="<?= $barbeiro['id'] ?>">
-                        <i class="fa-solid fa-xmark"></i></a>
+                      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                          <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-warning btn-sm btnEditarAgendamento dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            Ação
+                            </button>
+                            <ul class="dropdown-menu" style="padding: 0px; border-radius: 0px;">
+                              <li id="dropdownAcoesAgendamento">
+                                <a class="dropdown-item btnEditarAgendamento"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalEditarBarbeiro"
+                                data-id="<?= $barbeiro['id'] ?>"
+                                data-nome="<?= htmlspecialchars($barbeiro['nome'], ENT_QUOTES) ?>"
+                                data-telefone="<?= htmlspecialchars($barbeiro['telefone'], ENT_QUOTES) ?>"
+                                data-ativo="<?= htmlspecialchars($barbeiro['ativo'], ENT_QUOTES) ?>"
+                                data-comissao="<?= htmlspecialchars($barbeiro['comissao'], ENT_QUOTES) ?>"
+                                data-servicos_id="<?= htmlspecialchars($barbeiro['servicos_id'], ENT_QUOTES) ?>"
+                                style="cursor: pointer">
+                                Editar</a>
+                              </li>
+                              <li id="dropdownAcoesAgendamento">
+                                <a class="dropdown-item btnEditarAgendamento"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalExcluirBarbeiro"
+                                onclick="excluirBarbeiroService(<?= $barbeiro['id'] ?>)"
+                                data-id="<?= $barbeiro['id'] ?>"
+                                style="cursor: pointer">
+                                Remover</a>
+                              </li>
+                            </ul>
+                          </div>
                       </div>
                     </td>
                 </tr>
