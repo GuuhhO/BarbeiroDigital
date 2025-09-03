@@ -5,55 +5,70 @@ $title = 'Serviços';
 ?>
 
 <div class="container">
-    <div class="row mt-5">
-        <div class="d-flex justify-content-between align-items-center">
-            <h1 class="text-start flex-grow-1">SERVIÇOS</h1>
-            <a type="button" data-bs-toggle="modal" data-bs-target="#modalAdicionarServico" class="btn btn-primary">
-            <i class="fa-solid fa-plus"></i> Adicionar
-            </a>
-        </div>
+  <div class="row mt-5 m-auto">
+      <div class="d-flex justify-content-between align-items-center">
+          <h1 class="text-start flex-grow-1">SERVIÇOS</h1>
+          <a type="button" data-bs-toggle="modal" data-bs-target="#modalAdicionarServico" class="btn btn-primary">
+          <i class="fa-solid fa-plus"></i> Adicionar
+          </a>
+      </div>
+      <div class="table-responsive">
         <table class="table table-dark table-striped mt-5">
-            <thead>
-                <tr>
-                <th scope="col">SERVIÇO</th>
-                <th scope="col">DURAÇÃO</th>
-                <th scope="col">ATIVO</th>
-                <th scope="col">PREÇO</th>
-                <th scope="col"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($servicos as $servico): ?>
-                <tr>
-                    <td><?= htmlspecialchars($servico['servico']) ?></td>
-                    <td><?= htmlspecialchars($servico['duracao']) ?></td>
-                    <td><?= $servico['ativo'] ? 'Sim' : 'Não' ?></td>
-                    <td><?= 'R$ ' . number_format($servico['preco'], 2, ',', '.') ?></td>
-                    <td>
-                      <div class="btn-group" role="group" aria-label="Basic example">
-                        <a class="p-3 btn btn-warning btn-sm btnEditarServico"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalEditarServico"
-                        data-id="<?= $servico['id'] ?>"
-                        data-servico="<?= htmlspecialchars($servico['servico'], ENT_QUOTES) ?>"
-                        data-duracao="<?= htmlspecialchars($servico['duracao'], ENT_QUOTES) ?>"
-                        data-ativo="<?= htmlspecialchars($servico['ativo'], ENT_QUOTES) ?>"
-                        data-preco="<?= htmlspecialchars($servico['preco'], ENT_QUOTES) ?>">
-                        Editar
-                        </a>
-                        <a class="p-3 btn btn-danger btn-sm btnEditarServico"
-                        onclick="excluirServicoService(<?= $servico['id'] ?>)"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalExcluirServico"
-                        data-id="<?= $servico['id'] ?>">
-                        <i class="fa-solid fa-xmark"></i></a>
-                      </div>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
+          <thead>
+              <tr>
+              <th scope="col">SERVIÇO</th>
+              <th scope="col">DURAÇÃO</th>
+              <th scope="col">ATIVO</th>
+              <th scope="col">PREÇO</th>
+              <th scope="col"></th>
+              </tr>
+          </thead>
+          <tbody>
+              <?php foreach ($servicos as $servico): ?>
+              <tr>
+                  <td><?= htmlspecialchars($servico['servico']) ?></td>
+                  <td><?= htmlspecialchars($servico['duracao']) ?></td>
+                  <td><?= $servico['ativo'] ? 'Sim' : 'Não' ?></td>
+                  <td><?= 'R$ ' . number_format($servico['preco'], 2, ',', '.') ?></td>
+                  <td>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-warning btn-sm btnEditarAgendamento dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            Ação
+                            </button>
+                            <ul class="dropdown-menu" style="padding: 0px; border-radius: 0px;">
+                                <li id="dropdownAcoesAgendamento">
+                                    <a class="dropdown-item btnEditarAgendamento"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalEditarServico"
+                                    data-id="<?= $servico['id'] ?>"
+                                    data-servico="<?= htmlspecialchars($servico['servico'], ENT_QUOTES) ?>"
+                                    data-duracao="<?= htmlspecialchars($servico['duracao'], ENT_QUOTES) ?>"
+                                    data-ativo="<?= htmlspecialchars($servico['ativo'], ENT_QUOTES) ?>"
+                                    data-preco="<?= htmlspecialchars($servico['preco'], ENT_QUOTES) ?>"
+                                    style="cursor: pointer">
+                                    Editar</a>
+                                </li>
+                                <li id="dropdownAcoesAgendamento">
+                                    <a class="dropdown-item btnRemoverAgendamento"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalExcluirServico"
+                                    onclick="excluirServicoService(<?= $servico['id'] ?>)"
+                                    data-id="<?= $servico['id'] ?>"
+                                    style="cursor: pointer">
+                                    Remover</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                  </td>
+              </tr>
+              <?php endforeach; ?>
+          </tbody>
         </table>
-    </div>
+      </div>
+  </div>
 </div>
 
 <div class="modal" tabindex="-1" id="modalEditarServico">
@@ -277,17 +292,16 @@ $title = 'Serviços';
     }
 
     function excluirServicoService(servico_id) {
-        if (!servico_id) {
-            alert("Serviço inválido.");
-            return;
-        }
+      const modalEl = document.getElementById('modalExcluirServico');
+      const btnSalvar = document.getElementById('btnConfirmarExclusaoServico');
 
-        const dados = { servico_id: servico_id };
+      const dados = { servico_id: servico_id };
 
-        const modalEl = document.getElementById('modalExcluirServico');
-        modalEl.removeAttribute('aria-hidden'); // Remove atributo inválido antes de abrir
-        const modal = new bootstrap.Modal(modalEl);
-        modal.show();
+      if (!servico_id) {
+          alert("Serviço inválido.");
+          return;
+      }
+
 
         // Evita múltiplos bindings duplicados
         $('#btnConfirmarExclusaoServico').off('click').on('click', function () {
@@ -309,7 +323,7 @@ $title = 'Serviços';
                         }
 
                         setTimeout(() => {
-                            document.getElementById('modalExcluirServicoBodyText').innerHTML = "<p>Agendamento excluído com sucesso!</p>";
+                            document.getElementById('modalExcluirServicoBodyText').innerHTML = "<p>Serviço excluído com sucesso!</p>";
 
                             document.getElementById('btnModalExcluirServicoCancelar').style.display = 'inline';
                             document.getElementById('btnModalExcluirServicoCancelar').innerHTML = '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnModalCancelar">Fechar</button>';
