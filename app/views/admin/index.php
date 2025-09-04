@@ -137,7 +137,7 @@ $title = 'Painel do Administrador';
                                         </li>
                                         <li id="dropdownAcoesAgendamento">
                                             <a data-bs-toggle="modal"
-                                            data-bs-target="#modalRemoverAgendamento"
+                                            data-bs-target="#modalExcluirAgendamento"
                                             class="dropdown-item btnRemoverAgendamento"
                                             data-id="<?= (int) $agendamento['id'] ?>"
                                             style="cursor: pointer">
@@ -273,21 +273,40 @@ $title = 'Painel do Administrador';
   </div>
 </div>
 
-<div class="modal fade" tabindex="-1" id="modalRemoverAgendamento" aria-hidden="true">
+<div class="modal" tabindex="-1" id="modalExcluirAgendamento">
   <div class="modal-dialog modal-dialog-centered m-auto">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Remover agendamento</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        <h5 class="modal-title">Excluir agendamento</h5>
       </div>
       <div class="modal-body">
-        <div class="container text-center">
-            <label class="form-label">Deseja realmente remover este agendamento?</label>
-        </div>
+        <p id="modalExcluirAgendamentoBodyText">Deseja realmente excluir o agendamento?</p>
+        <form id="formExcluirAgendamento" style="display: none;">
+            <input type="hidden" id="agendamento_id" name="agendamento_id">
+            <div class="mb-3">
+                <label for="cliente" class="form-label">Cliente</label>
+                <input type="text" class="form-control" id="cliente" name="cliente" disabled>
+            </div>
+            <div class="mb-3">
+                <label for="telefone" class="form-label">Telefone</label>
+                <input type="text" class="form-control" id="telefone" name="telefone" disabled>
+            </div>
+            <div class="mb-3">
+                <label for="servico" class="form-label">Serviço</label>
+                <select class="form-control" id="servico" name="servico_id" disabled>
+                    <option value="">Selecione...</option>
+                    <?php foreach ($servicos as $servico): ?>
+                        <option value="<?= htmlspecialchars($servico['id']) ?>">
+                            <?= htmlspecialchars($servico['servico']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-danger" id="btnConfirmarRemocao">Remover</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCancelarExclusaoAgendamento">Fechar</button>
+        <button type="button" class="btn btn-danger" id="btnConfirmarExclusaoAgendamento">Excluir</button>
       </div>
     </div>
   </div>
@@ -296,6 +315,24 @@ $title = 'Painel do Administrador';
 <script>
     function inicializarEdicaoAgendamento() {
         var modal = document.getElementById('modalEditarAgendamento');
+
+        modal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+
+            var agendamento_id = button.getAttribute('data-id');
+            var cliente        = button.getAttribute('data-cliente');
+            var telefone       = button.getAttribute('data-telefone');
+            var servico_id     = button.getAttribute('data-servico');
+
+            modal.querySelector('#agendamento_id').value = agendamento_id;
+            modal.querySelector('#cliente').value        = cliente;
+            modal.querySelector('#telefone').value       = telefone;
+            modal.querySelector('#servico').value        = servico_id;
+        });
+    }
+
+    function inicializarRemocaoAgendamento() {
+        var modal = document.getElementById('modalExcluirAgendamento');
 
         modal.addEventListener('show.bs.modal', function (event) {
             var button = event.relatedTarget;
@@ -355,6 +392,68 @@ $title = 'Painel do Administrador';
                     }, 1000);
                 } catch(e) {
                     document.getElementById('modalEditarAgendamentoBodyText').innerHTML = "<p>"+resultado.erro+"</p>";
+                    document.getElementById('btnModalEditarAgendamentoCancelar').style.display = 'inline';
+                    const btnFechar = document.getElementById('btnModalEditarAgendamentoCancelar');
+
+                    btnFechar.addEventListener('click', function() {
+                        location.reload();
+                    });
+                    console.log(e);
+                }
+            },
+            error: function(erro) {
+                alert("Erro ao editar agendamento.");
+                console.log(erro);
+            },
+            complete: function() {
+                btnSalvar.disabled = false;
+            }
+        });
+    }
+
+    function removerAgendamentoService()
+    {
+        const modalEl = document.getElementById('modalExcluirAgendamento');
+        const btnSalvar = document.getElementById('btnConfirmarExclusaoAgendamento');
+
+        const dados = $('#formExcluirAgendamento').serialize();
+
+        document.getElementById('modalExcluirAgendamentoBodyText').innerHTML = "<center><img src='/Cortai/public/assets/img/loading.gif' width='50'></img></center>";
+        document.getElementById('btnCancelarExclusaoAgendamento').style.display = 'none';
+        document.getElementById('btnConfirmarExclusaoAgendamento').style.display = 'none';
+
+        $.ajax({
+            method: 'POST',
+            url: '/Cortai/admin/removerAgendamentoService',
+            data: dados,
+            success: function(resposta) {
+                try {
+                    const resultado = JSON.parse(resposta);
+
+                    if (resultado.erro) {
+                        document.getElementById('modalExcluirAgendamentoBodyText').innerHTML = "<p>"+resultado.erro+"</p>";
+                        document.getElementById('btnCancelarExclusaoAgendamento').style.display = 'inline';
+                        const btnFechar = document.getElementById('btnCancelarExclusaoAgendamento');
+
+                        btnFechar.addEventListener('click', function() {
+                            location.reload();
+                        });
+                        return;
+                    }
+
+                    setTimeout(() => {
+                        document.getElementById('modalExcluirAgendamentoBodyText').innerHTML = "<p>Agendamento removido com sucesso!</p>";
+                        document.getElementById('btnCancelarExclusaoAgendamento').style.display = 'inline';
+
+                        const btnFechar = document.getElementById('btnCancelarExclusaoAgendamento');
+
+                        btnFechar.addEventListener('click', function() {
+                            location.reload();
+                        });
+
+                    }, 1000);
+                } catch(e) {
+                    document.getElementById('modalExcluirAgendamentoBodyText').innerHTML = "<p>"+resultado.erro+"</p>";
                     document.getElementById('btnModalEditarAgendamentoCancelar').style.display = 'inline';
                     const btnFechar = document.getElementById('btnModalEditarAgendamentoCancelar');
 
@@ -536,48 +635,6 @@ $title = 'Painel do Administrador';
         };
     }
 
-    function RemocaoAgendamentoController(service, modalHelper) {
-        let agendamentoSelecionadoId = null;
-
-        this.init = function() {
-            this.registrarEventos();
-        };
-
-        this.registrarEventos = function() {
-            document.querySelectorAll('.btnRemoverAgendamento').forEach(botao => {
-                botao.addEventListener('click', () => {
-                    agendamentoSelecionadoId = botao.dataset.id;
-                });
-            });
-
-            document.getElementById('btnConfirmarRemocao').addEventListener('click', () => {
-                this.removerAgendamento();
-            });
-        };
-
-        this.removerAgendamento = function() {
-            if (!agendamentoSelecionadoId) {
-                alert("Nenhum agendamento selecionado.");
-                return;
-            }
-
-            service.remover(agendamentoSelecionadoId)
-                .done(resposta => {
-                    if (resposta.sucesso) {
-                        alert("Agendamento cancelado com sucesso!");
-                        modalHelper.fechar();
-                        location.reload();
-                    } else {
-                        alert(resposta.erro || "Erro ao remover agendamento.");
-                    }
-                })
-                .fail(err => {
-                    alert("Erro ao remover agendamento.");
-                    console.error(err);
-                });
-        };
-    }
-
     function mascaraTelefone() {
         Inputmask({
             mask: ["(99) 9999-9999","(99) 99999-9999"],
@@ -622,19 +679,16 @@ $title = 'Painel do Administrador';
     }
 
     document.addEventListener('DOMContentLoaded', inicializarEdicaoAgendamento);
-    
-    document.addEventListener('DOMContentLoaded', function() {
-        const service = new AgendamentoService('/Cortai/admin');
-        const modalHelper = new ModalHelper('modalRemoverAgendamento');
-        const controller = new RemocaoAgendamentoController(service, modalHelper);
-        controller.init();
-    });
+    document.addEventListener('DOMContentLoaded', inicializarRemocaoAgendamento);
 
     document.getElementById('btnModalEditarAgendamentoSalvar')
     .addEventListener('click', editarAgendamentoService);
 
     document.getElementById('btnModalEditarHorarioAgendamentoSalvar')
     .addEventListener('click', atualizarHorarioAgendamentoService);
+
+    document.getElementById('modalExcluirAgendamento')
+    .addEventListener('click', removerAgendamentoService);
 
     document.addEventListener("DOMContentLoaded", carregarGraficoAgendamentos);
 

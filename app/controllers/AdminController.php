@@ -510,6 +510,30 @@ class AdminController
         }
     }
 
+    public function removerAgendamentoService()
+    {
+      global $db;
+
+      $agendamento_id = $_POST['agendamento_id'];
+
+      if (empty($agendamento_id))
+      {
+         echo json_encode(["erro" => "Nenhum agendamento encontrado."]);
+         return;
+      }
+
+      $excluirAgendamentoDb = $db->prepare("DELETE FROM api.agendamentos WHERE id = ?");
+      $excluirAgendamentoDb->execute([$agendamento_id]);
+
+      if (!$excluirAgendamentoDb)
+      {
+         echo json_encode(["erro" => "Não foi possível excluir o agendamento."]);
+         return;
+      }
+
+      echo json_encode(["sucesso" => true, "dados" => $agendamento_id]);
+    }
+
     public function excluirBarbeiroService()
     {
       global $db;
