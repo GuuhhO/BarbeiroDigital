@@ -11,7 +11,7 @@ class LembreteController
         $this->model = new AgendamentoModel();
     }
 
-    public function enviar()
+    public function enviarLembreteAgendamento()
     {
         $agendamentos = $this->model->obterAgendamentosPendentes();        
 
@@ -52,6 +52,56 @@ class LembreteController
         }
     }
 
+    public function converterTelefone($telefone)
+    {
+        $telefone = preg_replace('/\D/', '', $telefone);
 
+        // Adiciona código do país (55) se ainda não estiver presente
+        if (substr($telefone, 0, 2) != '55') {
+            $telefone = '55' . $telefone;
+        }
+
+        return $telefone;
+    }
+
+    public function enviarAvisoAgendado()
+    {
+        global $db;
+
+        $cliente = $_POST['cliente'];
+        $telefone = $_POST['telefone'];
+        $servico_id = $_POST['servico_id'];
+        $dia = $_POST['dia'];
+        $horario = $_POST['horario'];
+
+        $telefoneFormatado = $this->converterTelefone($telefone);
+
+        $nomeServico = $this->model->obterNomeServico($servico_id);
+
+        $msg = "💈 Olá {$cliente}, você acabou de agendar um atendimento na *Barbearia Soares!*\n\n" .
+                "⏰ *Dia:* " . date('d/m/Y', strtotime($dia)) . " às {$horario}\n" .
+                "✂ *Serviço:* {$nomeServico}\n" .
+                "📍 *Endereço:* Rua das Tulipas, 449, Eldorado/São Pedro, Itabira/MG\n" .
+                "👇 *Clique no link abaixo para ver no mapa:* \n" .
+                "http://bit.ly/4p8s4Rt \n\n" .
+                "⚠️ *Não se esqueça de levar seu cartão de fidelidade!*";
+
+        $url = "http://localhost:3000/send?phone=" . urlencode($telefoneFormatado) . "&msg=" . urlencode($msg);
+
+        // Inicializa cURL
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($response === false || $httpcode != 200) {
+            error_log("Erro ao enviar mensagem para {$telefoneFormatado}");
+            return false;
+        }
+
+        return true;
+    }
 
 }

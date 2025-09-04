@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../models/ServicoModel.php';
 require_once __DIR__ . '/../models/ExpedienteModel.php';
 require_once __DIR__ . '/../models/BarbeiroModel.php';
+require_once __DIR__ . '/../controllers/LembreteController.php';
 
 use App\Services\WhatsAppService;
 
@@ -207,31 +208,31 @@ class AgendarController
         echo json_encode($horariosDisponiveis);
     }
 
-   public function agendarCliente()
-   {
-      global $db;
+    public function agendarCliente()
+    {
+        global $db;
 
-      $cliente = $_POST['cliente'] ?? null;
-      $telefone = $_POST['telefone'] ?? null;
-      $servicoId = $_POST['servico_id'] ?? null;
-      $dia = $_POST['dia'] ?? null;
-      $horario = $_POST['horario'] ?? null;
+        $cliente = $_POST['cliente'] ?? null;
+        $telefone = $_POST['telefone'] ?? null;
+        $servicoId = $_POST['servico_id'] ?? null;
+        $dia = $_POST['dia'] ?? null;
+        $horario = $_POST['horario'] ?? null;
 
-      if (!$cliente || !$telefone || !$servicoId || !$dia || !$horario) {
-         echo json_encode(['erro' => 'Dados incompletos.']);
-         return;
-      }
+        if (!$cliente || !$telefone || !$servicoId || !$dia || !$horario) {
+            echo json_encode(['erro' => 'Dados incompletos.']);
+            return;
+        }
 
-      if ($dia) {
-         // Converte dd/mm/yyyy para yyyy-mm-dd
-         $dataObj = DateTime::createFromFormat('d/m/Y', $dia);
-         if ($dataObj) {
+        if ($dia) {
+            // Converte dd/mm/yyyy para yyyy-mm-dd
+            $dataObj = DateTime::createFromFormat('d/m/Y', $dia);
+            if ($dataObj) {
             $dia = $dataObj->format('Y-m-d');
-         } else {
+            } else {
             echo json_encode(['erro' => 'Data inválida.']);
             return;
-         }
-      }
+            }
+        }
 
         // Obter duração do serviço
         $obterDadosServico = $db->prepare("SELECT duracao, preco FROM seg.servicos WHERE id = ?");
@@ -258,8 +259,11 @@ class AgendarController
             'preco' => $dadosServico['0']['preco']
         ]);
 
+        $lembreteController = new LembreteController();
+        $lembreteController->enviarAvisoAgendado();
+
         echo json_encode(['sucesso' => true]);
-   }
+    }
 
     public function obterBarbeiroPorServicoService()
     {
