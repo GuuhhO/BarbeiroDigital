@@ -52,17 +52,45 @@ class LembreteController
         }
     }
 
-    public function converterTelefone($telefone)
+    public function formatarTelefone($telefone)
     {
-        $telefone = preg_replace('/\D/', '', $telefone);
-
-        // Adiciona código do país (55) se ainda não estiver presente
-        if (substr($telefone, 0, 2) != '55') {
-            $telefone = '55' . $telefone;
+        if (!$telefone) {
+            return null;
         }
 
-        return $telefone;
+        // Remove tudo que não for número
+        $telefone = preg_replace('/\D/', '', $telefone);
+
+        // Se já vier com 55, corta pra analisar só o número nacional
+        if (substr($telefone, 0, 2) === '55') {
+            $telefone = substr($telefone, 2);
+        }
+
+        // DDD e resto
+        $ddd = substr($telefone, 0, 2);
+        $resto = substr($telefone, 2);
+
+        // DDDs que sempre aceitam o 9
+        $ddds_com_9 = array_merge(range(11, 19), [21, 22, 24, 27, 28]);
+
+        // Se não estiver na lista e tiver 9 dígitos começando com 9 → remove
+        if (!in_array((int)$ddd, $ddds_com_9)) {
+            if (strlen($resto) === 9 && $resto[0] === '9') {
+                $resto = substr($resto, 1);
+            }
+        }
+
+        $telefoneNormalizado = $ddd . $resto;
+
+        // Validação: precisa ter 10 ou 11 dígitos
+        if (strlen($telefoneNormalizado) < 10 || strlen($telefoneNormalizado) > 11) {
+            return null;
+        }
+
+        // Adiciona código do país (55)
+        return '55' . $telefoneNormalizado;
     }
+
 
     public function enviarAvisoAgendado()
     {
@@ -74,7 +102,7 @@ class LembreteController
         $dia = $_POST['dia'];
         $horario = $_POST['horario'];
 
-        $telefoneFormatado = $this->converterTelefone($telefone);
+        $telefoneFormatado = $this->formatarTelefone($telefone);
 
         $nomeServico = $this->model->obterNomeServico($servico_id);
 
@@ -103,5 +131,4 @@ class LembreteController
 
         return true;
     }
-
 }
