@@ -133,7 +133,7 @@ class AgendarController
             return;
         }
 
-        $horaAgora = new DateTime();
+        $dataAgora = new DateTime();
 
         $diasSemana = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
         $nomeDia = $diasSemana[(int)$dataObj->format('w')]; // 0=domingo ... 6=sábado
@@ -185,12 +185,12 @@ class AgendarController
         foreach ($horarios as $h) {
             $inicio = new DateTime($h);
 
-            if ($dataObj->format('Y-m-d') === $horaAgora->format('Y-m-d') && $inicio < $horaAgora)
+            if ($dataObj->format('Y-m-d') === $dataAgora->format('Y-m-d') && $inicio < $dataAgora)
             {
                 unset($horariosDisponiveis[array_search($h, $horariosDisponiveis)]);
                 continue;
             }
-            
+
             $fim = clone $inicio;
             $fim->modify("+$duracaoMin minutes");
 
