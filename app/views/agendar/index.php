@@ -251,13 +251,18 @@ $title = 'Agendar Horário';
             }
         });
     }
-
+    
     function mascaraTelefone() {
-        $("#telefone").inputmask({
-            mask: ["(99) 9999-9999", "(99) 99999-9999"],
+        Inputmask({
+            mask: ["(99) 9999-9999","(99) 99999-9999"],
             keepStatic: true
-        });
-    }
+        }).mask("#telefone");
+        }
+
+        $(document).ready(function() {
+            mascaraTelefone();
+        }
+    );
 
     function obterBarbeiroPorServico() {
         $('#servico_id').on('change', function() {
@@ -302,10 +307,6 @@ $title = 'Agendar Horário';
 
     $(document).ready(function() {
         obterBarbeiroPorServico();
-    });
-
-    $(document).ready(function() {
-        mascaraTelefone();
     });
 
 </script>
