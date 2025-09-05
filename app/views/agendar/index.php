@@ -83,9 +83,13 @@ $title = 'Agendar Horário';
                     let diasAtivos = typeof resposta === 'string' ? JSON.parse(resposta) : resposta;
 
                     if (!diasAtivos || diasAtivos.length === 0) {
-                        alert("Nenhum dia ativo encontrado.");
+                        alert("Nenhum dia ativo encontrado para agendar.");
                         return;
                     }
+
+                    let hoje = new Date();
+                    let doisMesesDepois = new Date();
+                    doisMesesDepois.setMonth(doisMesesDepois.getMonth() + 2);
 
                     $.datepicker.regional['pt-BR'] = {
                         closeText: 'Fechar',
@@ -115,7 +119,9 @@ $title = 'Agendar Horário';
                         beforeShowDay: function(date) {
                             return [diasAtivos.includes(date.getDay())];
                         },
-                        minDate: 0 // bloqueia datas passadas
+                        dateFormat: 'dd/mm/yy',
+                        minDate: 0, // bloqueia datas passadas
+                        maxDate: doisMesesDepois
                     });
                 },
                 error: function(erro) {
