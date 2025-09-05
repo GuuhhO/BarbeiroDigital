@@ -9,106 +9,104 @@ use App\Services\WhatsAppService;
 
 class AgendarController
 {
-   public function index()
-   {
-      $servicoModel = new ServicoModel();
-      $expedienteModel = new ExpedienteModel();
-      $barbeiroModel = new BarbeiroModel();
+    public function index()
+    {
+        $servicoModel = new ServicoModel();
+        $expedienteModel = new ExpedienteModel();
+        $barbeiroModel = new BarbeiroModel();
 
-      $servicos = $servicoModel->obterServicosAtivos();
-      $diasAtivos = $expedienteModel->obterDiasAtivos();
-      $barbeirosAtivos = $barbeiroModel->obterBarbeirosAtivos();
-      view('agendar/index', compact('servicos', 'diasAtivos', 'barbeirosAtivos'));
-   }
-
-   public function gerarHorariosPadrao()
-{
-    global $db;
-
-    $obterExpediente = $db->query("SELECT * FROM seg.expedientes");
-    $expedientes = $obterExpediente->fetchAll(PDO::FETCH_ASSOC);
-
-    if (!$expedientes) return [];
-
-    $horariosPorDia = [];
-
-    foreach ($expedientes as $expediente) {
-        // garante que os campos existem
-        $inicio   = $expediente['inicio']   ?? null;
-        $almoco   = $expediente['almoco']   ?? null;
-        $retorno  = $expediente['retorno']  ?? null;
-        $termino  = $expediente['termino']  ?? null;
-
-        if (!$inicio || !$almoco || !$retorno || !$termino) {
-            continue; // pula se o expediente não estiver completo
-        }
-
-        $turnos = [
-            ['inicio' => $inicio, 'fim' => $almoco],
-            ['inicio' => $retorno, 'fim' => $termino]
-        ];
-
-        $horarios = [];
-
-        foreach ($turnos as $turno) {
-            try {
-                $horaInicio = new DateTime((string)$turno['inicio']);
-                $horaFim    = new DateTime((string)$turno['fim']);
-            } catch (Exception $e) {
-                continue; // se não for string válida, ignora
-            }
-
-            while ($horaInicio < $horaFim) {
-                $horario = $horaInicio->format('H:i');
-                if (empty($horarios) || end($horarios) < $horario) {
-                    $horarios[] = $horario;
-                }
-                $horaInicio->modify('+15 minutes'); // intervalo
-            }
-        }
-
-        // associa o expediente ao nome do dia
-        $horariosPorDia[$expediente['dia']] = $horarios;
+        $servicos = $servicoModel->obterServicosAtivos();
+        $diasAtivos = $expedienteModel->obterDiasAtivos();
+        $barbeirosAtivos = $barbeiroModel->obterBarbeirosAtivos();
+        view('agendar/index', compact('servicos', 'diasAtivos', 'barbeirosAtivos'));
     }
 
-    return $horariosPorDia;
-}
+    public function gerarHorariosPadrao()
+    {
+        global $db;
 
+        $obterExpediente = $db->query("SELECT * FROM seg.expedientes");
+        $expedientes = $obterExpediente->fetchAll(PDO::FETCH_ASSOC);
 
+        if (!$expedientes) return [];
 
-   public function horarios()
-   {
-      $horarios = $this->gerarHorariosPadrao();
-      echo json_encode($horarios);
-   }
+        $horariosPorDia = [];
 
-   public function obterDiasAtivos()
-   {
-      global $db;
+        foreach ($expedientes as $expediente) {
+            // garante que os campos existem
+            $inicio   = $expediente['inicio']   ?? null;
+            $almoco   = $expediente['almoco']   ?? null;
+            $retorno  = $expediente['retorno']  ?? null;
+            $termino  = $expediente['termino']  ?? null;
 
-      $dias = [
-         'Domingo' => 0,
-         'Segunda' => 1,
-         'Terça'   => 2,
-         'Quarta'  => 3,
-         'Quinta'  => 4,
-         'Sexta'   => 5,
-         'Sábado'  => 6
-      ];
+            if (!$inicio || !$almoco || !$retorno || !$termino) {
+                continue; // pula se o expediente não estiver completo
+            }
 
-      $diasAtivosSql = $db->prepare("SELECT dia FROM seg.expedientes WHERE ativo = true");
-      $diasAtivosSql->execute();
-      $diasAtivosRes = $diasAtivosSql->fetchAll(PDO::FETCH_COLUMN);
+            $turnos = [
+                ['inicio' => $inicio, 'fim' => $almoco],
+                ['inicio' => $retorno, 'fim' => $termino]
+            ];
 
-      $diasAtivos = [];
-      foreach ($diasAtivosRes as $dia) {
-         if (isset($dias[$dia])) {
-               $diasAtivos[] = $dias[$dia];
-         }
-      }
+            $horarios = [];
 
-      return $diasAtivos;
-   }
+            foreach ($turnos as $turno) {
+                try {
+                    $horaInicio = new DateTime((string)$turno['inicio']);
+                    $horaFim    = new DateTime((string)$turno['fim']);
+                } catch (Exception $e) {
+                    continue; // se não for string válida, ignora
+                }
+
+                while ($horaInicio < $horaFim) {
+                    $horario = $horaInicio->format('H:i');
+                    if (empty($horarios) || end($horarios) < $horario) {
+                        $horarios[] = $horario;
+                    }
+                    $horaInicio->modify('+15 minutes'); // intervalo
+                }
+            }
+
+            // associa o expediente ao nome do dia
+            $horariosPorDia[$expediente['dia']] = $horarios;
+        }
+
+        return $horariosPorDia;
+    }
+
+    public function horarios()
+    {
+        $horarios = $this->gerarHorariosPadrao();
+        echo json_encode($horarios);
+    }
+
+    public function obterDiasAtivos()
+    {
+        global $db;
+
+        $dias = [
+            'Domingo' => 0,
+            'Segunda' => 1,
+            'Terça'   => 2,
+            'Quarta'  => 3,
+            'Quinta'  => 4,
+            'Sexta'   => 5,
+            'Sábado'  => 6
+        ];
+
+        $diasAtivosSql = $db->prepare("SELECT dia FROM seg.expedientes WHERE ativo = true");
+        $diasAtivosSql->execute();
+        $diasAtivosRes = $diasAtivosSql->fetchAll(PDO::FETCH_COLUMN);
+
+        $diasAtivos = [];
+        foreach ($diasAtivosRes as $dia) {
+            if (isset($dias[$dia])) {
+                $diasAtivos[] = $dias[$dia];
+            }
+        }
+
+        return $diasAtivos;
+    }
 
     public function obterDiasAtivosAjax()
     {
@@ -260,9 +258,18 @@ class AgendarController
         ]);
 
         $lembreteController = new LembreteController();
-        $lembreteController->enviarAvisoAgendado();
+        $lembreteStatus = false;
 
-        echo json_encode(['sucesso' => true]);
+        try {
+            $lembreteStatus = $lembreteController->enviarAvisoAgendado();
+        } catch (Exception $e) {
+            error_log("Erro ao enviar lembrete: " . $e->getMessage());
+        }
+
+        echo json_encode([
+            'sucesso' => true,
+            'lembrete' => $lembreteStatus ? true : false
+        ]);
     }
 
     public function obterBarbeiroPorServicoService()

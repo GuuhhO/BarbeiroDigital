@@ -56,7 +56,6 @@ $title = 'Agendar Horário';
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Selecione um horário</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
       </div>
       <div class="modal-body">
         <div class="container text-center">
@@ -67,7 +66,7 @@ $title = 'Agendar Horário';
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCancelarModalSelecionarHorario">Cancelar</button>
         <button type="button" class="btn btn-primary" onclick="agendarClienteService()">Agendar</button>
       </div>
     </div>
@@ -187,7 +186,8 @@ $title = 'Agendar Horário';
         const modal = bootstrap.Modal.getInstance(modalEl);
 
         const modalBody = modalEl.querySelector('.modal-body'); 
-        const btnCancelar = modalEl.querySelector('.btn-secondary'); 
+        const modalTitle = modalEl.querySelector('.modal-title'); 
+        const btnCancelar = document.getElementById('btnCancelarModalSelecionarHorario'); 
         const btnAgendar = modalEl.querySelector('.btn-primary');
 
         const cliente = $('#nome').val();
@@ -228,8 +228,19 @@ $title = 'Agendar Horário';
                     }
 
                     setTimeout(() => {
-                        modalBody.innerHTML = "<p>Agendamento realizado com sucesso!</p>";
+                        // Caso o agendamento dê certo mas o lembrete falhe
+                        if (resultado.sucesso && resultado.lembrete === false) {
+                            modalTitle.innerHTML = 'Agendamento realizado';
+                            modalBody.innerHTML = `
+                                <p>Agendamento realizado com sucesso, mas não foi possível enviar mensagem no WhatsApp do número ${telefone}.</p>
+                            `;
+                        } else {
+                            modalTitle.innerHTML = 'Agendamento realizado';
+                            modalBody.innerHTML = "<p>Agendamento realizado com sucesso. Uma mensagem de confirmação foi enviada no WhatsApp.</p>";
+                        }
+
                         btnCancelar.style.display = 'inline';
+                        btnCancelar.innerHTML = 'Fechar';
 
                         // Reload ao fechar
                         btnCancelar.addEventListener('click', function() {
@@ -239,14 +250,18 @@ $title = 'Agendar Horário';
                     }, 1000);
 
                 } catch(e) {
+                    modalTitle.innerHTML = 'Ocorreu um erro';
                     modalBody.innerHTML = "<p style='color:red'>Erro ao interpretar resposta do servidor.</p>";
                     btnCancelar.style.display = 'inline';
+                    btnCancelar.innerHTML = 'Fechar';
                     console.log(e);
                 }
             },
             error: function(erro) {
+                modalTitle.innerHTML = 'Ocorreu um erro';
                 modalBody.innerHTML = "<p style='color:red'>Erro ao agendar.</p>";
                 btnCancelar.style.display = 'inline';
+                btnCancelar.innerHTML = 'Fechar';
                 console.log(erro);
             }
         });

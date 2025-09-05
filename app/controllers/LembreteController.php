@@ -91,7 +91,6 @@ class LembreteController
         return '55' . $telefoneNormalizado;
     }
 
-
     public function enviarAvisoAgendado()
     {
         global $db;
