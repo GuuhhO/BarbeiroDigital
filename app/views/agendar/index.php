@@ -88,15 +88,36 @@ $title = 'Agendar Horário';
                         return;
                     }
 
-                    $("#calendario").datepicker("destroy"); // destrói qualquer Datepicker anterior
+                    $.datepicker.regional['pt-BR'] = {
+                        closeText: 'Fechar',
+                        prevText: '&#x3C;Anterior',
+                        nextText: 'Próximo&#x3E;',
+                        currentText: 'Hoje',
+                        monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
+                                    'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+                        monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun',
+                                        'Jul','Ago','Set','Out','Nov','Dez'],
+                        dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+                        dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'],
+                        dayNamesMin: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'],
+                        weekHeader: 'Sm',
+                        dateFormat: 'dd/mm/yy',
+                        firstDay: 0,
+                        isRTL: false,
+                        showMonthAfterYear: false,
+                        yearSuffix: ''
+                    };
+                    $.datepicker.setDefaults($.datepicker.regional['pt-BR']);
 
-                    $("#calendario").datepicker($.extend({}, $.datepicker.regional["pt-BR"], {
+                    // Destrói qualquer Datepicker anterior
+                    $("#calendario").datepicker("destroy");
+
+                    $("#calendario").datepicker({
                         beforeShowDay: function(date) {
                             return [diasAtivos.includes(date.getDay())];
                         },
-                        dateFormat: 'dd/mm/yy',
                         minDate: 0 // bloqueia datas passadas
-                    }));
+                    });
                 },
                 error: function(erro) {
                     console.log(erro);
@@ -106,7 +127,6 @@ $title = 'Agendar Horário';
         });
     }
 
-    // Chamada da função
     gerarCalendarioAtivos();
 
     function verificarHorariosService(event) {
