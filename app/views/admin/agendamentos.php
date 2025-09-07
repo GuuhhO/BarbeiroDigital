@@ -1,83 +1,10 @@
 <?php
 
-$title = 'Painel do Administrador';
+$title = 'Agendamentos';
 
 ?>
 
 <div class="container">
-    <div class="row mt-5 m-auto">
-        <h1 align="center">PAINEL</h1>
-            <div class="row m-auto">
-                <h4 align="center">Desempenho</h4>
-                <div class="col-md-6">
-                    <div class="d-flex align-items-center shadow-sm rounded overflow-hidden mb-3" style="background: #e3e3e3; height: 100px;">
-                        <div class="d-flex justify-content-center align-items-center" 
-                            style="width: 100px; height: 100%; background: #12a033ff; color: #ffffffff;">
-                            <i class="fa-solid fa-calendar fa-2x" style="font-size: 50px !important;"></i>
-                        </div>
-                        <div class="p-3 flex-fill">
-                            <span class="text-muted d-block" style="font-size: 18px;">Atendimentos para hoje</span>
-                            <h4 class="mb-0" style="color: #333333ff;">Restam <?php echo $contagemAgendamentosHoje['count']; ?> de <?php echo $contagemAgendamentosHojeTotal['count']; ?></h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="d-flex align-items-center shadow-sm rounded overflow-hidden mb-3" style="background: #e3e3e3; height: 100px;">
-                        <div class="d-flex justify-content-center align-items-center" 
-                            style="width: 100px; height: 100%; background: #1539b1ff; color: #ffffffff;">
-                            <i class="fa-solid fa-calendar-week fa-2x" style="font-size: 50px !important;"></i>
-                        </div>
-                        <div class="p-3 flex-fill">
-                            <span class="text-muted d-block" style="font-size: 18px;">Atendimentos para amanhã</span>
-                            <h4 class="mb-0" style="color: #333333ff;"><?php echo $contagemAgendamentosAmanha['count']; ?></h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="d-flex align-items-center shadow-sm rounded overflow-hidden mb-3" style="background: #e3e3e3; height: 100px;">
-                        <div class="d-flex justify-content-center align-items-center" 
-                            style="width: 100px; height: 100%; background: #e92929ff; color: #ffffffff;">
-                            <i class="fa-solid fa-calendar-days fa-2x" style="font-size: 50px !important;"></i>
-                        </div>
-                        <div class="p-3 flex-fill">
-                            <span class="text-muted d-block" style="font-size: 18px;">Atendimentos no mês</span>
-                            <h4 class="mb-0" style="color: #333333ff;"><?php echo $contagemAgendamentosMes['count']; ?></h4>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row m-auto">
-                <h4 align="center">Saúde financeira</h4>
-                <div class="col-md-6">
-                    <div class="d-flex align-items-center shadow-sm rounded overflow-hidden mb-3" style="background: #e3e3e3; height: 100px;">
-                        <div class="d-flex justify-content-center align-items-center" 
-                            style="width: 100px; height: 100%; background: #1539b1ff; color: #ffffffff;">
-                            <i class="fa-solid fa-hand-holding-dollar fa-2x" style="font-size: 50px !important;"></i>
-                        </div>
-                        <div class="p-3 flex-fill">
-                            <span class="text-muted d-block" style="font-size: 18px;">Faturamento de hoje</span>
-                            <h4 class="mb-0" style="color: #333333ff;"><?= 'R$ ' . number_format($faturamentoHoje['0']['total'], 2, ',', '.') ?></h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="d-flex align-items-center shadow-sm rounded overflow-hidden mb-3" style="background: #e3e3e3; height: 100px;">
-                        <div class="d-flex justify-content-center align-items-center" 
-                            style="width: 100px; height: 100%; background: #12a033ff; color: #ffffffff;">
-                            <i class="fa-solid fa-sack-dollar fa-2x" style="font-size: 50px !important;"></i>
-                        </div>
-                        <div class="p-3 flex-fill">
-                            <span class="text-muted d-block" style="font-size: 18px;">Faturamento mensal</span>
-                            <h4 class="mb-0" style="color: #333333ff;"><?= 'R$ ' . number_format($faturamentoMensal['0']['total'], 2, ',', '.') ?></h4>
-                        </div>
-                    </div>
-                </div>
-            </div>   
-    </div>
-
-    <div class="row mt-5 m-auto">
-        <canvas id="graficoAgendamentos" width="200" height="200"></canvas>
-    </div>
     <div class="row mt-5 m-auto">
         <h1 align="center">AGENDAMENTOS</h1>
         <div class="table-responsive">
@@ -85,16 +12,13 @@ $title = 'Painel do Administrador';
                 <thead>
                     <tr>
                     <th scope="col">CLIENTE</th>
-                    <th scope="col" style="min-width: 200px !important;">DATA</th>
+                    <th scope="col">DATA</th>
                     <th scope="col">SERVIÇO</th>
                     <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php 
-                    $contador = 0;
-                    foreach ($agendamentos as $agendamento): 
-                        if ($contador++ >= 5) break;
+                    <?php foreach ($agendamentos as $agendamento): 
                     ?>
                         <tr>
                             <td><?= htmlspecialchars($agendamento['cliente']) ?></td>
@@ -155,56 +79,7 @@ $title = 'Painel do Administrador';
             </table>
         </div>
     </div>
-    <div class="row">
-        <a href="<?= BASE_URL ?>admin/agendamentos" class="btn btn-primary col-auto m-auto">VER MAIS <i class="fa-solid fa-plus"></i></a>
-    </div>
     <hr>
-    <div class="row mt-5 m-auto">
-        <h1 align="center">CLIENTES</h1>
-        <div class="table-responsive">
-            <table class="table table-dark table-striped">
-                <thead>
-                    <tr>
-                    <th scope="col">CLIENTE</th>
-                    <th scope="col">TELEFONE</th>
-                    <th scope="col">AGENDAMENTOS</th>
-                    <th scope="col"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($clientes as $cliente): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($cliente['cliente']) ?></td>
-                        <td><?= htmlspecialchars($cliente['telefone'] ?? 'N/A') ?></td>
-                        <td>
-                            <?php
-                                // Conta quantos agendamentos esse cliente tem
-                                $quantidade = array_reduce($agendamentos, function ($carry, $item) use ($cliente) {
-                                    return $carry + ($item['cliente'] === $cliente['cliente'] ? 1 : 0);
-                                }, 0);
-                                echo $quantidade;
-                            ?>
-                        </td>
-                        <td>
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <a class="p-3 btn btn-warning btn-sm btnEditarAgendamento"
-                                data-bs-toggle="modal"
-                                data-bs-target="#modalEditarAgendamento"
-                                data-id="<?= $agendamento['id'] ?>"
-                                data-cliente="<?= htmlspecialchars($agendamento['cliente'], ENT_QUOTES) ?>"
-                                data-telefone="<?= htmlspecialchars($agendamento['telefone'], ENT_QUOTES) ?>"
-                                data-servico="<?= htmlspecialchars($agendamento['servico_id'], ENT_QUOTES) ?>"
-                                data-dia="<?= htmlspecialchars($agendamento['dia'], ENT_QUOTES) ?>"
-                                data-horario="<?= htmlspecialchars($agendamento['horario'], ENT_QUOTES) ?>">
-                                Editar</a>
-                            </div>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
 </div>
 
 <div class="modal" tabindex="-1" id="modalEditarAgendamento">
@@ -647,42 +522,6 @@ $title = 'Painel do Administrador';
         }).mask("#telefone");
     }
 
-    function carregarGraficoAgendamentos() {
-        fetch('/Cortai/agendar/obterDadosGrafico')
-            .then(response => response.json())
-            .then(data => {
-                const labels = data.map(item => item.servico);
-                const valores = data.map(item => item.total);
-
-                new Chart(document.getElementById('graficoAgendamentos'), {
-                    type: 'pie', // <-- altere para 'doughnut' se quiser rosquinha
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Agendamentos',
-                            data: valores,
-                            backgroundColor: [
-                                '#f37c1bff',
-                                '#10b981',
-                                '#3b82f6',
-                                '#ef4444',
-                                '#8b5cf6',
-                                '#f5e50bff',
-                                '#a5a5a5ff'
-                            ]
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: { position: 'bottom' },
-                            title: { display: true, text: 'Agendamentos por Serviço' }
-                        }
-                    }
-                });
-            });
-    }
-
     document.addEventListener('DOMContentLoaded', inicializarEdicaoAgendamento);
     document.addEventListener('DOMContentLoaded', inicializarRemocaoAgendamento);
 
@@ -694,8 +533,6 @@ $title = 'Painel do Administrador';
 
     document.getElementById('modalExcluirAgendamento')
     .addEventListener('click', removerAgendamentoService);
-
-    document.addEventListener("DOMContentLoaded", carregarGraficoAgendamentos);
 
     $(document).ready(function() {
         mascaraTelefone();

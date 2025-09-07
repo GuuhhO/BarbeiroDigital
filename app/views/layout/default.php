@@ -21,26 +21,27 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="<?= BASE_URL ?>">Início</a>
+                        <a class="nav-link" aria-current="page" href="<?= BASE_URL ?>"><i class="fa-solid fa-house"></i> Início</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= BASE_URL ?>Agendar">Agendar</a>
+                        <a class="nav-link" href="<?= BASE_URL ?>Agendar"><i class="fa-solid fa-calendar-days"></i> Agendar</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= BASE_URL ?>Sobre">Sobre</a>
+                        <a class="nav-link" href="<?= BASE_URL ?>Sobre"><i class="fa-solid fa-circle-info"></i> Sobre</a>
                     </li>
                     <?php if (Session::isAuthenticated()) {?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Administrador
+                                <i class="fa-solid fa-gear"></i> Administrador
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="<?= BASE_URL ?>admin">Painel</a></li>
-                                <li><a class="dropdown-item" href="<?= BASE_URL ?>admin/expedientes">Expedientes</a></li>
-                                <li><a class="dropdown-item" href="<?= BASE_URL ?>admin/servicos">Serviços</a></li>
-                                <li><a class="dropdown-item" href="<?= BASE_URL ?>admin/barbeiros">Barbeiros</a></li>
+                                <li><a class="dropdown-item" href="<?= BASE_URL ?>admin"><i class="fa-solid fa-sliders"></i> Painel</a></li>
+                                <li><a class="dropdown-item" href="<?= BASE_URL ?>admin/agendamentos"><i class="fa-solid fa-calendar"></i> Agendamentos</a></li>
+                                <li><a class="dropdown-item" href="<?= BASE_URL ?>admin/expedientes"><i class="fa-solid fa-table"></i> Expedientes</a></li>
+                                <li><a class="dropdown-item" href="<?= BASE_URL ?>admin/servicos"><i class="fa-solid fa-gears"></i> Serviços</a></li>
+                                <li><a class="dropdown-item" href="<?= BASE_URL ?>admin/barbeiros"><i class="fa-solid fa-users"></i> Barbeiros</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" onclick="deslogarService()">Sair</a></li>
+                                <li><a class="dropdown-item" onclick="deslogarService()"><i class="fa-solid fa-right-from-bracket"></i> Sair</a></li>
                             </ul>
                         </li>
                     <?php } ?>

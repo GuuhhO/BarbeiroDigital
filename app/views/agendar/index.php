@@ -58,6 +58,10 @@ $title = 'Agendar Horário';
         <h5 class="modal-title">Selecione um horário</h5>
       </div>
       <div class="modal-body">
+        <div class="row text-center">
+            <h5>DIA:</h5>
+            <p id="modalBodyExibirDia"></p>
+        </div>
         <div class="container text-center">
             <label class="form-label">Horários disponíveis:</label>
             <div class="row row-cols-auto justify-content-center" id="containerHorarios">
@@ -148,6 +152,9 @@ $title = 'Agendar Horário';
             dia: $('#calendario').val(),
         };
 
+        const [day, month, year] = dados.dia.split('/');
+        const diaFormatado = `${day}/${month}/${year}`;
+
         $.ajax({
             method: 'POST',
             url: '/Cortai/agendar/verificarHorariosDisponiveis',
@@ -160,6 +167,8 @@ $title = 'Agendar Horário';
                     $('#containerHorarios').hide();
                     return;
                 }
+
+                document.querySelector('#modalBodyExibirDia').innerHTML = diaFormatado;
 
                 mostrarHorariosComoCaixas(horariosDisponiveis);
 

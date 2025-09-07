@@ -85,6 +85,14 @@ class AdminController
         view('admin/barbeiros', compact('barbeiros'));
     }
     
+    public function agendamentos()
+    {
+        $this->verificarAutenticacao();
+        
+        $AgendamentoModel = new AgendamentoModel();
+        $agendamentos = $AgendamentoModel->obterAgendamentos();
+        view('admin/agendamentos', compact('agendamentos'));
+    }
 
     public function logar()
     {

@@ -115,3 +115,33 @@ footer {
     max-width: 90% !important;
     max-height: 90vh !important;
 }
+
+#tabelaAgendamentos {
+    font-size: 14px;
+    text-align: center;
+}
+
+#tabelaAgendamentos td:nth-child(1),
+#tabelaAgendamentos th:nth-child(1) {
+    width: 70px;
+}
+
+#tabelaAgendamentos td:nth-child(2),
+#tabelaAgendamentos th:nth-child(2) {
+    width: 90px;
+}
+
+#tabelaAgendamentos td:nth-child(3),
+#tabelaAgendamentos th:nth-child(3) {
+    width: 90px;
+}
+
+#tabelaAgendamentos td:nth-child(4),
+#tabelaAgendamentos th:nth-child(4) {
+    width: 70px;
+}
+
+#tabelaAgendamentos td:nth-child(5),
+#tabelaAgendamentos th:nth-child(5) {
+    width: 70px;
+}
