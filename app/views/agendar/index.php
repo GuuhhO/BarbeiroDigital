@@ -44,7 +44,7 @@ $title = 'Agendar Horário';
                 <!-- <input type="date" class="form-control" id="dia" aria-describedby="dia" onclick="gerarCalendarioAtivos()"> -->
             </div>
             <div class="mb-3 col-8 m-auto">
-                <button class="btn btn-primary" onclick="verificarHorariosService(event)">VERIFICAR</button>
+                <button class="btn btn-primary" onclick="verificarHorariosService(event)">VER HORÁRIOS</button>
             </div>
         </form>
     </div>
@@ -121,7 +121,11 @@ $title = 'Agendar Horário';
                         },
                         dateFormat: 'dd/mm/yy',
                         minDate: 0, // bloqueia datas passadas
-                        maxDate: doisMesesDepois
+                        maxDate: doisMesesDepois,
+                        onSelect: function(dateText) {
+                            // Quando o usuário escolher a data, já chama a função
+                            verificarHorariosService(new Event('submit'));
+                        }
                     });
                 },
                 error: function(erro) {
@@ -134,7 +138,7 @@ $title = 'Agendar Horário';
 
     gerarCalendarioAtivos();
 
-    function verificarHorariosService(event) {
+    function verificarHorariosService(event = null) {
         event.preventDefault();
 
         const dados = {
