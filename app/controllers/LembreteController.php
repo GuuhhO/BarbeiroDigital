@@ -129,4 +129,41 @@ class LembreteController
 
         return true;
     }
+
+    public function avisarCancelamentoHorario($dadosCliente)
+    {
+        global $db;
+
+        $cliente = $dadosCliente['cliente'];
+        $telefone = $dadosCliente['telefone'];
+        $servico_id = $dadosCliente['servico_id'];
+        $dia = $dadosCliente['dia'];
+        $horario = $dadosCliente['horario'];
+
+        $telefoneFormatado = $this->formatarTelefone($telefone);
+
+        $nomeServico = $this->model->obterNomeServico($servico_id);
+
+        $dataFormatada = DateTime::createFromFormat('Y-m-d', $dia)->format('d/m/Y');
+
+        $msg = "⚠️ Olá {$cliente}, você acabou de cancelar um atendimento de *{$nomeServico}* na *Barbearia Soares* que estava agendado para o dia *{$dataFormatada}* às *{$horario}*. \n \n" .
+                "Caso não reconheça essa solicitação, entre em contato com a barbearia.";
+
+        $url = "http://localhost:3000/send?phone=" . urlencode($telefoneFormatado) . "&msg=" . urlencode($msg);
+
+        // Inicializa cURL
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($response === false || $httpcode != 200) {
+            error_log("Erro ao enviar mensagem para {$telefoneFormatado}");
+            return false;
+        }
+
+        return true;
+    }
 }

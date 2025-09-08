@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../controllers/LembreteController.php';
 
 class ClienteController
 {
@@ -49,9 +50,12 @@ class ClienteController
       view('cliente/index', ['agendamentos' => $agendamentos, 'servicos' => $servicos]);
     }
 
-    public function excluirAgendamento()
-    {
+   public function excluirAgendamento()
+   {
       global $db;
+
+      $lembreteController = new LembreteController();
+      $lembreteStatus = false;
 
       $agendamentoId = $_POST['agendamento_id'];
 
@@ -60,6 +64,8 @@ class ClienteController
          echo json_encode(["erro" => "Nenhum agendamento encontrado."]);
          return;
       }
+
+      $dadosCliente = $this->obterDadosCliente();
 
       $excluirAgendamentoDb = $db->prepare("DELETE FROM api.agendamentos WHERE id = ?");
       $excluirAgendamentoDb->execute([$agendamentoId]);
@@ -70,6 +76,27 @@ class ClienteController
          return;
       }
 
-      echo json_encode(["sucesso" => true, "dados" => $agendamentoId]);
-    }
+      try {
+         $lembreteStatus = $lembreteController->avisarCancelamentoHorario($dadosCliente);
+      } catch (Exception $e) {
+         error_log("Erro ao enviar lembrete: " . $e->getMessage());
+      }
+
+      echo json_encode([
+         'sucesso' => true,
+         'lembrete' => $lembreteStatus ? true : false
+      ]);
+   }
+
+   public function obterDadosCliente()
+   {
+      global $db;
+
+      $agendamentoId = $_POST['agendamento_id'];
+
+      $dadosCliente = $db->prepare("SELECT * FROM api.agendamentos WHERE id = ?");
+      $dadosCliente->execute([$agendamentoId]);
+
+      return $dadosCliente->fetch(PDO::FETCH_ASSOC);
+   }
 }
