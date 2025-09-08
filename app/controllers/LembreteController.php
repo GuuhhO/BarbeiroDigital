@@ -109,8 +109,7 @@ class LembreteController
                 "⏰ *Dia:* " . date('d/m/Y', strtotime($dia)) . " às {$horario}\n" .
                 "✂ *Serviço:* {$nomeServico}\n" .
                 "📍 *Endereço:* Rua das Tulipas, 449, Eldorado/São Pedro, Itabira/MG\n" .
-                "👇 *Clique no link abaixo para ver no mapa:* \n" .
-                "http://bit.ly/4p8s4Rt \n\n" .
+                "https://shre.ink/S02k \n\n" .
                 "⚠️ *Não se esqueça de levar seu cartão de fidelidade!*";
 
         $url = "http://localhost:3000/send?phone=" . urlencode($telefoneFormatado) . "&msg=" . urlencode($msg);

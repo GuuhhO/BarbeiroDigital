@@ -54,15 +54,15 @@ footer {
 .box-horario {
     border: 1px solid #007bff;
     border-radius: 4px;
-    padding: 10px 15px;
-    margin: 5px;
+    padding: 5px 0px;
+    margin: 3px;
     cursor: pointer;
     user-select: none;
     color: #007bff;
     font-weight: 500;
     transition: background-color 0.2s, color 0.2s;
     display: inline-block;
-    min-width: 80px;
+    min-width: 70px;
 }
 
 .box-horario:hover {
@@ -112,8 +112,9 @@ footer {
 }
 
 .modal-dialog {
-    max-width: 90% !important;
-    max-height: 90vh !important;
+    font-size: 14px !important;
+    max-width: 80% !important;
+    max-height: 80vh !important;
 }
 
 #tabelaAgendamentos {
