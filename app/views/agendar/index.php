@@ -168,6 +168,8 @@ $title = 'Agendar Horário';
                     return;
                 }
 
+                $('#containerHorarios').show();
+
                 document.querySelector('#modalBodyExibirDia').innerHTML = diaFormatado;
 
                 mostrarHorariosComoCaixas(horariosDisponiveis);
