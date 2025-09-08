@@ -250,10 +250,22 @@ $title = 'Agendar Horário';
 
                     setTimeout(() => {
                         // Caso o agendamento dê certo mas o lembrete falhe
-                        if (resultado.sucesso && resultado.lembrete === false) {
+                        if (resultado.sucesso && resultado.lembrete === false && resultado.premiado === false) {
                             modalTitle.innerHTML = 'Agendamento realizado';
                             modalBody.innerHTML = `
                                 <p>⚠ Agendamento realizado com sucesso, mas não foi possível enviar mensagem no WhatsApp do número ${telefone}.</p>
+                            `;
+                        } else if (resultado.sucesso && resultado.lembrete === true && resultado.premiado === true) {
+                            modalTitle.innerHTML = 'Você foi premiado!';
+                            modalBody.innerHTML = `
+                                <p>✅ Agendamento realizado.</p>
+                                <p>Você preencheu nossa cartela de fidelidade com dez atendimentos e ganhou um corte gratuito na barbearia! No seu próximo atendimento, certifique-se de apresentar sua cartela preenchida.</p>
+                            `;
+                        } else if (resultado.sucesso && resultado.lembrete === false && resultado.premiado === true) {
+                            modalTitle.innerHTML = 'Agendamento realizado';
+                            modalBody.innerHTML = `
+                                <p>⚠ Agendamento realizado com sucesso, mas não foi possível enviar mensagem no WhatsApp do número ${telefone}.</p>
+                                <p>Você preencheu nossa cartela de fidelidade com dez atendimentos e ganhou um corte gratuito na barbearia! No seu próximo atendimento, certifique-se de apresentar sua cartela preenchida.</p>
                             `;
                         } else {
                             modalTitle.innerHTML = 'Agendamento realizado';
@@ -263,9 +275,8 @@ $title = 'Agendar Horário';
                         btnCancelar.style.display = 'inline';
                         btnCancelar.innerHTML = 'Fechar';
 
-                        // Reload ao fechar
                         btnCancelar.addEventListener('click', function() {
-                            location.reload();
+                            window.location.href = "<?= BASE_URL ?>";
                         });
 
                     }, 1000);
