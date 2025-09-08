@@ -132,14 +132,16 @@ $title = 'Expedientes';
             modal.querySelector('#almoco').value = almoco;
             modal.querySelector('#retorno').value   = retorno;
             modal.querySelector('#termino').value   = termino;
-            var idsSelecionados = barbeiros ? barbeiros.split(',') : [];
-            Array.from(modal.querySelectorAll('#barbeirosContainer input[type="checkbox"]')).forEach(cb => {
-                cb.checked = false;
-            });
-            idsSelecionados.forEach(id => {
-                var checkbox = modal.querySelector('#barbeiro_' + id);
-                if (checkbox) checkbox.checked = true;
-            });
+            
+            var checkboxes = modal.querySelectorAll('#barbeirosContainer input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = false);
+
+            if (barbeiros) {
+              barbeiros.split(',').map(id => id.trim()).forEach(id => {
+                  var checkbox = modal.querySelector('#barbeiro_' + id);
+                  if (checkbox) checkbox.checked = true;
+              });
+            }
         });
     }
 
@@ -205,10 +207,19 @@ $title = 'Expedientes';
         });
     }
 
-    document.addEventListener("DOMContentLoaded", function() {
-    inicializarEdicaoExpediente();
+    function resetarModalExpediente() {
+      location.reload();
+    }
 
-    document.getElementById("btnModalExpedienteSalvar")
-            .addEventListener("click", atualizarExpedienteService);
+    function inicializarBotaoFecharModal() {
+      const btnFechar = document.getElementById('btnModalExpedienteCancelar');
+      btnFechar.addEventListener('click', resetarModalExpediente);
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      inicializarEdicaoExpediente(); // sua função original
+      inicializarBotaoFecharModal();  // novo listener de reset
+      document.getElementById("btnModalExpedienteSalvar")
+          .addEventListener("click", atualizarExpedienteService);
     });
 </script>
