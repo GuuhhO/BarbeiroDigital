@@ -106,7 +106,7 @@ class LembreteController
         $nomeServico = $this->model->obterNomeServico($servico_id);
 
         $msg = "💈 Olá {$cliente}, você acabou de agendar um atendimento na *Barbearia Soares!*\n\n" .
-                "⏰ *Dia:* " . date('d/m/Y', strtotime($dia)) . " às {$horario}\n" .
+                "⏰ *Dia:* " . DateTime::createFromFormat('d/m/Y', $dia)->format('d/m/Y') . " às {$horario}\n" .
                 "✂ *Serviço:* {$nomeServico}\n" .
                 "📍 *Endereço:* Rua das Tulipas, 449, Eldorado/São Pedro, Itabira/MG\n" .
                 "https://shre.ink/S02k \n\n" .
