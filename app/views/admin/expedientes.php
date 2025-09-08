@@ -36,7 +36,8 @@ $title = 'Expedientes';
                           data-inicio="<?= htmlspecialchars($expediente['inicio'], ENT_QUOTES) ?>"
                           data-almoco="<?= htmlspecialchars($expediente['almoco'], ENT_QUOTES) ?>"
                           data-retorno="<?= htmlspecialchars($expediente['retorno'], ENT_QUOTES) ?>"
-                          data-termino="<?= htmlspecialchars($expediente['termino'], ENT_QUOTES) ?>">
+                          data-termino="<?= htmlspecialchars($expediente['termino'], ENT_QUOTES) ?>"
+                          data-barbeiros="<?= htmlspecialchars($expediente['barbeiros'], ENT_QUOTES) ?>">
                           <i class="fa-solid fa-pen-to-square"></i>
                           </a>
                         </div>
@@ -85,6 +86,19 @@ $title = 'Expedientes';
             <label for="termino" class="form-label">Término</label>
             <input type="time" class="form-control" id="termino" name="termino" required>
           </div>
+          <div class="mb-3">
+            <label for="barbeiros" class="form-label">Barbeiros</label>
+              <?php foreach($barbeiros as $b): ?>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" 
+                        name="barbeiros[]" value="<?= $b['id'] ?>" 
+                        id="barbeiro_<?= $b['id'] ?>">
+                  <label class="form-check-label" for="barbeiro_<?= $b['id'] ?>">
+                      <?= htmlspecialchars($b['nome']) ?>
+                  </label>
+                </div>
+              <?php endforeach; ?>
+          </div>
         </form>
       </div>
       <div class="modal-footer">
@@ -109,6 +123,7 @@ $title = 'Expedientes';
             var almoco = button.getAttribute('data-almoco');
             var retorno = button.getAttribute('data-retorno');
             var termino = button.getAttribute('data-termino');
+            var barbeiros = button.getAttribute('data-barbeiros');
 
             modal.querySelector('#ativo').value = (ativo == 1 ? 'TRUE' : 'FALSE');
             modal.querySelector('#expediente_id').value = expediente_id;
@@ -117,6 +132,14 @@ $title = 'Expedientes';
             modal.querySelector('#almoco').value = almoco;
             modal.querySelector('#retorno').value   = retorno;
             modal.querySelector('#termino').value   = termino;
+            var idsSelecionados = barbeiros ? barbeiros.split(',') : [];
+            Array.from(modal.querySelectorAll('#barbeirosContainer input[type="checkbox"]')).forEach(cb => {
+                cb.checked = false;
+            });
+            idsSelecionados.forEach(id => {
+                var checkbox = modal.querySelector('#barbeiro_' + id);
+                if (checkbox) checkbox.checked = true;
+            });
         });
     }
 
@@ -172,12 +195,12 @@ $title = 'Expedientes';
                 }
             },
             error: function(erro) {
-                alert("Erro ao editar serviço.");
+                alert("Erro ao editar expediente.");
                 console.log(erro);
             },
             complete: function() {
                 btnSalvar.disabled = false;
-                loading.remove(); // remove o loading
+                loading.remove();
             }
         });
     }

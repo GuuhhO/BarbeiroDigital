@@ -71,17 +71,19 @@ class AdminController
         $this->verificarAutenticacao();
         
         $AdminModel = new AdminModel();
+        $BarbeiroModel = new BarbeiroModel();
         $ExpedienteModel = new ExpedienteModel();
         $expedientes = $ExpedienteModel->obterExpedientes();
-        view('admin/expedientes', compact('expedientes'));
+        $barbeiros = $BarbeiroModel->obterBarbeiros();
+        view('admin/expedientes', compact('expedientes', 'barbeiros'));
     }
 
     public function barbeiros()
     {
         $this->verificarAutenticacao();
         
-        $AdminModel = new BarbeiroModel();
-        $barbeiros = $AdminModel->obterBarbeiros();
+        $BarbeiroModel = new BarbeiroModel();
+        $barbeiros = $BarbeiroModel->obterBarbeiros();
         view('admin/barbeiros', compact('barbeiros'));
     }
     
@@ -399,6 +401,9 @@ class AdminController
         $retorno = $_POST['retorno'];
         $termino = $_POST['termino'];
         $ativo = $_POST['ativo'];
+        $barbeiros = $_POST['barbeiros'] ?? [];
+        
+        $arrayBarbeiros = implode(',', $barbeiros);
 
         if (empty($inicio) || empty($almoco) || empty($retorno) || empty($termino))
         {
@@ -409,7 +414,7 @@ class AdminController
         try {
             $atualizarExpedienteSql= $db->prepare("
                 UPDATE seg.expedientes
-                SET inicio = ?, almoco = ?, retorno = ?, termino = ?, ativo = ?
+                SET inicio = ?, almoco = ?, retorno = ?, termino = ?, ativo = ?, barbeiros = ?
                 WHERE id = ?
             ");
 
@@ -419,6 +424,7 @@ class AdminController
                 $retorno,
                 $termino,
                 $ativo,
+                $arrayBarbeiros,
                 $expediente_id
             ]);
 
