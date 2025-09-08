@@ -17,13 +17,18 @@ http_response_code(404);
 <body>
 
 <main>
-    <div class="container vh-100 d-flex flex-column align-items-center justify-content-center text-center">
-        <div class="d-flex flex-column align-items-center justify-content-center">
-            <img src="<?php BASE_PATH ?>public/assets/img/404.png" width="300" alt="Erro página não encontrada">
-            <h4>ERRO!</h4>
-            <p>Essa página não existe.</p>
-            <br>
-            <a href="<?php BASE_PATH ?>" class="btn btn-sm btn-primary">CLIQUE AQUI PARA VOLTAR</a>
+    <div class="container vh-100 d-flex flex-column justify-content-center text-center">
+    <div class="row align-items-center justify-content-center w-100">
+        <div class="col-12 col-md-6 mb-4 mb-md-0">
+            <h3 class="mb-3">Página não encontrada!</h3>
+            <p class="mb-3">Ops! A página que você procura não existe.</p>
+            <a href="<?= BASE_URL ?>" class="btn btn-primary btn-sm">VOLTAR</a>
+        </div>
+        <div class="col-12 col-md-6 text-center">
+            <img src="public/assets/img/404.png" alt="Erro página não encontrada" class="img-fluid" style="max-width: 300px;">
         </div>
     </div>
+</div>
+
+
 </main>
