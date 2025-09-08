@@ -251,11 +251,11 @@ $title = 'Agendar Horário';
                         if (resultado.sucesso && resultado.lembrete === false) {
                             modalTitle.innerHTML = 'Agendamento realizado';
                             modalBody.innerHTML = `
-                                <p>Agendamento realizado com sucesso, mas não foi possível enviar mensagem no WhatsApp do número ${telefone}.</p>
+                                <p>⚠ Agendamento realizado com sucesso, mas não foi possível enviar mensagem no WhatsApp do número ${telefone}.</p>
                             `;
                         } else {
                             modalTitle.innerHTML = 'Agendamento realizado';
-                            modalBody.innerHTML = "<p>Agendamento realizado com sucesso. Uma mensagem de confirmação foi enviada no WhatsApp.</p>";
+                            modalBody.innerHTML = "<p>✅ Agendamento realizado com sucesso. Uma mensagem de confirmação foi enviada no WhatsApp.</p>";
                         }
 
                         btnCancelar.style.display = 'inline';
