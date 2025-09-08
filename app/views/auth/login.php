@@ -31,8 +31,7 @@ $title = 'Login';
 
 <script>
     function verificarCredencialService() {
-        // captura o submit do form
-        $('#formLogin').on('submit', function(e) {
+        $('#formLogin').off('submit').on('submit', function(e) {
             e.preventDefault(); // evita reload da página
 
             const dados = {
