@@ -358,7 +358,7 @@ class AgendarController
 
         $clienteData = $sqlCliente->fetch(PDO::FETCH_ASSOC);
 
-        if ($clienteData && $clienteData['pontos'] >= 10)
+        if ($clienteData && $clienteData['pontos'] > 10)
         {
             $insert = $db->prepare("
                 UPDATE seg.clientes
