@@ -6,7 +6,7 @@ class ExpedienteModel
     {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM seg.expedientes");
+        $stmt = $db->prepare("SELECT * FROM seg.expedientes ORDER BY id ASC");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
