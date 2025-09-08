@@ -275,9 +275,12 @@ class AgendarController
             error_log("Erro ao enviar lembrete: " . $e->getMessage());
         }
 
+        $premiado = $this->cadastrarCliente($cliente, $telefone);
+
         echo json_encode([
             'sucesso' => true,
-            'lembrete' => $lembreteStatus ? true : false
+            'lembrete' => (bool)$lembreteStatus,
+            'premiado' => (bool)$premiado
         ]);
     }
 
@@ -309,5 +312,69 @@ class AgendarController
 
         header('Content-Type: application/json');
         echo json_encode($dados);
+    }
+
+    public function cadastrarCliente($cliente, $telefone)
+    {
+        global $db;
+
+        $stmt = $db->prepare("SELECT pontos FROM seg.clientes WHERE cliente = :cliente AND telefone = :telefone");
+        $stmt->execute([
+            'cliente' => $cliente,
+            'telefone' => $telefone
+        ]);
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($resultado)
+        {
+            $novoPonto = $resultado['pontos'] + 1;
+            $update = $db->prepare("UPDATE seg.clientes SET pontos = :pontos WHERE cliente = :cliente AND telefone = :telefone");
+            $update->execute([
+                'pontos' => $novoPonto,
+                'cliente' => $cliente,
+                'telefone' => $telefone
+            ]);
+        } else {
+            $insert = $db->prepare("
+                INSERT INTO seg.clientes (cliente, telefone, pontos)
+                VALUES (:cliente, :telefone, :pontos)
+            ");
+            $insert->execute([
+                'cliente' => $cliente,
+                'telefone' => $telefone,
+                'pontos' => 1
+            ]);
+        }
+
+        return $this->verificarPontuacao($cliente, $telefone);
+    }
+
+    public function verificarPontuacao($cliente, $telefone)
+    {
+        global $db;
+
+        $sqlCliente = $db->prepare("SELECT * FROM seg.clientes WHERE cliente = ? AND telefone = ?");
+        $sqlCliente->execute([$cliente, $telefone]);
+
+        $clienteData = $sqlCliente->fetch(PDO::FETCH_ASSOC);
+
+        if ($clienteData && $clienteData['pontos'] >= 10)
+        {
+            $insert = $db->prepare("
+                UPDATE seg.clientes
+                SET premiado = TRUE,
+                pontos = 0
+                WHERE cliente = :cliente
+                AND telefone = :telefone
+            ");
+            $insert->execute([
+                'cliente' => $cliente,
+                'telefone' => $telefone
+            ]);
+
+            return true;
+        }
+
+        return false;
     }
 }
