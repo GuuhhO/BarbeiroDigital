@@ -26,6 +26,12 @@ class Router
         }
 
         http_response_code(404);
-        echo "Página não encontrada.";
+
+        $errorPage = BASE_PATH . "/404.php";
+        if (file_exists($errorPage)) {
+            require $errorPage;
+        } else {
+            echo "Página não encontrada.";
+        }
     }
 }
