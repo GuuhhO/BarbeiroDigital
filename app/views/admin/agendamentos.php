@@ -7,6 +7,45 @@ $title = 'Agendamentos';
 <div class="container">
     <div class="row mt-5 m-auto">
         <h1 align="center">AGENDAMENTOS</h1>
+        <div class="row">
+            <p class="d-flex justify-content-end gap-1">
+            <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" title="Clique para filtrar">
+                <i class="fa-solid fa-filter"></i>
+            </button>
+            </p>
+            <div class="collapse" id="collapseExample">
+                <div class="card card-body">
+                    <form id="formAgendar" action="/Cortai/admin/agendamentos" method="GET">
+                        <div class="mb-3 col-8 m-auto">
+                            <label for="nome" class="form-label">Nome</label>
+                            <input type="text" class="form-control" id="nome" name="nome">
+                        </div>
+                        <div class="mb-3 col-8 m-auto">
+                            <label for="telefone" class="form-label">Telefone</label>
+                            <input type="text" class="form-control" id="telefone" name="telefone">
+                        </div>
+                        <div class="mb-3 col-8 m-auto">
+                            <label for="servico" class="form-label">Serviço</label>
+                            <select class="form-select" id="servico_id" name="servico_id">
+                                <option value="" selected disabled>Selecione uma opção</option>
+                                <?php foreach ($servicos as $servico): ?>
+                                    <option value="<?= $servico['id'] ?>">
+                                        <?= htmlspecialchars($servico['servico']) ?> - <?= 'R$ ' . number_format($servico['preco'], 2, ',', '.') ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="mb-3 col-8 m-auto">
+                            <label for="dia" class="form-label">Data</label>
+                            <input type="date" class="form-control" id="calendario" name="dia">
+                        </div>
+                        <div class="mb-3 col-8 m-auto">
+                            <button type="submit" class="btn btn-primary">FILTRAR</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         <div class="table-responsive">
             <table class="table table-dark table-striped" id="tabelaAgendamentos">
                 <thead>
@@ -80,30 +119,36 @@ $title = 'Agendamentos';
         </div>
     </div>
     <div class="row m-auto">
-        <?php if (isset($totalPaginas) && $totalPaginas > 1): ?>
-            <nav aria-label="Navegação de página">
-                <ul class="pagination justify-content-center">
+        <?php
+            $filtros = [];
+            if (!empty($nome)) $filtros['nome'] = $nome;
+            if (!empty($telefone)) $filtros['telefone'] = $telefone;
+            if (!empty($servico_id)) $filtros['servico_id'] = $servico_id;
+            if (!empty($dia)) $filtros['dia'] = $dia;
 
-                    <!-- Botão Anterior -->
-                    <li class="page-item <?= ($pagina <= 1) ? 'disabled' : '' ?>">
-                        <a class="page-link" href="?pagina=<?= $pagina - 1 ?>" tabindex="-1">&laquo;</a>
-                    </li>
+            // Converte em query string (ex: nome=Gustavo&dia=2025-09-10)
+            $queryFiltros = http_build_query($filtros);
+            ?>
 
-                    <!-- Números -->
-                    <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
-                        <li class="page-item <?= ($i == $pagina) ? 'active' : '' ?>">
-                            <a class="page-link" href="?pagina=<?= $i ?>"><?= $i ?></a>
-                        </li>
-                    <?php endfor; ?>
-
-                    <!-- Botão Próximo -->
-                    <li class="page-item <?= ($pagina >= $totalPaginas) ? 'disabled' : '' ?>">
-                        <a class="page-link" href="?pagina=<?= $pagina + 1 ?>">&raquo;</a>
-                    </li>
-
-                </ul>
-            </nav>
+            <div class="row m-auto">
+                <?php if (isset($totalPaginas) && $totalPaginas > 1): ?>
+                    <nav aria-label="Navegação de página">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item <?= ($pagina <= 1) ? 'disabled' : '' ?>">
+                                <a class="page-link" href="?pagina=<?= $pagina - 1 ?>&<?= $queryFiltros ?>" tabindex="-1">&laquo;</a>
+                            </li>
+                            <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+                                <li class="page-item <?= ($i == $pagina) ? 'active' : '' ?>">
+                                    <a class="page-link" href="?pagina=<?= $i ?>&<?= $queryFiltros ?>"><?= $i ?></a>
+                                </li>
+                            <?php endfor; ?>
+                            <li class="page-item <?= ($pagina >= $totalPaginas) ? 'disabled' : '' ?>">
+                                <a class="page-link" href="?pagina=<?= $pagina + 1 ?>&<?= $queryFiltros ?>">&raquo;</a>
+                            </li>
+                        </ul>
+                    </nav>
         <?php endif; ?>
+            </div>
     </div>
     <hr>
 </div>
@@ -219,7 +264,8 @@ $title = 'Agendamentos';
 </div>
 
 <script>
-    function inicializarEdicaoAgendamento() {
+    function inicializarEdicaoAgendamento()
+    {
         var modal = document.getElementById('modalEditarAgendamento');
 
         modal.addEventListener('show.bs.modal', function (event) {
@@ -237,7 +283,8 @@ $title = 'Agendamentos';
         });
     }
 
-    function inicializarRemocaoAgendamento() {
+    function inicializarRemocaoAgendamento()
+    {
         var modal = document.getElementById('modalExcluirAgendamento');
 
         modal.addEventListener('show.bs.modal', function (event) {
@@ -379,7 +426,8 @@ $title = 'Agendamentos';
         });
     }
 
-    function editarHorarioAgendamento(el) {
+    function editarHorarioAgendamento(el)
+    {
         // 'el' é o link que foi clicado
         const agendamento_id = el.dataset.id;
         const cliente = el.dataset.cliente;
@@ -439,7 +487,8 @@ $title = 'Agendamentos';
         document.querySelector('#servico').value = servico_id;
     }
 
-    function mostrarHorariosComoCaixas(horarios) {
+    function mostrarHorariosComoCaixas(horarios)
+    {
         const container = $('#containerHorarios');
         container.empty();
 
@@ -455,7 +504,8 @@ $title = 'Agendamentos';
         });
     }
 
-    function atualizarHorarioAgendamentoService() {
+    function atualizarHorarioAgendamentoService()
+    {
         const agendamento_id = document.querySelector('#agendamento_id').value;
         const cliente = document.querySelector('#cliente').value;
         const telefone = document.querySelector('#telefone').value;
@@ -520,7 +570,8 @@ $title = 'Agendamentos';
         });
     }
 
-    function AgendamentoService(apiUrl) {
+    function AgendamentoService(apiUrl)
+    {
         this.remover = function(agendamentoId) {
             return $.ajax({
                 method: 'POST',
@@ -531,7 +582,95 @@ $title = 'Agendamentos';
         };
     }
 
-    function ModalHelper(modalId) {
+    function filtrarAgendamentos(event = null)
+    {
+        event.preventDefault();
+
+        const dados = {
+            nome: $('#nome').val(),
+            telefone: $('#telefone').val(),
+            servico_id: $('#servico_id').val(),
+            dia: $('#calendario').val(),
+        };
+
+        const [day, month, year] = dados.dia.split('/');
+        const diaFormatado = `${day}/${month}/${year}`;
+
+        $.ajax({
+            method: 'POST',
+            url: '/Cortai/agendar/filtrarHorarios',
+            data: dados,
+            success: function(resposta) {
+                let horariosDisponiveis = typeof resposta === 'string' ? JSON.parse(resposta) : resposta;
+
+                if (horariosDisponiveis.length === 0) {
+                    alert("Nenhum horário disponível para essa data/serviço.");
+                    $('#containerHorarios').hide();
+                    return;
+                }
+
+                $('#containerHorarios').show();
+
+                document.querySelector('#modalBodyExibirDia').innerHTML = diaFormatado;
+
+                mostrarHorariosComoCaixas(horariosDisponiveis);
+
+                // Abrir modal Bootstrap
+                const modalElement = document.getElementById('modalSelecionarHorario');
+                const modal = new bootstrap.Modal(modalElement);
+                modal.show();
+            },
+            error: function(erro) {
+                alert("Erro ao verificar horários.");
+                console.log(erro);
+            }
+        });
+    }
+
+    function obterBarbeiroPorServico()
+    {
+        $('#servico_id').on('change', function() {
+            let servico_id = $(this).val();
+
+            $.ajax({
+                method: 'POST',
+                url: '/Cortai/agendar/obterBarbeiroPorServicoService',
+                data: { servico_id: servico_id },
+                success: function(resposta) {
+                    try {
+                        const barbeiros = JSON.parse(resposta);
+
+                        if (barbeiros.error) {
+                            alert('Serviço inválido. Tente novamente.');
+                            return;
+                        }
+
+                        let $select = $('#barbeiro_id');
+                        $select.empty();
+                        $select.append('<option value="" selected disabled>Selecione uma opção</option>');
+
+                        barbeiros.forEach(b => {
+                            $select.append(`<option value="${b.id}">${b.nome}</option>`);
+                        });
+
+                        // Tratamento: se houver apenas 1 barbeiro, seleciona ele automaticamente
+                        if (barbeiros.length === 1) {
+                            $select.val(barbeiros[0].id);
+                        }
+
+                    } catch (e) {
+                        console.log('Erro ao processar JSON:', e);
+                    }
+                },
+                error: function(erro) {
+                    console.log('Erro na requisição:', erro);
+                }
+            });
+        });
+    }
+
+    function ModalHelper(modalId)
+    {
         this.abrir = function() {
             new bootstrap.Modal(document.getElementById(modalId)).show();
         };
@@ -541,7 +680,8 @@ $title = 'Agendamentos';
         };
     }
 
-    function mascaraTelefone() {
+    function mascaraTelefone()
+    {
         Inputmask({
             mask: ["(99) 9999-9999","(99) 99999-9999"],
             keepStatic: true
@@ -559,6 +699,10 @@ $title = 'Agendamentos';
 
     document.getElementById('modalExcluirAgendamento')
     .addEventListener('click', removerAgendamentoService);
+
+    $(document).ready(function() {
+        obterBarbeiroPorServico();
+    });
 
     $(document).ready(function() {
         mascaraTelefone();

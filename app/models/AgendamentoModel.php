@@ -2,32 +2,93 @@
 
 class AgendamentoModel
 {
-    public function obterAgendamentos($limite = 10, $offset = 0)
+    public function obterAgendamentos($limite = 10, $offset = 0, $nome = null, $telefone = null, $servico_id = null, $dia = null)
     {
         global $db;
 
-        $stmt = $db->prepare("SELECT a.*, s.servico AS servico_nome
-            FROM api.agendamentos a
-            JOIN seg.servicos s ON s.id = CAST(a.servico_id AS INTEGER)
-            ORDER BY a.id DESC
-            LIMIT :limite OFFSET :offset");
+        $sql = "SELECT a.*, s.servico AS servico_nome
+                FROM api.agendamentos a
+                JOIN seg.servicos s ON s.id = CAST(a.servico_id AS INTEGER)
+                WHERE 1=1";
 
-        // bindParam exige tipo inteiro
-        $stmt->bindParam(':limite', $limite, PDO::PARAM_INT);
-        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $params = [];
+
+        if (!empty($nome)) {
+            $sql .= " AND a.cliente ILIKE :nome"; // ILIKE para case-insensitive no Postgres
+            $params[':nome'] = "%$nome%";
+        }
+
+        if (!empty($telefone)) {
+            $sql .= " AND a.telefone ILIKE :telefone";
+            $params[':telefone'] = "%$telefone%";
+        }
+
+        if (!empty($servico_id)) {
+            $sql .= " AND a.servico_id = :servico_id";
+            $params[':servico_id'] = $servico_id;
+        }
+
+        if (!empty($dia)) {
+            $sql .= " AND DATE(a.data_agendamento) = :dia";
+            $params[':dia'] = $dia; // yyyy-mm-dd vindo do <input type="date">
+        }
+
+        $sql .= " ORDER BY a.id DESC LIMIT :limite OFFSET :offset";
+
+        $stmt = $db->prepare($sql);
+
+        // Bind dos filtros
+        foreach ($params as $key => $val) {
+            $stmt->bindValue($key, $val);
+        }
+
+        // Bind da paginação
+        $stmt->bindValue(':limite', (int) $limite, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int) $offset, PDO::PARAM_INT);
 
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function contarAgendamentos()
+    public function contarAgendamentos($nome = null, $telefone = null, $servico_id = null, $dia = null)
     {
         global $db;
 
-        $stmt = $db->prepare("SELECT COUNT(*) AS total FROM api.agendamentos");
+        $sql = "SELECT COUNT(*) as total
+                FROM api.agendamentos a
+                JOIN seg.servicos s ON s.id = CAST(a.servico_id AS INTEGER)
+                WHERE 1=1";
+
+        $params = [];
+
+        if (!empty($nome)) {
+            $sql .= " AND a.cliente ILIKE :nome";
+            $params[':nome'] = "%$nome%";
+        }
+
+        if (!empty($telefone)) {
+            $sql .= " AND a.telefone ILIKE :telefone";
+            $params[':telefone'] = "%$telefone%";
+        }
+
+        if (!empty($servico_id)) {
+            $sql .= " AND a.servico_id = :servico_id";
+            $params[':servico_id'] = $servico_id;
+        }
+
+        if (!empty($dia)) {
+            $sql .= " AND DATE(a.data_agendamento) = :dia";
+            $params[':dia'] = $dia;
+        }
+
+        $stmt = $db->prepare($sql);
+
+        foreach ($params as $key => $val) {
+            $stmt->bindValue($key, $val);
+        }
+
         $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $row['total'];
+        return (int) $stmt->fetchColumn();
     }
 
     public function obterAgendamentosPendentes()

@@ -158,3 +158,8 @@ footer {
     color: white !important;
     border: solid 2px rgb(255, 255, 255) !important;
 }
+
+.card.card-body {
+    background: transparent;
+    border: solid 3px white;
+}

@@ -92,19 +92,28 @@ class AdminController
         $this->verificarAutenticacao();
 
         $AgendamentoModel = new AgendamentoModel();
+        $servicoModel = new ServicoModel();
 
         // Definir limite de registros por página
         $limite = 10;
         $pagina = isset($_GET['pagina']) ? (int) $_GET['pagina'] : 1;
         if ($pagina < 1) $pagina = 1;
-
         $offset = ($pagina - 1) * $limite;
 
-        $agendamentos = $AgendamentoModel->obterAgendamentos($limite, $offset);
-        $total = $AgendamentoModel->contarAgendamentos();
+        // Captura os filtros do GET
+        $nome = $_GET['nome'] ?? null;
+        $telefone = $_GET['telefone'] ?? null;
+        $servico_id = $_GET['servico_id'] ?? null;
+        $dia = $_GET['dia'] ?? null;
+
+        $servicos = $servicoModel->obterServicosAtivos();
+
+        // Chama o model passando os filtros
+        $agendamentos = $AgendamentoModel->obterAgendamentos($limite, $offset, $nome, $telefone, $servico_id, $dia);
+        $total = $AgendamentoModel->contarAgendamentos($nome, $telefone, $servico_id, $dia);
         $totalPaginas = ceil($total / $limite);
 
-        view('admin/agendamentos', compact('agendamentos', 'pagina', 'totalPaginas'));
+        view('admin/agendamentos', compact('agendamentos', 'pagina', 'totalPaginas', 'servicos', 'nome', 'telefone', 'servico_id', 'dia'));
     }
 
     public function logar()
