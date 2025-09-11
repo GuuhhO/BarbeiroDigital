@@ -90,10 +90,21 @@ class AdminController
     public function agendamentos()
     {
         $this->verificarAutenticacao();
-        
+
         $AgendamentoModel = new AgendamentoModel();
-        $agendamentos = $AgendamentoModel->obterAgendamentos();
-        view('admin/agendamentos', compact('agendamentos'));
+
+        // Definir limite de registros por página
+        $limite = 10;
+        $pagina = isset($_GET['pagina']) ? (int) $_GET['pagina'] : 1;
+        if ($pagina < 1) $pagina = 1;
+
+        $offset = ($pagina - 1) * $limite;
+
+        $agendamentos = $AgendamentoModel->obterAgendamentos($limite, $offset);
+        $total = $AgendamentoModel->contarAgendamentos();
+        $totalPaginas = ceil($total / $limite);
+
+        view('admin/agendamentos', compact('agendamentos', 'pagina', 'totalPaginas'));
     }
 
     public function logar()

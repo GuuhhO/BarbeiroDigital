@@ -79,6 +79,32 @@ $title = 'Agendamentos';
             </table>
         </div>
     </div>
+    <div class="row m-auto">
+        <?php if (isset($totalPaginas) && $totalPaginas > 1): ?>
+            <nav aria-label="Navegação de página">
+                <ul class="pagination justify-content-center">
+
+                    <!-- Botão Anterior -->
+                    <li class="page-item <?= ($pagina <= 1) ? 'disabled' : '' ?>">
+                        <a class="page-link" href="?pagina=<?= $pagina - 1 ?>" tabindex="-1">&laquo;</a>
+                    </li>
+
+                    <!-- Números -->
+                    <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+                        <li class="page-item <?= ($i == $pagina) ? 'active' : '' ?>">
+                            <a class="page-link" href="?pagina=<?= $i ?>"><?= $i ?></a>
+                        </li>
+                    <?php endfor; ?>
+
+                    <!-- Botão Próximo -->
+                    <li class="page-item <?= ($pagina >= $totalPaginas) ? 'disabled' : '' ?>">
+                        <a class="page-link" href="?pagina=<?= $pagina + 1 ?>">&raquo;</a>
+                    </li>
+
+                </ul>
+            </nav>
+        <?php endif; ?>
+    </div>
     <hr>
 </div>
 

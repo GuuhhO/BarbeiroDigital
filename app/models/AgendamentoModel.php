@@ -2,16 +2,32 @@
 
 class AgendamentoModel
 {
-    public function obterAgendamentos()
+    public function obterAgendamentos($limite = 10, $offset = 0)
     {
         global $db;
 
         $stmt = $db->prepare("SELECT a.*, s.servico AS servico_nome
             FROM api.agendamentos a
             JOIN seg.servicos s ON s.id = CAST(a.servico_id AS INTEGER)
-            ORDER BY a.id DESC");
+            ORDER BY a.id DESC
+            LIMIT :limite OFFSET :offset");
+
+        // bindParam exige tipo inteiro
+        $stmt->bindParam(':limite', $limite, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function contarAgendamentos()
+    {
+        global $db;
+
+        $stmt = $db->prepare("SELECT COUNT(*) AS total FROM api.agendamentos");
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['total'];
     }
 
     public function obterAgendamentosPendentes()
