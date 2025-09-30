@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../models/AgendamentoModel.php';
+require_once __DIR__ . '/../models/LembreteModel.php';
 
 class LembreteController
 {
@@ -109,7 +110,7 @@ class LembreteController
                 "⏰ *Dia:* " . DateTime::createFromFormat('d/m/Y', $dia)->format('d/m/Y') . " às {$horario}\n" .
                 "✂ *Serviço:* {$nomeServico}\n" .
                 "📍 *Endereço:* Rua das Tulipas, 449, Eldorado/São Pedro, Itabira/MG\n" .
-                "https://shre.ink/S02k \n\n" .
+                "https://polecat-deep-quagga.ngrok-free.app/Cortai/ \n\n" .
                 "⚠️ *Não se esqueça de levar seu cartão de fidelidade!*";
 
         $url = "http://localhost:3000/send?phone=" . urlencode($telefoneFormatado) . "&msg=" . urlencode($msg);
@@ -165,5 +166,53 @@ class LembreteController
         }
 
         return true;
+    }
+
+    public function avisarClienteHorario()
+    {
+        global $db;
+
+        $lembreteModel = new LembreteModel();
+
+        $verificarAtendimentosPendentes = $lembreteModel->verificarAtendimentosAmanha();
+
+        foreach ($verificarAtendimentosPendentes as $atendimento)
+        {
+            $cliente = $atendimento['cliente'];
+            $telefone = $atendimento['telefone'];
+            $servico_id = $atendimento['servico_id'];
+            $dia = $atendimento['dia'];
+            $horario = $atendimento['horario'];
+
+            $telefoneFormatado = $this->formatarTelefone($telefone);
+
+            $nomeServico = $this->model->obterNomeServico($servico_id);
+
+            $dataFormatada = DateTime::createFromFormat('Y-m-d', $dia)->format('d/m/Y');
+
+            $msg = "💈 Olá {$cliente}, este é um lembrete do seu atendimento de amanhã na *Barbearia Soares*!\n\n" .
+                "⏰ *Dia:* " . (new DateTime($dia))->format('d/m/Y') . " às {$horario}\n" .
+                "✂ *Serviço:* {$nomeServico}\n" .
+                "📍 *Endereço:* Rua das Tulipas, 449, Eldorado, Itabira/MG\n" .
+                "https://polecat-deep-quagga.ngrok-free.app/Cortai/ \n\n" .
+                "⚠️ *Não se esqueça de levar seu cartão de fidelidade!*";
+
+            $url = "http://localhost:3000/send?phone=" . urlencode($telefoneFormatado) . "&msg=" . urlencode($msg);
+
+            // Inicializa cURL
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+            if ($response === false || $httpcode != 200) {
+                error_log("Erro ao enviar mensagem para {$telefoneFormatado}");
+                return false;
+            }
+
+            return true;
+        }
     }
 }
