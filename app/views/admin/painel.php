@@ -248,7 +248,7 @@ $title = 'Painel do Administrador';
 
                     $.ajax({
                         method: 'POST',
-                        url: '/Cortai/agendar/verificarHorariosDisponiveis',
+                        url: '/BarbeiroDigital/agendar/verificarHorariosDisponiveis',
                         data: dados,
                         success: function(resposta) {
                             let horariosDisponiveis = typeof resposta === 'string' ? JSON.parse(resposta) : resposta;
@@ -356,7 +356,7 @@ $title = 'Painel do Administrador';
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        const service = new AgendamentoService('/Cortai/admin');
+        const service = new AgendamentoService('/BarbeiroDigital/admin');
         const modalHelper = new ModalHelper('modalRemoverAgendamento');
         const controller = new RemocaoAgendamentoController(service, modalHelper);
         controller.init();

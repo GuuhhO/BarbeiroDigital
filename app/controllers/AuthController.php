@@ -7,7 +7,7 @@ class AuthController
     public function login()
     {
         if (Session::isAuthenticated()) {
-            header('Location: /Cortai/admin/');
+            header('Location: /BarbeiroDigital/admin/');
             exit;
         }
 

@@ -82,7 +82,7 @@ $title = 'Agendar Horário';
         $(function() {
             $.ajax({
                 method: 'POST',
-                url: '/Cortai/agendar/obterDiasAtivosAjax',
+                url: '/BarbeiroDigital/agendar/obterDiasAtivosAjax',
                 success: function(resposta) {
                     let diasAtivos = typeof resposta === 'string' ? JSON.parse(resposta) : resposta;
 
@@ -157,7 +157,7 @@ $title = 'Agendar Horário';
 
         $.ajax({
             method: 'POST',
-            url: '/Cortai/agendar/verificarHorariosDisponiveis',
+            url: '/BarbeiroDigital/agendar/verificarHorariosDisponiveis',
             data: dados,
             success: function(resposta) {
                 let horariosDisponiveis = typeof resposta === 'string' ? JSON.parse(resposta) : resposta;
@@ -230,13 +230,13 @@ $title = 'Agendar Horário';
             horario: horario
         };
 
-        modalBody.innerHTML = "<center><img src='/Cortai/public/assets/img/loading.gif' width='50'></img></center>";
+        modalBody.innerHTML = "<center><img src='/BarbeiroDigital/public/assets/img/loading.gif' width='50'></img></center>";
         btnCancelar.style.display = 'none';
         btnAgendar.style.display = 'none';
 
         $.ajax({
             method: 'POST',
-            url: '/Cortai/agendar/agendarCliente',
+            url: '/BarbeiroDigital/agendar/agendarCliente',
             data: dados,
             success: function(resposta) {
                 try {
@@ -312,7 +312,7 @@ $title = 'Agendar Horário';
 
             $.ajax({
                 method: 'POST',
-                url: '/Cortai/agendar/obterBarbeiroPorServicoService',
+                url: '/BarbeiroDigital/agendar/obterBarbeiroPorServicoService',
                 data: { servico_id: servico_id },
                 success: function(resposta) {
                     try {

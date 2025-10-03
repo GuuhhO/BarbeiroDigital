@@ -151,13 +151,13 @@ $title = 'Expedientes';
         
         const dados = $('#formEditarExpediente').serialize();
 
-        document.getElementById('modalEditarExpedienteBodyText').innerHTML = "<center><img src='/Cortai/public/assets/img/loading.gif' width='50'></img></center>";
+        document.getElementById('modalEditarExpedienteBodyText').innerHTML = "<center><img src='/BarbeiroDigital/public/assets/img/loading.gif' width='50'></img></center>";
         document.getElementById('btnModalExpedienteCancelar').style.display = 'none';
         document.getElementById('btnModalExpedienteSalvar').style.display = 'none';
 
         $.ajax({
             method: 'POST',
-            url: '/Cortai/admin/atualizarExpedienteService',
+            url: '/BarbeiroDigital/admin/atualizarExpedienteService',
             data: dados,
             success: function(resposta) {
                 try {

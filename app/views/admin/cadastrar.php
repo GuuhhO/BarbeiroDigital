@@ -42,7 +42,7 @@ $title = 'Cadastrar';
 
         $.ajax({
             method: 'POST',
-            url: '/Cortai/admin/cadastrarAdmin',
+            url: '/BarbeiroDigital/admin/cadastrarAdmin',
             data: dados,
             success: function(resposta) {
                 let resultado;

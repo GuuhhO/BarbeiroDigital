@@ -7,7 +7,7 @@ define('APP_PATH', BASE_PATH . '/app');
 define('VIEW_PATH', APP_PATH . '/views');
 define('CONTROLLER_PATH', APP_PATH . '/controllers');
 
-define('BASE_URL', '/Cortai/');
+define('BASE_URL', '/BarbeiroDigital/');
 
 require_once APP_PATH . '/db.php';
 require_once APP_PATH . '/router.php';

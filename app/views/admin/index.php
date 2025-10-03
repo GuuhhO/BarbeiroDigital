@@ -361,13 +361,13 @@ $title = 'Painel do Administrador';
 
         const dados = $('#formEditarAgendamento').serialize();
 
-        document.getElementById('modalEditarAgendamentoBodyText').innerHTML = "<center><img src='/Cortai/public/assets/img/loading.gif' width='50'></img></center>";
+        document.getElementById('modalEditarAgendamentoBodyText').innerHTML = "<center><img src='/BarbeiroDigital/public/assets/img/loading.gif' width='50'></img></center>";
         document.getElementById('btnModalEditarAgendamentoCancelar').style.display = 'none';
         document.getElementById('btnModalEditarAgendamentoSalvar').style.display = 'none';
 
         $.ajax({
             method: 'POST',
-            url: '/Cortai/admin/editarAgendamentoService',
+            url: '/BarbeiroDigital/admin/editarAgendamentoService',
             data: dados,
             success: function(resposta) {
                 try {
@@ -423,13 +423,13 @@ $title = 'Painel do Administrador';
 
         const dados = $('#formExcluirAgendamento').serialize();
 
-        document.getElementById('modalExcluirAgendamentoBodyText').innerHTML = "<center><img src='/Cortai/public/assets/img/loading.gif' width='50'></img></center>";
+        document.getElementById('modalExcluirAgendamentoBodyText').innerHTML = "<center><img src='/BarbeiroDigital/public/assets/img/loading.gif' width='50'></img></center>";
         document.getElementById('btnCancelarExclusaoAgendamento').style.display = 'none';
         document.getElementById('btnConfirmarExclusaoAgendamento').style.display = 'none';
 
         $.ajax({
             method: 'POST',
-            url: '/Cortai/admin/removerAgendamentoService',
+            url: '/BarbeiroDigital/admin/removerAgendamentoService',
             data: dados,
             success: function(resposta) {
                 try {
@@ -505,7 +505,7 @@ $title = 'Painel do Administrador';
 
         $.ajax({
             method: 'POST',
-            url: '/Cortai/agendar/verificarHorariosDisponiveis',
+            url: '/BarbeiroDigital/agendar/verificarHorariosDisponiveis',
             data: dados,
             success: function(resposta) {
                 let horariosDisponiveis = typeof resposta === 'string' ? JSON.parse(resposta) : resposta;
@@ -578,13 +578,13 @@ $title = 'Painel do Administrador';
         };
 
         // Mostrar loading
-        document.getElementById('modalEditarHorarioAgendamentoBodyText').innerHTML = "<center><img src='/Cortai/public/assets/img/loading.gif' width='50'></center>";
+        document.getElementById('modalEditarHorarioAgendamentoBodyText').innerHTML = "<center><img src='/BarbeiroDigital/public/assets/img/loading.gif' width='50'></center>";
         document.getElementById('btnModalEditarHorarioAgendamentoCancelar').style.display = 'none';
         document.getElementById('btnModalEditarHorarioAgendamentoSalvar').style.display = 'none';
 
         $.ajax({
             method: 'POST',
-            url: '/Cortai/admin/atualizarHorarioAgendamentoService', // ajuste para a rota correta
+            url: '/BarbeiroDigital/admin/atualizarHorarioAgendamentoService', // ajuste para a rota correta
             data: dados,
             success: function(resposta) {
                 try {
@@ -648,7 +648,7 @@ $title = 'Painel do Administrador';
     }
 
     function carregarGraficoAgendamentos() {
-        fetch('/Cortai/agendar/obterDadosGrafico')
+        fetch('/BarbeiroDigital/agendar/obterDadosGrafico')
             .then(response => response.json())
             .then(data => {
                 const labels = data.map(item => item.servico);

@@ -11,10 +11,10 @@ $title = 'Página Inicial';
   </div>
   <div class="carousel-inner">
     <div class="carousel-item active">
-      <img src="/../Cortai/public/assets/img/carousel_1.jpg" class="d-block w-100" alt="Imagem 1">
+      <img src="/../BarbeiroDigital/public/assets/img/carousel_1.jpg" class="d-block w-100" alt="Imagem 1">
     </div>
     <div class="carousel-item">
-      <img src="/../Cortai/public/assets/img/carousel_2.jpg" class="d-block w-100" alt="Imagem 2">
+      <img src="/../BarbeiroDigital/public/assets/img/carousel_2.jpg" class="d-block w-100" alt="Imagem 2">
     </div>
   </div>
   <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
@@ -58,7 +58,7 @@ $title = 'Página Inicial';
           <?php foreach ($servicos as $servico): ?>
             <div class="col-12">
               <div class="p-3 btn btn-servico text-white d-flex flex-column align-items-center">
-                <img src="/../Cortai/public/assets/img/<?= htmlspecialchars($servico['icone']) ?>" alt="" width="32" id="imgServico">
+                <img src="/../BarbeiroDigital/public/assets/img/<?= htmlspecialchars($servico['icone']) ?>" alt="" width="32" id="imgServico">
                 <div><?= strtoupper(htmlspecialchars($servico['servico'])) ?></div>
                 <div>
                     <i class="fa-regular fa-clock"></i>
@@ -125,14 +125,14 @@ $title = 'Página Inicial';
 
       $.ajax({
           method: 'POST',
-          url: '/Cortai/Cliente/verificarCliente',
+          url: '/BarbeiroDigital/Cliente/verificarCliente',
           data: { telefone: telefone },
           dataType: 'json', // se a resposta for JSON
           success: function(resposta) {
               // Redirecionamento via POST
               const form = document.createElement('form');
               form.method = 'POST';
-              form.action = '/Cortai/Cliente/';
+              form.action = '/BarbeiroDigital/Cliente/';
 
               const inputTelefone = document.createElement('input');
               inputTelefone.type = 'hidden';

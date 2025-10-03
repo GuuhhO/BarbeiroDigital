@@ -15,7 +15,7 @@ $title = 'Agendamentos';
             </p>
             <div class="collapse" id="collapseExample">
                 <div class="card card-body">
-                    <form id="formAgendar" action="/Cortai/admin/agendamentos" method="GET">
+                    <form id="formAgendar" action="/BarbeiroDigital/admin/agendamentos" method="GET">
                         <div class="mb-3 col-8 m-auto">
                             <label for="nome" class="form-label">Nome</label>
                             <input type="text" class="form-control" id="nome" name="nome">
@@ -309,13 +309,13 @@ $title = 'Agendamentos';
 
         const dados = $('#formEditarAgendamento').serialize();
 
-        document.getElementById('modalEditarAgendamentoBodyText').innerHTML = "<center><img src='/Cortai/public/assets/img/loading.gif' width='50'></img></center>";
+        document.getElementById('modalEditarAgendamentoBodyText').innerHTML = "<center><img src='/BarbeiroDigital/public/assets/img/loading.gif' width='50'></img></center>";
         document.getElementById('btnModalEditarAgendamentoCancelar').style.display = 'none';
         document.getElementById('btnModalEditarAgendamentoSalvar').style.display = 'none';
 
         $.ajax({
             method: 'POST',
-            url: '/Cortai/admin/editarAgendamentoService',
+            url: '/BarbeiroDigital/admin/editarAgendamentoService',
             data: dados,
             success: function(resposta) {
                 try {
@@ -371,13 +371,13 @@ $title = 'Agendamentos';
 
         const dados = $('#formExcluirAgendamento').serialize();
 
-        document.getElementById('modalExcluirAgendamentoBodyText').innerHTML = "<center><img src='/Cortai/public/assets/img/loading.gif' width='50'></img></center>";
+        document.getElementById('modalExcluirAgendamentoBodyText').innerHTML = "<center><img src='/BarbeiroDigital/public/assets/img/loading.gif' width='50'></img></center>";
         document.getElementById('btnCancelarExclusaoAgendamento').style.display = 'none';
         document.getElementById('btnConfirmarExclusaoAgendamento').style.display = 'none';
 
         $.ajax({
             method: 'POST',
-            url: '/Cortai/admin/removerAgendamentoService',
+            url: '/BarbeiroDigital/admin/removerAgendamentoService',
             data: dados,
             success: function(resposta) {
                 try {
@@ -454,7 +454,7 @@ $title = 'Agendamentos';
 
         $.ajax({
             method: 'POST',
-            url: '/Cortai/agendar/verificarHorariosDisponiveis',
+            url: '/BarbeiroDigital/agendar/verificarHorariosDisponiveis',
             data: dados,
             success: function(resposta) {
                 let horariosDisponiveis = typeof resposta === 'string' ? JSON.parse(resposta) : resposta;
@@ -529,13 +529,13 @@ $title = 'Agendamentos';
         };
 
         // Mostrar loading
-        document.getElementById('modalEditarHorarioAgendamentoBodyText').innerHTML = "<center><img src='/Cortai/public/assets/img/loading.gif' width='50'></center>";
+        document.getElementById('modalEditarHorarioAgendamentoBodyText').innerHTML = "<center><img src='/BarbeiroDigital/public/assets/img/loading.gif' width='50'></center>";
         document.getElementById('btnModalEditarHorarioAgendamentoCancelar').style.display = 'none';
         document.getElementById('btnModalEditarHorarioAgendamentoSalvar').style.display = 'none';
 
         $.ajax({
             method: 'POST',
-            url: '/Cortai/admin/atualizarHorarioAgendamentoService', // ajuste para a rota correta
+            url: '/BarbeiroDigital/admin/atualizarHorarioAgendamentoService', // ajuste para a rota correta
             data: dados,
             success: function(resposta) {
                 try {
@@ -598,7 +598,7 @@ $title = 'Agendamentos';
 
         $.ajax({
             method: 'POST',
-            url: '/Cortai/agendar/filtrarHorarios',
+            url: '/BarbeiroDigital/agendar/filtrarHorarios',
             data: dados,
             success: function(resposta) {
                 let horariosDisponiveis = typeof resposta === 'string' ? JSON.parse(resposta) : resposta;
@@ -634,7 +634,7 @@ $title = 'Agendamentos';
 
             $.ajax({
                 method: 'POST',
-                url: '/Cortai/agendar/obterBarbeiroPorServicoService',
+                url: '/BarbeiroDigital/agendar/obterBarbeiroPorServicoService',
                 data: { servico_id: servico_id },
                 success: function(resposta) {
                     try {

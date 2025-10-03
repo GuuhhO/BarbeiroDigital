@@ -110,7 +110,7 @@ class LembreteController
                 "⏰ *Dia:* " . DateTime::createFromFormat('d/m/Y', $dia)->format('d/m/Y') . " às {$horario}\n" .
                 "✂ *Serviço:* {$nomeServico}\n" .
                 "📍 *Endereço:* Rua das Tulipas, 449, Eldorado/São Pedro, Itabira/MG\n" .
-                "https://polecat-deep-quagga.ngrok-free.app/Cortai/ \n\n" .
+                "https://polecat-deep-quagga.ngrok-free.app/BarbeiroDigital/ \n\n" .
                 "⚠️ *Não se esqueça de levar seu cartão de fidelidade!*";
 
         $url = "http://localhost:3000/send?phone=" . urlencode($telefoneFormatado) . "&msg=" . urlencode($msg);
@@ -194,7 +194,7 @@ class LembreteController
                 "⏰ *Dia:* " . (new DateTime($dia))->format('d/m/Y') . " às {$horario}\n" .
                 "✂ *Serviço:* {$nomeServico}\n" .
                 "📍 *Endereço:* Rua das Tulipas, 449, Eldorado, Itabira/MG\n" .
-                "https://polecat-deep-quagga.ngrok-free.app/Cortai/ \n\n" .
+                "https://polecat-deep-quagga.ngrok-free.app/BarbeiroDigital/ \n\n" .
                 "⚠️ *Não se esqueça de levar seu cartão de fidelidade!*";
 
             $url = "http://localhost:3000/send?phone=" . urlencode($telefoneFormatado) . "&msg=" . urlencode($msg);

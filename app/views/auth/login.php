@@ -41,12 +41,12 @@ $title = 'Login';
 
             $.ajax({
                 method: 'POST',
-                url: '/Cortai/auth/verificarCredencial',
+                url: '/BarbeiroDigital/auth/verificarCredencial',
                 data: dados,
                 dataType: 'json',
                 success: function(resposta) {
                     if (resposta.sucesso) {
-                        window.location.href = '/Cortai/admin';
+                        window.location.href = '/BarbeiroDigital/admin';
                     } else {
                         alert(resposta.mensagem || "Credenciais inválidas.");
                     }

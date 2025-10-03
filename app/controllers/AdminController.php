@@ -11,7 +11,7 @@ class AdminController
     private function verificarAutenticacao(): void
     {
         if (!Session::isAuthenticated()) {
-            header('Location: /Cortai/auth/login');
+            header('Location: /BarbeiroDigital/auth/login');
             exit;
         }
     }

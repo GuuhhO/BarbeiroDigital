@@ -83,13 +83,13 @@ $title = 'Painel do Cliente';
 
         // Evita múltiplos bindings duplicados
         $('#confirmarExclusao').off('click').on('click', function () {
-            document.getElementById('modalBodyText').innerHTML = "<center><img src='/Cortai/public/assets/img/loading.gif' width='50'></img></center>";
+            document.getElementById('modalBodyText').innerHTML = "<center><img src='/BarbeiroDigital/public/assets/img/loading.gif' width='50'></img></center>";
             document.getElementById('btnModalCancelar').style.display = 'none';
             document.getElementById('confirmarExclusao').style.display = 'none';
 
             $.ajax({
                 method: 'POST',
-                url: '/Cortai/Cliente/excluirAgendamento',
+                url: '/BarbeiroDigital/Cliente/excluirAgendamento',
                 data: dados,
                 success: function(resposta) {
                     try {

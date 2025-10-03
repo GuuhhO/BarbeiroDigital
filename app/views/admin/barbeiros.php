@@ -206,13 +206,13 @@ $title = 'Barbeiros';
         
         const dados = $('#formEditarBarbeiro').serialize();
 
-        document.getElementById('modalBodyText').innerHTML = "<center><img src='/Cortai/public/assets/img/loading.gif' width='50'></img></center>";
+        document.getElementById('modalBodyText').innerHTML = "<center><img src='/BarbeiroDigital/public/assets/img/loading.gif' width='50'></img></center>";
         document.getElementById('btnModalCancelar').style.display = 'none';
         document.getElementById('btnConfirmarEdicao').style.display = 'none';
 
         $.ajax({
             method: 'POST',
-            url: '/Cortai/admin/atualizarBarbeiroService',
+            url: '/BarbeiroDigital/admin/atualizarBarbeiroService',
             data: dados,
             success: function(resposta) {
                 try {
@@ -257,13 +257,13 @@ $title = 'Barbeiros';
         const btnSalvar = document.getElementById('btnConfirmarAdicao');
         const dados = $('#formAdicionarBarbeiro').serialize();
 
-        document.getElementById('modalAdicionarBarbeiroBodyText').innerHTML = "<center><img src='/Cortai/public/assets/img/loading.gif' width='50'></img></center>";
+        document.getElementById('modalAdicionarBarbeiroBodyText').innerHTML = "<center><img src='/BarbeiroDigital/public/assets/img/loading.gif' width='50'></img></center>";
         document.getElementById('btnmodalAdicionarBarbeiroCancelar').style.display = 'none';
         document.getElementById('btnConfirmarAdicao').style.display = 'none';
 
         $.ajax({
             method: 'POST',
-            url: '/Cortai/admin/adicionarBarbeiroService',
+            url: '/BarbeiroDigital/admin/adicionarBarbeiroService',
             data: dados,
             success: function(resposta) {
                 try {
@@ -314,13 +314,13 @@ $title = 'Barbeiros';
 
         // Evita múltiplos bindings duplicados
         $('#btnConfirmarExclusaoBarbeiro').off('click').on('click', function () {
-            document.getElementById('modalExcluirBarbeiroBodyText').innerHTML = "<center><img src='/Cortai/public/assets/img/loading.gif' width='50'></img></center>";
+            document.getElementById('modalExcluirBarbeiroBodyText').innerHTML = "<center><img src='/BarbeiroDigital/public/assets/img/loading.gif' width='50'></img></center>";
             document.getElementById('btnModalExcluirBarbeiroCancelar').style.display = 'none';
             document.getElementById('btnConfirmarExclusaoBarbeiro').style.display = 'none';
 
             $.ajax({
                 method: 'POST',
-                url: '/Cortai/admin/excluirBarbeiroService',
+                url: '/BarbeiroDigital/admin/excluirBarbeiroService',
                 data: dados,
                 success: function(resposta) {
                     try {
